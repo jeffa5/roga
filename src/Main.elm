@@ -163,7 +163,7 @@ view model =
         numPoses =
             List.length (originalDefault model.original) |> String.fromInt
     in
-    div []
+    div [ css [ Css.fontFamily Css.sansSerif ] ]
         [ h2 [ css [ Css.textAlign Css.center ] ] [ text "Roga" ]
         , viewFilters model numPoses
         , viewPoses model
