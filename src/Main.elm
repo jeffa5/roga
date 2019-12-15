@@ -1,10 +1,10 @@
 module Main exposing (Model, Msg(..), getPoses, init, main, subscriptions, update, view, viewPoses)
 
 import Browser
-import Element exposing (Element)
-import Html exposing (Html, div, em, h2, h4, h5, img, input, legend, li, table, td, text, tr, ul)
-import Html.Attributes as Attrs exposing (attribute)
-import Html.Events exposing (onCheck, onInput)
+import Css exposing (display, inline)
+import Html.Styled exposing (Html, div, em, h2, h3, h4, img, input, legend, li, table, td, text, toUnstyled, tr, ul)
+import Html.Styled.Attributes as Attrs exposing (css, src, type_, value)
+import Html.Styled.Events exposing (onCheck, onInput)
 import Http
 import Json.Decode exposing (Decoder, field, list, map5, string)
 import Random
@@ -22,7 +22,7 @@ main =
         { init = init
         , update = update
         , subscriptions = subscriptions
-        , view = view
+        , view = view >> toUnstyled
         }
 
 
@@ -164,22 +164,8 @@ view model =
             List.length (originalDefault model.original) |> String.fromInt
     in
     div []
-        [ h2 [] [ text "Roga" ]
-        , div []
-            [ legend [] [ text "Number of Poses" ]
-            , input
-                [ Attrs.type_ "number"
-                , Attrs.min "0"
-                , Attrs.max numPoses
-                , Attrs.value <| String.fromInt model.filterNum
-                , onInput
-                    (\s -> FilterNum (String.toInt s |> Maybe.withDefault model.filterNum))
-                ]
-                []
-            ]
-        , viewCheckbox "Beginner" model.filterBeginner FilterBeginner
-        , viewCheckbox "Intermediate" model.filterIntermediate FilterIntermediate
-        , viewCheckbox "Advanced" model.filterAdvanced FilterAdvanced
+        [ h2 [ css [ Css.textAlign Css.center ] ] [ text "Roga" ]
+        , viewFilters model numPoses
         , viewPoses model
         ]
 
@@ -194,16 +180,42 @@ originalDefault g =
             []
 
 
+viewFilters : Model -> String -> Html Msg
+viewFilters model numPoses =
+    table [ css [ Css.width <| Css.px 400, Css.margin Css.auto ] ]
+        [ tr []
+            [ td [] [ legend [] [ text "Number of Poses" ] ]
+            , td []
+                [ input
+                    [ type_ "number"
+                    , Attrs.min "0"
+                    , Attrs.max numPoses
+                    , value <| String.fromInt model.filterNum
+                    , onInput
+                        (\s -> FilterNum (String.toInt s |> Maybe.withDefault model.filterNum))
+                    , css [ Css.width (Css.px 80) ]
+                    ]
+                    []
+                ]
+            ]
+        , viewCheckbox "Beginner" model.filterBeginner FilterBeginner
+        , viewCheckbox "Intermediate" model.filterIntermediate FilterIntermediate
+        , viewCheckbox "Advanced" model.filterAdvanced FilterAdvanced
+        ]
+
+
 viewCheckbox : String -> Bool -> (Bool -> Msg) -> Html Msg
 viewCheckbox l c oc =
-    div []
-        [ legend [] [ text l ]
-        , input
-            [ Attrs.type_ "checkbox"
-            , Attrs.checked c
-            , onCheck oc
+    tr []
+        [ td [] [ legend [ css [ display inline ] ] [ text l ] ]
+        , td []
+            [ input
+                [ Attrs.type_ "checkbox"
+                , Attrs.checked c
+                , onCheck oc
+                ]
+                []
             ]
-            []
         ]
 
 
@@ -213,31 +225,33 @@ viewPoses model =
         Success _ ->
             case model.poses of
                 Finished poses ->
-                    table []
+                    table [ css [ Css.width <| Css.px 800, Css.margin Css.auto, Css.borderCollapse Css.collapse ] ]
                         (List.map (\p -> viewPose p) poses)
 
                 Filtering ->
                     text "Filtering..."
 
         Loading ->
-            text "Loading..."
+            div [ css [ Css.width <| Css.px 800, Css.margin Css.auto ] ] [ text "Loading..." ]
 
         Failure _ ->
-            text "Failed to load"
+            div [ css [ Css.width <| Css.px 800, Css.margin Css.auto ] ] [ text "Failed to load" ]
 
 
 viewPose : Pose -> Html Msg
 viewPose p =
-    tr []
-        [ td []
-            [ h4 [] [ text p.pose, em [] [ text (" (" ++ p.asana ++ ")") ] ]
-            , h5 [] [ text p.level ]
-            , ul []
-                (List.map (\b -> li [] [ text b ]) p.benefits)
+    tr [ css [ Css.hover [ Css.backgroundColor (Css.hex "#f5f5f5") ] ] ]
+        [ td [ css [ Css.borderBottom3 (Css.px 1) Css.solid (Css.hex "#dddddd"), Css.borderTop3 (Css.px 1) Css.solid (Css.hex "#ddd") ] ]
+            [ div [ css [ Css.margin (Css.px 20) ] ]
+                [ h3 [] [ text p.pose, em [] [ text (" (" ++ p.asana ++ ")") ] ]
+                , h4 [] [ text p.level ]
+                , ul []
+                    (List.map (\b -> li [] [ text b ]) p.benefits)
+                ]
             ]
-        , td []
+        , td [ css [ Css.borderTop3 (Css.px 1) Css.solid (Css.hex "#ddd"), Css.borderBottom3 (Css.px 1) Css.solid (Css.hex "#ddd") ] ]
             [ img
-                [ attribute "src" p.image, Attrs.width 128 ]
+                [ src p.image, Attrs.width 128, css [ Css.margin (Css.px 20) ] ]
                 []
             ]
         ]
