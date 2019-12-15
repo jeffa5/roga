@@ -199,7 +199,7 @@ viewCheckbox l c oc =
     div []
         [ legend [] [ text l ]
         , input
-            [ Attrs.type_ "checked"
+            [ Attrs.type_ "checkbox"
             , Attrs.checked c
             , onCheck oc
             ]
