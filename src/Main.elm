@@ -2,9 +2,9 @@ module Main exposing (Model, Msg(..), getPoses, init, main, subscriptions, updat
 
 import Browser
 import Css exposing (display, inline)
-import Html.Styled exposing (Html, div, em, h2, h3, h4, img, input, legend, li, table, td, text, toUnstyled, tr, ul)
+import Html.Styled exposing (Html, button, div, em, h2, h3, h4, img, input, legend, li, table, td, text, toUnstyled, tr, ul)
 import Html.Styled.Attributes as Attrs exposing (css, src, type_, value)
-import Html.Styled.Events exposing (onCheck, onInput)
+import Html.Styled.Events exposing (onCheck, onClick, onInput)
 import Http
 import Json.Decode exposing (Decoder, field, list, map5, string)
 import Random
@@ -75,6 +75,7 @@ type Msg
     | FilterBeginner Bool
     | FilterIntermediate Bool
     | FilterAdvanced Bool
+    | Filter
     | Filtered (List Pose)
 
 
@@ -93,49 +94,21 @@ update msg model =
                     ( { model | original = Failure err }, Cmd.none )
 
         FilterNum n ->
-            case model.original of
-                Success p ->
-                    let
-                        newModel =
-                            { model | filterNum = n, poses = Filtering }
-                    in
-                    ( newModel, filterPoses newModel p )
-
-                _ ->
-                    ( model, Cmd.none )
+            ( { model | filterNum = n }, Cmd.none )
 
         FilterBeginner b ->
-            case model.original of
-                Success p ->
-                    let
-                        newModel =
-                            { model | filterBeginner = b, poses = Filtering }
-                    in
-                    ( newModel, filterPoses newModel p )
-
-                _ ->
-                    ( model, Cmd.none )
+            ( { model | filterBeginner = b }, Cmd.none )
 
         FilterIntermediate b ->
-            case model.original of
-                Success p ->
-                    let
-                        newModel =
-                            { model | filterIntermediate = b, poses = Filtering }
-                    in
-                    ( newModel, filterPoses newModel p )
-
-                _ ->
-                    ( model, Cmd.none )
+            ( { model | filterIntermediate = b }, Cmd.none )
 
         FilterAdvanced b ->
+            ( { model | filterAdvanced = b }, Cmd.none )
+
+        Filter ->
             case model.original of
                 Success p ->
-                    let
-                        newModel =
-                            { model | filterAdvanced = b, poses = Filtering }
-                    in
-                    ( newModel, filterPoses newModel p )
+                    ( { model | poses = Filtering }, filterPoses model p )
 
                 _ ->
                     ( model, Cmd.none )
@@ -201,6 +174,7 @@ viewFilters model numPoses =
         , viewCheckbox "Beginner" model.filterBeginner FilterBeginner
         , viewCheckbox "Intermediate" model.filterIntermediate FilterIntermediate
         , viewCheckbox "Advanced" model.filterAdvanced FilterAdvanced
+        , button [ onClick Filter ] [ text "Filter" ]
         ]
 
 
@@ -225,8 +199,13 @@ viewPoses model =
         Success _ ->
             case model.poses of
                 Finished poses ->
-                    table [ css [ Css.width <| Css.px 800, Css.margin Css.auto, Css.borderCollapse Css.collapse ] ]
-                        (List.map (\p -> viewPose p) poses)
+                    case List.length poses of
+                        0 ->
+                            div [ css [ Css.textAlign Css.center ] ] [ text "No poses to show" ]
+
+                        _ ->
+                            table [ css [ Css.width <| Css.px 800, Css.margin Css.auto, Css.borderCollapse Css.collapse ] ]
+                                (List.map (\p -> viewPose p) poses)
 
                 Filtering ->
                     text "Filtering..."
