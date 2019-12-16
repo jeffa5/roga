@@ -10,6 +10,8 @@ import Json.Decode exposing (Decoder, field, list, map5, string)
 import Random
 import Random.Set
 import Set
+import Task
+import Time exposing (Posix, now, toMinute, toSecond, utc)
 
 
 
@@ -37,6 +39,11 @@ type alias Model =
     , filterBeginner : Bool
     , filterIntermediate : Bool
     , filterAdvanced : Bool
+    , inWorkout : Bool
+    , startWorkoutTime : Posix
+    , exerciseDuration : Posix
+    , breakDuration : Posix
+    , workoutPoses : List ( Maybe Pose, Maybe Posix )
     }
 
 
@@ -59,6 +66,11 @@ init _ =
       , filterBeginner = True
       , filterIntermediate = True
       , filterAdvanced = True
+      , inWorkout = False
+      , startWorkoutTime = Time.millisToPosix 0
+      , exerciseDuration = Time.millisToPosix 30000
+      , breakDuration = Time.millisToPosix 5000
+      , workoutPoses = []
       }
     , getPoses
     )
@@ -77,6 +89,9 @@ type Msg
     | FilterAdvanced Bool
     | Filter
     | Filtered (List Pose)
+    | StartWorkout
+    | Now Posix
+    | Tick Posix
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -116,6 +131,48 @@ update msg model =
         Filtered poses ->
             ( { model | poses = Finished poses }, Cmd.none )
 
+        StartWorkout ->
+            case model.poses of
+                Finished p ->
+                    let
+                        sequence =
+                            List.map (\i -> ( Just i, Just model.exerciseDuration )) p
+                                |> List.intersperse
+                                    ( Nothing, Just model.breakDuration )
+                    in
+                    ( { model | inWorkout = True, workoutPoses = sequence }, Task.perform Now now )
+
+                Filtering ->
+                    ( model, Cmd.none )
+
+        Now t ->
+            ( { model | startWorkoutTime = t }, Cmd.none )
+
+        Tick _ ->
+            let
+                poses =
+                    case model.workoutPoses of
+                        p :: ps ->
+                            case p of
+                                ( i, Just time ) ->
+                                    let
+                                        decremented =
+                                            Time.millisToPosix (Time.posixToMillis time - 1000)
+                                    in
+                                    if decremented == Time.millisToPosix 0 then
+                                        ps
+
+                                    else
+                                        ( i, Just decremented ) :: ps
+
+                                e ->
+                                    e :: ps
+
+                        e ->
+                            e
+            in
+            ( { model | workoutPoses = poses }, Cmd.none )
+
 
 
 -- SUBSCRIPTIONS
@@ -123,7 +180,7 @@ update msg model =
 
 subscriptions : Model -> Sub Msg
 subscriptions _ =
-    Sub.none
+    Time.every 1000 Tick
 
 
 
@@ -137,10 +194,16 @@ view model =
             List.length (originalDefault model.original) |> String.fromInt
     in
     div [ css [ Css.fontFamily Css.sansSerif ] ]
-        [ h2 [ css [ Css.textAlign Css.center ] ] [ text "Roga" ]
-        , viewFilters model numPoses
-        , viewPoses model
-        ]
+        (h2 [ css [ Css.textAlign Css.center ] ] [ text "Roga" ]
+            :: (if model.inWorkout then
+                    [ viewWorkout model ]
+
+                else
+                    [ viewFilters model numPoses
+                    , viewPoses model
+                    ]
+               )
+        )
 
 
 originalDefault : GettingPoses -> List Pose
@@ -151,6 +214,70 @@ originalDefault g =
 
         _ ->
             []
+
+
+viewWorkout : Model -> Html Msg
+viewWorkout model =
+    table
+        [ css
+            [ Css.width <| Css.px 800
+            , Css.margin Css.auto
+            , Css.borderCollapse Css.collapse
+            ]
+        ]
+        (List.concatMap
+            (\i ->
+                case i of
+                    ( Just p, Just t ) ->
+                        [ tr [ css [ Css.textAlign Css.center ] ]
+                            [ td
+                                [ Attrs.colspan 2
+                                , css
+                                    [ Css.borderBottom3 (Css.px 1) Css.solid (Css.hex "#dddddd")
+                                    , Css.borderTop3 (Css.px 1) Css.solid (Css.hex "#dddddd")
+                                    , Css.padding (Css.px 20)
+                                    ]
+                                ]
+                                [ viewTime t ]
+                            ]
+                        , viewPose p
+                        ]
+
+                    ( Nothing, Just t ) ->
+                        [ tr [ css [ Css.textAlign Css.center ] ]
+                            [ td
+                                [ Attrs.colspan 2
+                                , css [ Css.padding (Css.px 20), Css.fontSize (Css.px 20) ]
+                                ]
+                                [ div [] [ text "Break ", viewTime t ] ]
+                            ]
+                        ]
+
+                    _ ->
+                        [ text "Error" ]
+            )
+            model.workoutPoses
+        )
+
+
+viewTime : Posix -> Html Msg
+viewTime t =
+    let
+        min =
+            toMinute utc t
+
+        sec =
+            toSecond utc t
+    in
+    text
+        ((if min /= 0 then
+            String.fromInt min ++ "m "
+
+          else
+            ""
+         )
+            ++ (String.fromInt sec ++ "s")
+        )
 
 
 viewFilters : Model -> String -> Html Msg
@@ -174,7 +301,10 @@ viewFilters model numPoses =
         , viewCheckbox "Beginner" model.filterBeginner FilterBeginner
         , viewCheckbox "Intermediate" model.filterIntermediate FilterIntermediate
         , viewCheckbox "Advanced" model.filterAdvanced FilterAdvanced
-        , button [ onClick Filter ] [ text "Filter" ]
+        , tr []
+            [ td [] [ button [ onClick Filter ] [ text "Filter" ] ]
+            , td [] [ button [ onClick StartWorkout ] [ text "Start workout" ] ]
+            ]
         ]
 
 
