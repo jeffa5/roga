@@ -10,8 +10,7 @@ import Json.Decode exposing (Decoder, field, list, map5, string)
 import Random
 import Random.Set
 import Set
-import Task
-import Time exposing (Posix, now, toMinute, toSecond, utc)
+import Time exposing (Posix, toMinute, toSecond, utc)
 
 
 
@@ -40,7 +39,6 @@ type alias Model =
     , filterIntermediate : Bool
     , filterAdvanced : Bool
     , inWorkout : Bool
-    , startWorkoutTime : Posix
     , exerciseDuration : Posix
     , breakDuration : Posix
     , workoutPoses : List ( Maybe Pose, Maybe Posix )
@@ -67,7 +65,6 @@ init _ =
       , filterIntermediate = True
       , filterAdvanced = True
       , inWorkout = False
-      , startWorkoutTime = Time.millisToPosix 0
       , exerciseDuration = Time.millisToPosix 30000
       , breakDuration = Time.millisToPosix 5000
       , workoutPoses = []
@@ -90,7 +87,6 @@ type Msg
     | Filter
     | Filtered (List Pose)
     | StartWorkout
-    | Now Posix
     | Tick Posix
 
 
@@ -140,13 +136,10 @@ update msg model =
                                 |> List.intersperse
                                     ( Nothing, Just model.breakDuration )
                     in
-                    ( { model | inWorkout = True, workoutPoses = sequence }, Task.perform Now now )
+                    ( { model | inWorkout = True, workoutPoses = sequence }, Cmd.none )
 
                 Filtering ->
                     ( model, Cmd.none )
-
-        Now t ->
-            ( { model | startWorkoutTime = t }, Cmd.none )
 
         Tick _ ->
             let
