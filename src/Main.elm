@@ -1,6 +1,6 @@
 module Main exposing (Model, Msg(..), getPoses, init, main, subscriptions, update, view, viewPoses)
 
-import Browser
+import Browser exposing (Document)
 import Css exposing (display, inline)
 import Html.Styled exposing (Html, button, div, em, h2, h3, h4, img, input, legend, li, table, td, text, toUnstyled, tr, ul)
 import Html.Styled.Attributes as Attrs exposing (css, src, type_, value)
@@ -20,11 +20,11 @@ import Time exposing (Posix, now, toMinute, toSecond, utc)
 
 main : Program () Model Msg
 main =
-    Browser.element
+    Browser.document
         { init = init
         , update = update
         , subscriptions = subscriptions
-        , view = view >> toUnstyled
+        , view = view
         }
 
 
@@ -187,23 +187,28 @@ subscriptions _ =
 -- VIEW
 
 
-view : Model -> Html Msg
+view : Model -> Document Msg
 view model =
     let
         numPoses =
             List.length (originalDefault model.original) |> String.fromInt
     in
-    div [ css [ Css.fontFamily Css.sansSerif ] ]
-        (h2 [ css [ Css.textAlign Css.center ] ] [ text "Roga" ]
-            :: (if model.inWorkout then
-                    [ viewWorkout model ]
+    { title = "Roga"
+    , body =
+        [ toUnstyled <|
+            div [ css [ Css.fontFamily Css.sansSerif ] ]
+                (h2 [ css [ Css.textAlign Css.center ] ] [ text "Roga" ]
+                    :: (if model.inWorkout then
+                            [ viewWorkout model ]
 
-                else
-                    [ viewFilters model numPoses
-                    , viewPoses model
-                    ]
-               )
-        )
+                        else
+                            [ viewFilters model numPoses
+                            , viewPoses model
+                            ]
+                       )
+                )
+        ]
+    }
 
 
 originalDefault : GettingPoses -> List Pose
