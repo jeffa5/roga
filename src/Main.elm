@@ -164,7 +164,15 @@ update msg model =
                         e ->
                             e
             in
-            ( { model | workoutPoses = poses }, Cmd.none )
+            let
+                newModel =
+                    if List.length poses == 0 then
+                        { model | inWorkout = False }
+
+                    else
+                        model
+            in
+            ( { newModel | workoutPoses = poses }, Cmd.none )
 
 
 
