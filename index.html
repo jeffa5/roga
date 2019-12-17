@@ -9507,7 +9507,43 @@ var $author$project$Main$SetExerciseDuration = function (a) {
 	return {$: 9, a: a};
 };
 var $author$project$Main$StartWorkout = {$: 10};
+var $rtfeldman$elm_css$Css$alignItems = function (fn) {
+	return A3(
+		$rtfeldman$elm_css$Css$Internal$getOverloadedProperty,
+		'alignItems',
+		'align-items',
+		fn($rtfeldman$elm_css$Css$Internal$lengthForOverloadedProperty));
+};
 var $rtfeldman$elm_css$Html$Styled$button = $rtfeldman$elm_css$Html$Styled$node('button');
+var $elm$virtual_dom$VirtualDom$attribute = F2(
+	function (key, value) {
+		return A2(
+			_VirtualDom_attribute,
+			_VirtualDom_noOnOrFormAction(key),
+			_VirtualDom_noJavaScriptOrHtmlUri(value));
+	});
+var $rtfeldman$elm_css$VirtualDom$Styled$attribute = F2(
+	function (key, value) {
+		return A3(
+			$rtfeldman$elm_css$VirtualDom$Styled$Attribute,
+			A2($elm$virtual_dom$VirtualDom$attribute, key, value),
+			_List_Nil,
+			'');
+	});
+var $rtfeldman$elm_css$Html$Styled$Attributes$colspan = function (n) {
+	return A2(
+		$rtfeldman$elm_css$VirtualDom$Styled$attribute,
+		'colspan',
+		$elm$core$String$fromInt(n));
+};
+var $rtfeldman$elm_css$Css$displayFlex = A2($rtfeldman$elm_css$Css$property, 'display', 'flex');
+var $rtfeldman$elm_css$Css$justifyContent = function (fn) {
+	return A3(
+		$rtfeldman$elm_css$Css$Internal$getOverloadedProperty,
+		'justifyContent',
+		'justify-content',
+		fn($rtfeldman$elm_css$Css$Internal$lengthForOverloadedProperty));
+};
 var $elm$virtual_dom$VirtualDom$Normal = function (a) {
 	return {$: 0, a: a};
 };
@@ -9583,47 +9619,44 @@ var $rtfeldman$elm_css$Html$Styled$Attributes$stringProperty = F2(
 var $rtfeldman$elm_css$Html$Styled$Attributes$type_ = $rtfeldman$elm_css$Html$Styled$Attributes$stringProperty('type');
 var $author$project$Main$viewCheckbox = F3(
 	function (l, c, oc) {
-		return A2(
-			$rtfeldman$elm_css$Html$Styled$tr,
-			_List_Nil,
-			_List_fromArray(
-				[
-					A2(
-					$rtfeldman$elm_css$Html$Styled$td,
-					_List_Nil,
-					_List_fromArray(
-						[
-							A2(
-							$rtfeldman$elm_css$Html$Styled$legend,
-							_List_fromArray(
-								[
-									$rtfeldman$elm_css$Html$Styled$Attributes$css(
-									_List_fromArray(
-										[
-											$rtfeldman$elm_css$Css$display($rtfeldman$elm_css$Css$inline)
-										]))
-								]),
-							_List_fromArray(
-								[
-									$rtfeldman$elm_css$Html$Styled$text(l)
-								]))
-						])),
-					A2(
-					$rtfeldman$elm_css$Html$Styled$td,
-					_List_Nil,
-					_List_fromArray(
-						[
-							A2(
-							$rtfeldman$elm_css$Html$Styled$input,
-							_List_fromArray(
-								[
-									$rtfeldman$elm_css$Html$Styled$Attributes$type_('checkbox'),
-									$rtfeldman$elm_css$Html$Styled$Attributes$checked(c),
-									$rtfeldman$elm_css$Html$Styled$Events$onCheck(oc)
-								]),
-							_List_Nil)
-						]))
-				]));
+		return _List_fromArray(
+			[
+				A2(
+				$rtfeldman$elm_css$Html$Styled$td,
+				_List_Nil,
+				_List_fromArray(
+					[
+						A2(
+						$rtfeldman$elm_css$Html$Styled$legend,
+						_List_fromArray(
+							[
+								$rtfeldman$elm_css$Html$Styled$Attributes$css(
+								_List_fromArray(
+									[
+										$rtfeldman$elm_css$Css$display($rtfeldman$elm_css$Css$inline)
+									]))
+							]),
+						_List_fromArray(
+							[
+								$rtfeldman$elm_css$Html$Styled$text(l)
+							]))
+					])),
+				A2(
+				$rtfeldman$elm_css$Html$Styled$td,
+				_List_Nil,
+				_List_fromArray(
+					[
+						A2(
+						$rtfeldman$elm_css$Html$Styled$input,
+						_List_fromArray(
+							[
+								$rtfeldman$elm_css$Html$Styled$Attributes$type_('checkbox'),
+								$rtfeldman$elm_css$Html$Styled$Attributes$checked(c),
+								$rtfeldman$elm_css$Html$Styled$Events$onCheck(oc)
+							]),
+						_List_Nil)
+					]))
+			]);
 	});
 var $rtfeldman$elm_css$Html$Styled$Attributes$max = $rtfeldman$elm_css$Html$Styled$Attributes$stringProperty('max');
 var $rtfeldman$elm_css$Html$Styled$Attributes$min = $rtfeldman$elm_css$Html$Styled$Attributes$stringProperty('min');
@@ -9654,55 +9687,61 @@ var $rtfeldman$elm_css$Html$Styled$Events$onInput = function (tagger) {
 			$rtfeldman$elm_css$Html$Styled$Events$alwaysStop,
 			A2($elm$json$Json$Decode$map, tagger, $rtfeldman$elm_css$Html$Styled$Events$targetValue)));
 };
+var $rtfeldman$elm_css$Css$paddingRight = $rtfeldman$elm_css$Css$prop1('padding-right');
 var $rtfeldman$elm_css$Html$Styled$Attributes$value = $rtfeldman$elm_css$Html$Styled$Attributes$stringProperty('value');
 var $rtfeldman$elm_css$Css$width = $rtfeldman$elm_css$Css$prop1('width');
 var $author$project$Main$viewNumberInput = F5(
 	function (name, min, max, val, oi) {
-		return A2(
-			$rtfeldman$elm_css$Html$Styled$tr,
-			_List_Nil,
-			_List_fromArray(
-				[
-					A2(
-					$rtfeldman$elm_css$Html$Styled$td,
-					_List_Nil,
-					_List_fromArray(
-						[
-							A2(
-							$rtfeldman$elm_css$Html$Styled$legend,
-							_List_Nil,
-							_List_fromArray(
-								[
-									$rtfeldman$elm_css$Html$Styled$text(name)
-								]))
-						])),
-					A2(
-					$rtfeldman$elm_css$Html$Styled$td,
-					_List_Nil,
-					_List_fromArray(
-						[
-							A2(
-							$rtfeldman$elm_css$Html$Styled$input,
-							_List_fromArray(
-								[
-									$rtfeldman$elm_css$Html$Styled$Attributes$type_('number'),
-									$rtfeldman$elm_css$Html$Styled$Attributes$min(
-									$elm$core$String$fromInt(min)),
-									$rtfeldman$elm_css$Html$Styled$Attributes$max(
-									$elm$core$String$fromInt(max)),
-									$rtfeldman$elm_css$Html$Styled$Attributes$value(
-									$elm$core$String$fromInt(val)),
-									$rtfeldman$elm_css$Html$Styled$Events$onInput(oi),
-									$rtfeldman$elm_css$Html$Styled$Attributes$css(
-									_List_fromArray(
-										[
-											$rtfeldman$elm_css$Css$width(
-											$rtfeldman$elm_css$Css$px(80))
-										]))
-								]),
-							_List_Nil)
-						]))
-				]));
+		return _List_fromArray(
+			[
+				A2(
+				$rtfeldman$elm_css$Html$Styled$td,
+				_List_Nil,
+				_List_fromArray(
+					[
+						A2(
+						$rtfeldman$elm_css$Html$Styled$legend,
+						_List_Nil,
+						_List_fromArray(
+							[
+								$rtfeldman$elm_css$Html$Styled$text(name)
+							]))
+					])),
+				A2(
+				$rtfeldman$elm_css$Html$Styled$td,
+				_List_fromArray(
+					[
+						$rtfeldman$elm_css$Html$Styled$Attributes$css(
+						_List_fromArray(
+							[
+								$rtfeldman$elm_css$Css$paddingRight(
+								$rtfeldman$elm_css$Css$px(20))
+							]))
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$rtfeldman$elm_css$Html$Styled$input,
+						_List_fromArray(
+							[
+								$rtfeldman$elm_css$Html$Styled$Attributes$type_('number'),
+								$rtfeldman$elm_css$Html$Styled$Attributes$min(
+								$elm$core$String$fromInt(min)),
+								$rtfeldman$elm_css$Html$Styled$Attributes$max(
+								$elm$core$String$fromInt(max)),
+								$rtfeldman$elm_css$Html$Styled$Attributes$value(
+								$elm$core$String$fromInt(val)),
+								$rtfeldman$elm_css$Html$Styled$Events$onInput(oi),
+								$rtfeldman$elm_css$Html$Styled$Attributes$css(
+								_List_fromArray(
+									[
+										$rtfeldman$elm_css$Css$width(
+										$rtfeldman$elm_css$Css$px(80))
+									]))
+							]),
+						_List_Nil)
+					]))
+			]);
 	});
 var $author$project$Main$viewFilters = F2(
 	function (model, numPoses) {
@@ -9722,48 +9761,60 @@ var $author$project$Main$viewFilters = F2(
 				]),
 			_List_fromArray(
 				[
-					A5(
-					$author$project$Main$viewNumberInput,
-					'Number of Poses',
-					0,
-					numPoses,
-					model.af,
-					function (s) {
-						return $author$project$Main$FilterNum(
-							A2(
-								$elm$core$Maybe$withDefault,
-								model.af,
-								$elm$core$String$toInt(s)));
-					}),
-					A5(
-					$author$project$Main$viewNumberInput,
-					'Break duration',
-					1,
-					30,
-					breakDuration,
-					function (s) {
-						return $author$project$Main$SetBreakDuration(
-							A2(
-								$elm$core$Maybe$withDefault,
-								breakDuration,
-								$elm$core$String$toInt(s)));
-					}),
-					A5(
-					$author$project$Main$viewNumberInput,
-					'Exercise duration',
-					10,
-					60,
-					exerciseDuration,
-					function (s) {
-						return $author$project$Main$SetExerciseDuration(
-							A2(
-								$elm$core$Maybe$withDefault,
-								exerciseDuration,
-								$elm$core$String$toInt(s)));
-					}),
-					A3($author$project$Main$viewCheckbox, 'Beginner', model.a$, $author$project$Main$FilterBeginner),
-					A3($author$project$Main$viewCheckbox, 'Intermediate', model.a0, $author$project$Main$FilterIntermediate),
-					A3($author$project$Main$viewCheckbox, 'Advanced', model.a_, $author$project$Main$FilterAdvanced),
+					A2(
+					$rtfeldman$elm_css$Html$Styled$tr,
+					_List_Nil,
+					_Utils_ap(
+						A5(
+							$author$project$Main$viewNumberInput,
+							'Number of Poses',
+							0,
+							numPoses,
+							model.af,
+							function (s) {
+								return $author$project$Main$FilterNum(
+									A2(
+										$elm$core$Maybe$withDefault,
+										model.af,
+										$elm$core$String$toInt(s)));
+							}),
+						A3($author$project$Main$viewCheckbox, 'Beginner', model.a$, $author$project$Main$FilterBeginner))),
+					A2(
+					$rtfeldman$elm_css$Html$Styled$tr,
+					_List_Nil,
+					_Utils_ap(
+						A5(
+							$author$project$Main$viewNumberInput,
+							'Break duration',
+							1,
+							30,
+							breakDuration,
+							function (s) {
+								return $author$project$Main$SetBreakDuration(
+									A2(
+										$elm$core$Maybe$withDefault,
+										breakDuration,
+										$elm$core$String$toInt(s)));
+							}),
+						A3($author$project$Main$viewCheckbox, 'Intermediate', model.a0, $author$project$Main$FilterIntermediate))),
+					A2(
+					$rtfeldman$elm_css$Html$Styled$tr,
+					_List_Nil,
+					_Utils_ap(
+						A5(
+							$author$project$Main$viewNumberInput,
+							'Exercise duration',
+							10,
+							60,
+							exerciseDuration,
+							function (s) {
+								return $author$project$Main$SetExerciseDuration(
+									A2(
+										$elm$core$Maybe$withDefault,
+										exerciseDuration,
+										$elm$core$String$toInt(s)));
+							}),
+						A3($author$project$Main$viewCheckbox, 'Advanced', model.a_, $author$project$Main$FilterAdvanced))),
 					A2(
 					$rtfeldman$elm_css$Html$Styled$tr,
 					_List_Nil,
@@ -9771,34 +9822,70 @@ var $author$project$Main$viewFilters = F2(
 						[
 							A2(
 							$rtfeldman$elm_css$Html$Styled$td,
-							_List_Nil,
+							_List_fromArray(
+								[
+									$rtfeldman$elm_css$Html$Styled$Attributes$colspan(2)
+								]),
 							_List_fromArray(
 								[
 									A2(
-									$rtfeldman$elm_css$Html$Styled$button,
+									$rtfeldman$elm_css$Html$Styled$div,
 									_List_fromArray(
 										[
-											$rtfeldman$elm_css$Html$Styled$Events$onClick($author$project$Main$Filter)
+											$rtfeldman$elm_css$Html$Styled$Attributes$css(
+											_List_fromArray(
+												[
+													$rtfeldman$elm_css$Css$displayFlex,
+													$rtfeldman$elm_css$Css$alignItems($rtfeldman$elm_css$Css$center),
+													$rtfeldman$elm_css$Css$justifyContent($rtfeldman$elm_css$Css$center)
+												]))
 										]),
 									_List_fromArray(
 										[
-											$rtfeldman$elm_css$Html$Styled$text('Filter')
+											A2(
+											$rtfeldman$elm_css$Html$Styled$button,
+											_List_fromArray(
+												[
+													$rtfeldman$elm_css$Html$Styled$Events$onClick($author$project$Main$Filter)
+												]),
+											_List_fromArray(
+												[
+													$rtfeldman$elm_css$Html$Styled$text('Filter')
+												]))
 										]))
 								])),
 							A2(
 							$rtfeldman$elm_css$Html$Styled$td,
-							_List_Nil,
+							_List_fromArray(
+								[
+									$rtfeldman$elm_css$Html$Styled$Attributes$colspan(2)
+								]),
 							_List_fromArray(
 								[
 									A2(
-									$rtfeldman$elm_css$Html$Styled$button,
+									$rtfeldman$elm_css$Html$Styled$div,
 									_List_fromArray(
 										[
-											$rtfeldman$elm_css$Html$Styled$Events$onClick($author$project$Main$StartWorkout)
+											$rtfeldman$elm_css$Html$Styled$Attributes$css(
+											_List_fromArray(
+												[
+													$rtfeldman$elm_css$Css$displayFlex,
+													$rtfeldman$elm_css$Css$alignItems($rtfeldman$elm_css$Css$center),
+													$rtfeldman$elm_css$Css$justifyContent($rtfeldman$elm_css$Css$center)
+												]))
 										]),
 									_List_fromArray(
 										[
-											$rtfeldman$elm_css$Html$Styled$text('Start workout')
+											A2(
+											$rtfeldman$elm_css$Html$Styled$button,
+											_List_fromArray(
+												[
+													$rtfeldman$elm_css$Html$Styled$Events$onClick($author$project$Main$StartWorkout)
+												]),
+											_List_fromArray(
+												[
+													$rtfeldman$elm_css$Html$Styled$text('Start workout')
+												]))
 										]))
 								]))
 						]))
@@ -10208,21 +10295,6 @@ var $rtfeldman$elm_css$Html$Styled$Attributes$src = function (url) {
 	return A2($rtfeldman$elm_css$Html$Styled$Attributes$stringProperty, 'src', url);
 };
 var $rtfeldman$elm_css$Html$Styled$ul = $rtfeldman$elm_css$Html$Styled$node('ul');
-var $elm$virtual_dom$VirtualDom$attribute = F2(
-	function (key, value) {
-		return A2(
-			_VirtualDom_attribute,
-			_VirtualDom_noOnOrFormAction(key),
-			_VirtualDom_noJavaScriptOrHtmlUri(value));
-	});
-var $rtfeldman$elm_css$VirtualDom$Styled$attribute = F2(
-	function (key, value) {
-		return A3(
-			$rtfeldman$elm_css$VirtualDom$Styled$Attribute,
-			A2($elm$virtual_dom$VirtualDom$attribute, key, value),
-			_List_Nil,
-			'');
-	});
 var $rtfeldman$elm_css$Html$Styled$Attributes$width = function (n) {
 	return A2(
 		$rtfeldman$elm_css$VirtualDom$Styled$attribute,
@@ -10450,28 +10522,7 @@ var $author$project$Main$viewPoses = function (model) {
 	}
 };
 var $author$project$Main$CancelWorkout = {$: 11};
-var $rtfeldman$elm_css$Css$alignItems = function (fn) {
-	return A3(
-		$rtfeldman$elm_css$Css$Internal$getOverloadedProperty,
-		'alignItems',
-		'align-items',
-		fn($rtfeldman$elm_css$Css$Internal$lengthForOverloadedProperty));
-};
-var $rtfeldman$elm_css$Html$Styled$Attributes$colspan = function (n) {
-	return A2(
-		$rtfeldman$elm_css$VirtualDom$Styled$attribute,
-		'colspan',
-		$elm$core$String$fromInt(n));
-};
-var $rtfeldman$elm_css$Css$displayFlex = A2($rtfeldman$elm_css$Css$property, 'display', 'flex');
 var $rtfeldman$elm_css$Css$fontSize = $rtfeldman$elm_css$Css$prop1('font-size');
-var $rtfeldman$elm_css$Css$justifyContent = function (fn) {
-	return A3(
-		$rtfeldman$elm_css$Css$Internal$getOverloadedProperty,
-		'justifyContent',
-		'justify-content',
-		fn($rtfeldman$elm_css$Css$Internal$lengthForOverloadedProperty));
-};
 var $rtfeldman$elm_css$Css$padding = $rtfeldman$elm_css$Css$prop1('padding');
 var $elm$time$Time$flooredDiv = F2(
 	function (numerator, denominator) {
