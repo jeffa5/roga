@@ -487,7 +487,7 @@ poseDecoder =
 getPoses : Cmd Msg
 getPoses =
     Http.get
-        { url = "roga/poses.json"
+        { url = "poses.json"
         , expect = Http.expectJson GotPoses posesDecoder
         }
 
