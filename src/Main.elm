@@ -2,7 +2,7 @@ module Main exposing (Model, Msg(..), getPoses, init, main, subscriptions, updat
 
 import Browser exposing (Document)
 import Css exposing (display, inline)
-import Html.Styled exposing (Html, button, div, em, h2, h3, h4, img, input, legend, li, table, td, text, toUnstyled, tr, ul)
+import Html.Styled exposing (Html, a, button, div, em, h2, h3, h4, img, input, legend, li, table, td, text, toUnstyled, tr, ul)
 import Html.Styled.Attributes as Attrs exposing (css, src, type_, value)
 import Html.Styled.Events exposing (onCheck, onClick, onInput)
 import Http
@@ -426,9 +426,11 @@ viewPose p =
                 , Css.borderBottom3 (Css.px 1) Css.solid (Css.hex "#ddd")
                 ]
             ]
-            [ img
-                [ src p.image, Attrs.width 128, css [ Css.margin (Css.px 20) ] ]
-                []
+            [ a [ Attrs.href p.image ]
+                [ img
+                    [ src p.image, Attrs.width 128, css [ Css.margin (Css.px 20) ] ]
+                    []
+                ]
             ]
         ]
 
