@@ -243,12 +243,7 @@ originalDefault g =
 viewWorkout : Model -> Html Msg
 viewWorkout model =
     table
-        [ css
-            [ Css.width <| Css.px 800
-            , Css.margin Css.auto
-            , Css.borderCollapse Css.collapse
-            ]
-        ]
+        [ css [ Css.borderCollapse Css.collapse ] ]
         (tr []
             [ td
                 [ Attrs.colspan 2 ]
@@ -410,17 +405,17 @@ viewPoses model =
                             div [ css [ Css.textAlign Css.center ] ] [ text "No poses to show" ]
 
                         _ ->
-                            table [ css [ Css.width <| Css.px 800, Css.margin Css.auto, Css.borderCollapse Css.collapse ] ]
+                            table [ css [ Css.borderCollapse Css.collapse ] ]
                                 (List.map (\p -> viewPose p) poses)
 
                 Filtering ->
-                    text "Filtering..."
+                    div [ css [ Css.textAlign Css.center ] ] [ text "Filtering..." ]
 
         Loading ->
-            div [ css [ Css.width <| Css.px 800, Css.margin Css.auto ] ] [ text "Loading..." ]
+            div [ css [ Css.textAlign Css.center ] ] [ text "Loading..." ]
 
         Failure _ ->
-            div [ css [ Css.width <| Css.px 800, Css.margin Css.auto ] ] [ text "Failed to load" ]
+            div [ css [ Css.textAlign Css.center ] ] [ text "Failed to load" ]
 
 
 viewPose : Pose -> Html Msg
