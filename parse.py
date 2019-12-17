@@ -14,8 +14,7 @@ class MyHTMLParser(HTMLParser):
             if "benefits" not in self.current:
                 self.current["benefits"] = []
         elif tag == "a":
-            if "image" not in self.current:
-                self.current["image"] = attrs[0][1]
+            self.current["image"] = attrs[0][1]
 
     def handle_endtag(self, tag):
         if tag == "tr":
