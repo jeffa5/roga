@@ -8,7 +8,7 @@ import Html.Styled.Events exposing (onCheck, onClick, onInput)
 import Http
 import Json.Decode exposing (Decoder, field, list, map5, string)
 import Random
-import Random.Set
+import Random.List
 import Set
 import Time exposing (Posix, toMinute, toSecond, utc)
 
@@ -480,7 +480,16 @@ posesDecoder =
 
 filterPoses : Model -> List Pose -> Cmd Msg
 filterPoses model poses =
-    Random.generate Filtered (randomPoses (preFilter model.filterBeginner model.filterIntermediate model.filterAdvanced poses) model.filterNum)
+    Random.generate Filtered
+        (randomPoses
+            (preFilter
+                model.filterBeginner
+                model.filterIntermediate
+                model.filterAdvanced
+                poses
+            )
+            model.filterNum
+        )
 
 
 preFilter : Bool -> Bool -> Bool -> List Pose -> List Pose
@@ -505,14 +514,5 @@ preFilter b i a poses =
 
 randomPoses : List Pose -> Int -> Random.Generator (List Pose)
 randomPoses poses n =
-    Random.Set.set
-        (Basics.min n (List.length poses))
-        (Random.int 0 (List.length poses))
-        |> Random.map Set.toList
-        |> Random.map (\l -> List.map (\i -> List.drop i poses |> List.head) l)
-        |> Random.map
-            (\l ->
-                List.filterMap
-                    (\x -> x)
-                    l
-            )
+    Random.List.shuffle poses
+        |> Random.map (List.take n)
