@@ -331,50 +331,72 @@ viewFilters model numPoses =
             Time.posixToMillis model.exerciseDuration // 1000
     in
     table [ css [ Css.width (Css.px 400), Css.margin Css.auto ] ]
-        [ viewNumberInput "Number of Poses" 0 numPoses model.filterNum (\s -> FilterNum (String.toInt s |> Maybe.withDefault model.filterNum))
-        , viewNumberInput "Break duration" 1 30 breakDuration (\s -> SetBreakDuration (String.toInt s |> Maybe.withDefault breakDuration))
-        , viewNumberInput "Exercise duration" 10 60 exerciseDuration (\s -> SetExerciseDuration (String.toInt s |> Maybe.withDefault exerciseDuration))
-        , viewCheckbox "Beginner" model.filterBeginner FilterBeginner
-        , viewCheckbox "Intermediate" model.filterIntermediate FilterIntermediate
-        , viewCheckbox "Advanced" model.filterAdvanced FilterAdvanced
+        [ tr []
+            (viewNumberInput "Number of Poses" 0 numPoses model.filterNum (\s -> FilterNum (String.toInt s |> Maybe.withDefault model.filterNum))
+                ++ viewCheckbox "Beginner" model.filterBeginner FilterBeginner
+            )
         , tr []
-            [ td [] [ button [ onClick Filter ] [ text "Filter" ] ]
-            , td [] [ button [ onClick StartWorkout ] [ text "Start workout" ] ]
+            (viewNumberInput "Break duration" 1 30 breakDuration (\s -> SetBreakDuration (String.toInt s |> Maybe.withDefault breakDuration))
+                ++ viewCheckbox "Intermediate" model.filterIntermediate FilterIntermediate
+            )
+        , tr []
+            (viewNumberInput "Exercise duration" 10 60 exerciseDuration (\s -> SetExerciseDuration (String.toInt s |> Maybe.withDefault exerciseDuration))
+                ++ viewCheckbox "Advanced" model.filterAdvanced FilterAdvanced
+            )
+        , tr []
+            [ td [ Attrs.colspan 2 ]
+                [ div
+                    [ css
+                        [ Css.displayFlex
+                        , Css.alignItems Css.center
+                        , Css.justifyContent Css.center
+                        ]
+                    ]
+                    [ button [ onClick Filter ] [ text "Filter" ] ]
+                ]
+            , td [ Attrs.colspan 2 ]
+                [ div
+                    [ css
+                        [ Css.displayFlex
+                        , Css.alignItems Css.center
+                        , Css.justifyContent Css.center
+                        ]
+                    ]
+                    [ button [ onClick StartWorkout ] [ text "Start workout" ] ]
+                ]
             ]
         ]
 
 
-viewNumberInput : String -> Int -> Int -> Int -> (String -> Msg) -> Html Msg
+viewNumberInput : String -> Int -> Int -> Int -> (String -> Msg) -> List (Html Msg)
 viewNumberInput name min max val oi =
-    tr []
-        [ td [] [ legend [] [ text name ] ]
-        , td []
-            [ input
-                [ type_ "number"
-                , Attrs.min <| String.fromInt min
-                , Attrs.max <| String.fromInt max
-                , value <| String.fromInt val
-                , onInput oi
-                , css [ Css.width (Css.px 80) ]
-                ]
-                []
+    [ td [] [ legend [] [ text name ] ]
+    , td [ css [ Css.paddingRight (Css.px 20) ] ]
+        [ input
+            [ type_ "number"
+            , Attrs.min <| String.fromInt min
+            , Attrs.max <| String.fromInt max
+            , value <| String.fromInt val
+            , onInput oi
+            , css [ Css.width (Css.px 80) ]
             ]
+            []
         ]
+    ]
 
 
-viewCheckbox : String -> Bool -> (Bool -> Msg) -> Html Msg
+viewCheckbox : String -> Bool -> (Bool -> Msg) -> List (Html Msg)
 viewCheckbox l c oc =
-    tr []
-        [ td [] [ legend [ css [ display inline ] ] [ text l ] ]
-        , td []
-            [ input
-                [ Attrs.type_ "checkbox"
-                , Attrs.checked c
-                , onCheck oc
-                ]
-                []
+    [ td [] [ legend [ css [ display inline ] ] [ text l ] ]
+    , td []
+        [ input
+            [ Attrs.type_ "checkbox"
+            , Attrs.checked c
+            , onCheck oc
             ]
+            []
         ]
+    ]
 
 
 viewPoses : Model -> Html Msg
