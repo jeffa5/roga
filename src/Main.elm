@@ -87,6 +87,7 @@ type Msg
     | Filter
     | Filtered (List Pose)
     | StartWorkout
+    | CancelWorkout
     | Tick Posix
 
 
@@ -140,6 +141,9 @@ update msg model =
 
                 Filtering ->
                     ( model, Cmd.none )
+
+        CancelWorkout ->
+            ( { model | inWorkout = False, workoutPoses = [] }, Cmd.none )
 
         Tick _ ->
             let
@@ -197,7 +201,13 @@ view model =
     { title = "Roga"
     , body =
         [ toUnstyled <|
-            div [ css [ Css.fontFamily Css.sansSerif ] ]
+            div
+                [ css
+                    [ Css.width <| Css.px 800
+                    , Css.margin Css.auto
+                    , Css.fontFamily Css.sansSerif
+                    ]
+                ]
                 (h2 [ css [ Css.textAlign Css.center ] ] [ text "Roga" ]
                     :: (if model.inWorkout then
                             [ viewWorkout model ]
@@ -231,38 +241,55 @@ viewWorkout model =
             , Css.borderCollapse Css.collapse
             ]
         ]
-        (List.concatMap
-            (\i ->
-                case i of
-                    ( Just p, Just t ) ->
-                        [ tr [ css [ Css.textAlign Css.center ] ]
-                            [ td
-                                [ Attrs.colspan 2
-                                , css
-                                    [ Css.borderBottom3 (Css.px 1) Css.solid (Css.hex "#dddddd")
-                                    , Css.borderTop3 (Css.px 1) Css.solid (Css.hex "#dddddd")
-                                    , Css.padding (Css.px 20)
+        (tr []
+            [ td
+                [ Attrs.colspan 2 ]
+                [ div
+                    [ css
+                        [ Css.displayFlex
+                        , Css.alignItems Css.center
+                        , Css.justifyContent Css.center
+                        ]
+                    ]
+                    [ button
+                        [ onClick CancelWorkout ]
+                        [ text "Cancel Workout" ]
+                    ]
+                ]
+            ]
+            :: List.concatMap
+                (\i ->
+                    case i of
+                        ( Just p, Just t ) ->
+                            [ tr [ css [ Css.textAlign Css.center ] ]
+                                [ td
+                                    [ Attrs.colspan 2
+                                    , css
+                                        [ Css.borderBottom3 (Css.px 1) Css.dashed (Css.hex "#dddddd")
+                                        , Css.borderTop3 (Css.px 1) Css.solid (Css.hex "#dddddd")
+                                        , Css.padding (Css.px 20)
+                                        , Css.fontSize (Css.px 20)
+                                        ]
                                     ]
+                                    [ div [] [ text "Exercise ", viewTime t ] ]
                                 ]
-                                [ viewTime t ]
+                            , viewPose p
                             ]
-                        , viewPose p
-                        ]
 
-                    ( Nothing, Just t ) ->
-                        [ tr [ css [ Css.textAlign Css.center ] ]
-                            [ td
-                                [ Attrs.colspan 2
-                                , css [ Css.padding (Css.px 20), Css.fontSize (Css.px 20) ]
+                        ( Nothing, Just t ) ->
+                            [ tr [ css [ Css.textAlign Css.center ] ]
+                                [ td
+                                    [ Attrs.colspan 2
+                                    , css [ Css.padding (Css.px 20), Css.fontSize (Css.px 20) ]
+                                    ]
+                                    [ div [] [ text "Break ", viewTime t ] ]
                                 ]
-                                [ div [] [ text "Break ", viewTime t ] ]
                             ]
-                        ]
 
-                    _ ->
-                        [ text "Error" ]
-            )
-            model.workoutPoses
+                        _ ->
+                            [ text "Error" ]
+                )
+                model.workoutPoses
         )
 
 
@@ -288,7 +315,7 @@ viewTime t =
 
 viewFilters : Model -> String -> Html Msg
 viewFilters model numPoses =
-    table [ css [ Css.width <| Css.px 400, Css.margin Css.auto ] ]
+    table [ css [ Css.width (Css.px 400), Css.margin Css.auto ] ]
         [ tr []
             [ td [] [ legend [] [ text "Number of Poses" ] ]
             , td []
@@ -355,8 +382,17 @@ viewPoses model =
 
 viewPose : Pose -> Html Msg
 viewPose p =
-    tr [ css [ Css.hover [ Css.backgroundColor (Css.hex "#f5f5f5") ] ] ]
-        [ td [ css [ Css.borderBottom3 (Css.px 1) Css.solid (Css.hex "#dddddd"), Css.borderTop3 (Css.px 1) Css.solid (Css.hex "#ddd") ] ]
+    tr
+        [ css
+            [ Css.hover [ Css.backgroundColor (Css.hex "#f5f5f5") ]
+            ]
+        ]
+        [ td
+            [ css
+                [ Css.borderBottom3 (Css.px 1) Css.solid (Css.hex "#dddddd")
+                , Css.borderTop3 (Css.px 1) Css.dashed (Css.hex "#ddd")
+                ]
+            ]
             [ div [ css [ Css.margin (Css.px 20) ] ]
                 [ h3 [] [ text p.pose, em [] [ text (" (" ++ p.asana ++ ")") ] ]
                 , h4 [] [ text p.level ]
@@ -364,7 +400,12 @@ viewPose p =
                     (List.map (\b -> li [] [ text b ]) p.benefits)
                 ]
             ]
-        , td [ css [ Css.borderTop3 (Css.px 1) Css.solid (Css.hex "#ddd"), Css.borderBottom3 (Css.px 1) Css.solid (Css.hex "#ddd") ] ]
+        , td
+            [ css
+                [ Css.borderTop3 (Css.px 1) Css.dashed (Css.hex "#ddd")
+                , Css.borderBottom3 (Css.px 1) Css.solid (Css.hex "#ddd")
+                ]
+            ]
             [ img
                 [ src p.image, Attrs.width 128, css [ Css.margin (Css.px 20) ] ]
                 []
