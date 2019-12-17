@@ -143,6 +143,7 @@ update msg model =
                             List.map (\i -> ( Just i, Just model.exerciseDuration )) p
                                 |> List.intersperse
                                     ( Nothing, Just model.breakDuration )
+                                |> (\l -> ( Nothing, Just model.breakDuration ) :: l)
                     in
                     ( { model | inWorkout = True, workoutPoses = sequence }, Cmd.none )
 
