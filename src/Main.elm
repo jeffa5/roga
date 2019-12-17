@@ -85,6 +85,8 @@ type Msg
     | FilterAdvanced Bool
     | Filter
     | Filtered (List Pose)
+    | SetBreakDuration Int
+    | SetExerciseDuration Int
     | StartWorkout
     | CancelWorkout
     | Tick Posix
@@ -126,6 +128,12 @@ update msg model =
 
         Filtered poses ->
             ( { model | poses = Finished poses }, Cmd.none )
+
+        SetBreakDuration t ->
+            ( { model | breakDuration = Time.millisToPosix (t * 1000) }, Cmd.none )
+
+        SetExerciseDuration t ->
+            ( { model | exerciseDuration = Time.millisToPosix (t * 1000) }, Cmd.none )
 
         StartWorkout ->
             case model.poses of
@@ -195,7 +203,7 @@ view : Model -> Document Msg
 view model =
     let
         numPoses =
-            List.length (originalDefault model.original) |> String.fromInt
+            List.length (originalDefault model.original)
     in
     { title = "Roga"
     , body =
@@ -312,30 +320,43 @@ viewTime t =
         )
 
 
-viewFilters : Model -> String -> Html Msg
+viewFilters : Model -> Int -> Html Msg
 viewFilters model numPoses =
+    let
+        breakDuration =
+            Time.posixToMillis model.breakDuration // 1000
+
+        exerciseDuration =
+            Time.posixToMillis model.exerciseDuration // 1000
+    in
     table [ css [ Css.width (Css.px 400), Css.margin Css.auto ] ]
-        [ tr []
-            [ td [] [ legend [] [ text "Number of Poses" ] ]
-            , td []
-                [ input
-                    [ type_ "number"
-                    , Attrs.min "0"
-                    , Attrs.max numPoses
-                    , value <| String.fromInt model.filterNum
-                    , onInput
-                        (\s -> FilterNum (String.toInt s |> Maybe.withDefault model.filterNum))
-                    , css [ Css.width (Css.px 80) ]
-                    ]
-                    []
-                ]
-            ]
+        [ viewNumberInput "Number of Poses" 0 numPoses model.filterNum (\s -> FilterNum (String.toInt s |> Maybe.withDefault model.filterNum))
+        , viewNumberInput "Break duration" 1 30 breakDuration (\s -> SetBreakDuration (String.toInt s |> Maybe.withDefault breakDuration))
+        , viewNumberInput "Exercise duration" 10 60 exerciseDuration (\s -> SetExerciseDuration (String.toInt s |> Maybe.withDefault exerciseDuration))
         , viewCheckbox "Beginner" model.filterBeginner FilterBeginner
         , viewCheckbox "Intermediate" model.filterIntermediate FilterIntermediate
         , viewCheckbox "Advanced" model.filterAdvanced FilterAdvanced
         , tr []
             [ td [] [ button [ onClick Filter ] [ text "Filter" ] ]
             , td [] [ button [ onClick StartWorkout ] [ text "Start workout" ] ]
+            ]
+        ]
+
+
+viewNumberInput : String -> Int -> Int -> Int -> (String -> Msg) -> Html Msg
+viewNumberInput name min max val oi =
+    tr []
+        [ td [] [ legend [] [ text name ] ]
+        , td []
+            [ input
+                [ type_ "number"
+                , Attrs.min <| String.fromInt min
+                , Attrs.max <| String.fromInt max
+                , value <| String.fromInt val
+                , onInput oi
+                , css [ Css.width (Css.px 80) ]
+                ]
+                []
             ]
         ]
 
