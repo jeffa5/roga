@@ -9537,6 +9537,10 @@ var $rtfeldman$elm_css$Html$Styled$Attributes$colspan = function (n) {
 		$elm$core$String$fromInt(n));
 };
 var $rtfeldman$elm_css$Css$displayFlex = A2($rtfeldman$elm_css$Css$property, 'display', 'flex');
+var $rtfeldman$elm_css$Css$initial = {b5: 0, b8: 0, aX: 0, ca: 0, aw: 0, cb: 0, ax: 0, P: 0, t: 0, bf: 0, aB: 0, a: 0, h: 0, aE: 0, bI: 0, a1: 0, bn: 0, ag: 0, r: 0, aF: 0, e: 0, U: 0, bp: 0, cE: 0, bO: 0, a2: 0, aJ: 0, V: 0, aK: 0, aL: 0, aj: 0, ak: 0, J: 0, br: 0, c: 0, b: 0, bS: 0, a4: 0, X: 0, bt: 0, aN: 0, D: 0, by: 0, aQ: 0, ar: 0, aR: 0, aS: 0, as: 0, y: 0, aT: '', bb: 0, N: 'initial', bc: 0, ab: 0};
+var $rtfeldman$elm_css$Css$inherit = _Utils_update(
+	$rtfeldman$elm_css$Css$initial,
+	{N: 'inherit'});
 var $rtfeldman$elm_css$Css$justifyContent = function (fn) {
 	return A3(
 		$rtfeldman$elm_css$Css$Internal$getOverloadedProperty,
@@ -9688,7 +9692,6 @@ var $rtfeldman$elm_css$Html$Styled$Events$onInput = function (tagger) {
 			$rtfeldman$elm_css$Html$Styled$Events$alwaysStop,
 			A2($elm$json$Json$Decode$map, tagger, $rtfeldman$elm_css$Html$Styled$Events$targetValue)));
 };
-var $rtfeldman$elm_css$Css$paddingRight = $rtfeldman$elm_css$Css$prop1('padding-right');
 var $rtfeldman$elm_css$Html$Styled$Attributes$value = $rtfeldman$elm_css$Html$Styled$Attributes$stringProperty('value');
 var $rtfeldman$elm_css$Css$width = $rtfeldman$elm_css$Css$prop1('width');
 var $author$project$Main$viewNumberInput = F5(
@@ -9710,15 +9713,7 @@ var $author$project$Main$viewNumberInput = F5(
 					])),
 				A2(
 				$rtfeldman$elm_css$Html$Styled$td,
-				_List_fromArray(
-					[
-						$rtfeldman$elm_css$Html$Styled$Attributes$css(
-						_List_fromArray(
-							[
-								$rtfeldman$elm_css$Css$paddingRight(
-								$rtfeldman$elm_css$Css$px(20))
-							]))
-					]),
+				_List_Nil,
 				_List_fromArray(
 					[
 						A2(
@@ -9755,9 +9750,7 @@ var $author$project$Main$viewFilters = F2(
 					$rtfeldman$elm_css$Html$Styled$Attributes$css(
 					_List_fromArray(
 						[
-							$rtfeldman$elm_css$Css$width(
-							$rtfeldman$elm_css$Css$px(400)),
-							$rtfeldman$elm_css$Css$margin($rtfeldman$elm_css$Css$auto),
+							$rtfeldman$elm_css$Css$width($rtfeldman$elm_css$Css$inherit),
 							$rtfeldman$elm_css$Css$marginBottom(
 							$rtfeldman$elm_css$Css$px(20))
 						]))

@@ -325,7 +325,7 @@ viewFilters model numPoses =
         exerciseDuration =
             Time.posixToMillis model.exerciseDuration // 1000
     in
-    table [ css [ Css.width (Css.px 400), Css.margin Css.auto, Css.marginBottom (Css.px 20) ] ]
+    table [ css [ Css.width Css.inherit, Css.marginBottom (Css.px 20) ] ]
         [ tr []
             (viewNumberInput "Number of Poses" 0 numPoses model.filterNum (\s -> FilterNum (String.toInt s |> Maybe.withDefault model.filterNum))
                 ++ viewCheckbox "Beginner" model.filterBeginner FilterBeginner
@@ -366,7 +366,7 @@ viewFilters model numPoses =
 viewNumberInput : String -> Int -> Int -> Int -> (String -> Msg) -> List (Html Msg)
 viewNumberInput name min max val oi =
     [ td [] [ legend [] [ text name ] ]
-    , td [ css [ Css.paddingRight (Css.px 20) ] ]
+    , td []
         [ input
             [ type_ "number"
             , Attrs.min <| String.fromInt min
