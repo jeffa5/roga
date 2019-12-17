@@ -9,7 +9,6 @@ import Http
 import Json.Decode exposing (Decoder, field, list, map5, string)
 import Random
 import Random.List
-import Set
 import Time exposing (Posix, toMinute, toSecond, utc)
 
 
