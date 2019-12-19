@@ -298,7 +298,7 @@ viewWorkout model =
                                             , Css.fontSize (Css.em 1)
                                             ]
                                         ]
-                                        [ div [] [ text "Exercise ", viewTime t ] ]
+                                        [ div [] [ text <| "Exercise " ++ viewTime t ] ]
                                     ]
                                 , viewPose pose (i == model.workoutIndex)
                                 ]
@@ -327,11 +327,21 @@ viewBreak t highlight =
                        )
                 )
             ]
-            [ div [] [ text "Break ", viewTime t ] ]
+            [ div []
+                [ text <|
+                    "Break "
+                        ++ (if Time.posixToMillis t == 0 then
+                                "complete"
+
+                            else
+                                viewTime t
+                           )
+                ]
+            ]
         ]
 
 
-viewTime : Posix -> Html Msg
+viewTime : Posix -> String
 viewTime t =
     let
         min =
@@ -340,15 +350,13 @@ viewTime t =
         sec =
             toSecond utc t
     in
-    text
-        ((if min /= 0 then
-            String.fromInt min ++ "m "
+    (if min /= 0 then
+        String.fromInt min ++ "m "
 
-          else
-            ""
-         )
-            ++ (String.fromInt sec ++ "s")
-        )
+     else
+        ""
+    )
+        ++ (String.fromInt sec ++ "s")
 
 
 viewFilters : Model -> Int -> Html Msg

@@ -10619,8 +10619,7 @@ var $elm$time$Time$utc = A2($elm$time$Time$Zone, 0, _List_Nil);
 var $author$project$Main$viewTime = function (t) {
 	var sec = A2($elm$time$Time$toSecond, $elm$time$Time$utc, t);
 	var min = A2($elm$time$Time$toMinute, $elm$time$Time$utc, t);
-	return $rtfeldman$elm_css$Html$Styled$text(
-		((!(!min)) ? ($elm$core$String$fromInt(min) + 'm ') : '') + ($elm$core$String$fromInt(sec) + 's'));
+	return ((!(!min)) ? ($elm$core$String$fromInt(min) + 'm ') : '') + ($elm$core$String$fromInt(sec) + 's');
 };
 var $author$project$Main$viewBreak = F2(
 	function (t, highlight) {
@@ -10663,8 +10662,8 @@ var $author$project$Main$viewBreak = F2(
 							_List_Nil,
 							_List_fromArray(
 								[
-									$rtfeldman$elm_css$Html$Styled$text('Break '),
-									$author$project$Main$viewTime(t)
+									$rtfeldman$elm_css$Html$Styled$text(
+									'Break ' + ((!$elm$time$Time$posixToMillis(t)) ? 'complete' : $author$project$Main$viewTime(t)))
 								]))
 						]))
 				]));
@@ -10777,8 +10776,8 @@ var $author$project$Main$viewWorkout = function (model) {
 												_List_Nil,
 												_List_fromArray(
 													[
-														$rtfeldman$elm_css$Html$Styled$text('Exercise '),
-														$author$project$Main$viewTime(t)
+														$rtfeldman$elm_css$Html$Styled$text(
+														'Exercise ' + $author$project$Main$viewTime(t))
 													]))
 											]))
 									])),
