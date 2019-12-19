@@ -286,17 +286,28 @@ viewWorkout model =
             ]
             :: (let
                     f ( i, exercise ) =
+                        let
+                            highlight =
+                                i == model.workoutIndex
+                        in
                         case exercise of
                             Position ( pose, t ) ->
                                 [ tr [ css [ Css.textAlign Css.center ] ]
                                     [ td
                                         [ Attrs.colspan 2
                                         , css
-                                            [ Css.borderBottom3 (Css.px 1) Css.dashed (Css.hex "#dddddd")
-                                            , Css.borderTop3 (Css.px 1) Css.solid (Css.hex "#dddddd")
-                                            , Css.padding (Css.em 1)
-                                            , Css.fontSize (Css.em 1)
-                                            ]
+                                            ([ Css.borderBottom3 (Css.px 1) Css.dashed (Css.hex "#dddddd")
+                                             , Css.borderTop3 (Css.px 1) Css.solid (Css.hex "#dddddd")
+                                             , Css.padding (Css.em 1)
+                                             , Css.fontSize (Css.em 1)
+                                             ]
+                                                ++ (if highlight then
+                                                        [ Css.backgroundColor (Css.hex "#f5f5f5") ]
+
+                                                    else
+                                                        []
+                                                   )
+                                            )
                                         ]
                                         [ div []
                                             [ text <|
@@ -310,11 +321,11 @@ viewWorkout model =
                                             ]
                                         ]
                                     ]
-                                , viewPose pose (i == model.workoutIndex)
+                                , viewPose pose highlight
                                 ]
 
                             Break t ->
-                                [ viewBreak t (i == model.workoutIndex) ]
+                                [ viewBreak t highlight ]
                 in
                 List.indexedMap Tuple.pair model.workoutPoses
                     |> List.concatMap f
