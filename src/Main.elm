@@ -158,7 +158,7 @@ update msg model =
                     ( model, Cmd.none )
 
         CancelWorkout ->
-            ( { model | inWorkout = False, workoutPoses = [] }, Cmd.none )
+            ( { model | inWorkout = False, workoutIndex = 0, workoutPoses = [] }, Cmd.none )
 
         Tick _ ->
             let
