@@ -30,6 +30,11 @@ main =
 -- MODEL
 
 
+type Exercise
+    = Position ( Pose, Posix )
+    | Break Posix
+
+
 type alias Model =
     { original : GettingPoses
     , poses : FilteringPoses
@@ -40,7 +45,7 @@ type alias Model =
     , inWorkout : Bool
     , exerciseDuration : Posix
     , breakDuration : Posix
-    , workoutPoses : List ( Maybe Pose, Posix )
+    , workoutPoses : List Exercise
     , workoutIndex : Int
     }
 
@@ -142,10 +147,10 @@ update msg model =
                 Finished p ->
                     let
                         sequence =
-                            List.map (\i -> ( Just i, model.exerciseDuration )) p
+                            List.map (\i -> Position ( i, model.exerciseDuration )) p
                                 |> List.intersperse
-                                    ( Nothing, model.breakDuration )
-                                |> (\l -> ( Nothing, model.breakDuration ) :: l)
+                                    (Break model.breakDuration)
+                                |> (\l -> Break model.breakDuration :: l)
                     in
                     ( { model | inWorkout = True, workoutPoses = sequence }, Cmd.none )
 
@@ -159,20 +164,37 @@ update msg model =
             let
                 ( j, poses ) =
                     let
-                        f ( i, ( pose, time ) ) ( newI, ps ) =
+                        f ( i, exercise ) ( newI, es ) =
+                            let
+                                time =
+                                    case exercise of
+                                        Position ( _, t ) ->
+                                            t
+
+                                        Break t ->
+                                            t
+
+                                set e t =
+                                    case e of
+                                        Position ( p, _ ) ->
+                                            Position ( p, t )
+
+                                        Break _ ->
+                                            Break t
+                            in
                             if i == model.workoutIndex then
                                 let
                                     decremented =
                                         Time.millisToPosix (Time.posixToMillis time - 1000)
                                 in
                                 if decremented == Time.millisToPosix 0 then
-                                    ( newI + 1, ( pose, decremented ) :: ps )
+                                    ( newI + 1, set exercise decremented :: es )
 
                                 else
-                                    ( newI, ( pose, decremented ) :: ps )
+                                    ( newI, set exercise decremented :: es )
 
                             else
-                                ( newI, ( pose, time ) :: ps )
+                                ( newI, set exercise time :: es )
                     in
                     List.indexedMap Tuple.pair model.workoutPoses
                         |> List.foldr f ( model.workoutIndex, [] )
@@ -263,9 +285,9 @@ viewWorkout model =
                 ]
             ]
             :: (let
-                    f ( i, p ) =
-                        case p of
-                            ( Just pose, t ) ->
+                    f ( i, exercise ) =
+                        case exercise of
+                            Position ( pose, t ) ->
                                 [ tr [ css [ Css.textAlign Css.center ] ]
                                     [ td
                                         [ Attrs.colspan 2
@@ -281,28 +303,32 @@ viewWorkout model =
                                 , viewPose pose (i == model.workoutIndex)
                                 ]
 
-                            ( Nothing, t ) ->
-                                [ tr [ css [ Css.textAlign Css.center ] ]
-                                    [ td
-                                        [ Attrs.colspan 2
-                                        , css
-                                            ([ Css.padding (Css.em 1), Css.fontSize (Css.em 1) ]
-                                                ++ (if i == model.workoutIndex then
-                                                        [ Css.backgroundColor (Css.hex "#f5f5f5") ]
-
-                                                    else
-                                                        []
-                                                   )
-                                            )
-                                        ]
-                                        [ div [] [ text "Break ", viewTime t ] ]
-                                    ]
-                                ]
+                            Break t ->
+                                [ viewBreak t (i == model.workoutIndex) ]
                 in
                 List.indexedMap Tuple.pair model.workoutPoses
                     |> List.concatMap f
                )
         )
+
+
+viewBreak : Posix -> Bool -> Html Msg
+viewBreak t highlight =
+    tr [ css [ Css.textAlign Css.center ] ]
+        [ td
+            [ Attrs.colspan 2
+            , css
+                ([ Css.padding (Css.em 1), Css.fontSize (Css.em 1) ]
+                    ++ (if highlight then
+                            [ Css.backgroundColor (Css.hex "#f5f5f5") ]
+
+                        else
+                            []
+                       )
+                )
+            ]
+            [ div [] [ text "Break ", viewTime t ] ]
+        ]
 
 
 viewTime : Posix -> Html Msg

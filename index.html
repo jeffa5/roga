@@ -6519,11 +6519,17 @@ var $elm$time$Time$every = F2(
 var $author$project$Main$subscriptions = function (_v0) {
 	return A2($elm$time$Time$every, 1000, $author$project$Main$Tick);
 };
+var $author$project$Main$Break = function (a) {
+	return {$: 1, a: a};
+};
 var $author$project$Main$Failure = function (a) {
 	return {$: 0, a: a};
 };
 var $author$project$Main$Finished = function (a) {
 	return {$: 1, a: a};
+};
+var $author$project$Main$Position = function (a) {
+	return {$: 0, a: a};
 };
 var $author$project$Main$Success = function (a) {
 	return {$: 2, a: a};
@@ -7183,18 +7189,17 @@ var $author$project$Main$update = F2(
 					var sequence = function (l) {
 						return A2(
 							$elm$core$List$cons,
-							_Utils_Tuple2($elm$core$Maybe$Nothing, model.aA),
+							$author$project$Main$Break(model.aA),
 							l);
 					}(
 						A2(
 							$elm$core$List$intersperse,
-							_Utils_Tuple2($elm$core$Maybe$Nothing, model.aA),
+							$author$project$Main$Break(model.aA),
 							A2(
 								$elm$core$List$map,
 								function (i) {
-									return _Utils_Tuple2(
-										$elm$core$Maybe$Just(i),
-										model.a_);
+									return $author$project$Main$Position(
+										_Utils_Tuple2(i, model.a_));
 								},
 								p)));
 					return _Utils_Tuple2(
@@ -7214,13 +7219,32 @@ var $author$project$Main$update = F2(
 			default:
 				var _v4 = function () {
 					var f = F2(
-						function (_v5, _v7) {
-							var i = _v5.a;
-							var _v6 = _v5.b;
-							var pose = _v6.a;
-							var time = _v6.b;
-							var newI = _v7.a;
-							var ps = _v7.b;
+						function (_v9, _v10) {
+							var i = _v9.a;
+							var exercise = _v9.b;
+							var newI = _v10.a;
+							var es = _v10.b;
+							var time = function () {
+								if (!exercise.$) {
+									var _v8 = exercise.a;
+									var t = _v8.b;
+									return t;
+								} else {
+									var t = exercise.a;
+									return t;
+								}
+							}();
+							var set = F2(
+								function (e, t) {
+									if (!e.$) {
+										var _v6 = e.a;
+										var p = _v6.a;
+										return $author$project$Main$Position(
+											_Utils_Tuple2(p, t));
+									} else {
+										return $author$project$Main$Break(t);
+									}
+								});
 							if (_Utils_eq(i, model.av)) {
 								var decremented = $elm$time$Time$millisToPosix(
 									$elm$time$Time$posixToMillis(time) - 1000);
@@ -7230,20 +7254,20 @@ var $author$project$Main$update = F2(
 									newI + 1,
 									A2(
 										$elm$core$List$cons,
-										_Utils_Tuple2(pose, decremented),
-										ps)) : _Utils_Tuple2(
+										A2(set, exercise, decremented),
+										es)) : _Utils_Tuple2(
 									newI,
 									A2(
 										$elm$core$List$cons,
-										_Utils_Tuple2(pose, decremented),
-										ps));
+										A2(set, exercise, decremented),
+										es));
 							} else {
 								return _Utils_Tuple2(
 									newI,
 									A2(
 										$elm$core$List$cons,
-										_Utils_Tuple2(pose, time),
-										ps));
+										A2(set, exercise, time),
+										es));
 							}
 						});
 					return A3(
@@ -10598,6 +10622,53 @@ var $author$project$Main$viewTime = function (t) {
 	return $rtfeldman$elm_css$Html$Styled$text(
 		((!(!min)) ? ($elm$core$String$fromInt(min) + 'm ') : '') + ($elm$core$String$fromInt(sec) + 's'));
 };
+var $author$project$Main$viewBreak = F2(
+	function (t, highlight) {
+		return A2(
+			$rtfeldman$elm_css$Html$Styled$tr,
+			_List_fromArray(
+				[
+					$rtfeldman$elm_css$Html$Styled$Attributes$css(
+					_List_fromArray(
+						[
+							$rtfeldman$elm_css$Css$textAlign($rtfeldman$elm_css$Css$center)
+						]))
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$rtfeldman$elm_css$Html$Styled$td,
+					_List_fromArray(
+						[
+							$rtfeldman$elm_css$Html$Styled$Attributes$colspan(2),
+							$rtfeldman$elm_css$Html$Styled$Attributes$css(
+							_Utils_ap(
+								_List_fromArray(
+									[
+										$rtfeldman$elm_css$Css$padding(
+										$rtfeldman$elm_css$Css$em(1)),
+										$rtfeldman$elm_css$Css$fontSize(
+										$rtfeldman$elm_css$Css$em(1))
+									]),
+								highlight ? _List_fromArray(
+									[
+										$rtfeldman$elm_css$Css$backgroundColor(
+										$rtfeldman$elm_css$Css$hex('#f5f5f5'))
+									]) : _List_Nil))
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$rtfeldman$elm_css$Html$Styled$div,
+							_List_Nil,
+							_List_fromArray(
+								[
+									$rtfeldman$elm_css$Html$Styled$text('Break '),
+									$author$project$Main$viewTime(t)
+								]))
+						]))
+				]));
+	});
 var $author$project$Main$viewWorkout = function (model) {
 	return A2(
 		$rtfeldman$elm_css$Html$Styled$table,
@@ -10656,10 +10727,11 @@ var $author$project$Main$viewWorkout = function (model) {
 			function () {
 				var f = function (_v2) {
 					var i = _v2.a;
-					var p = _v2.b;
-					if (!p.a.$) {
-						var pose = p.a.a;
-						var t = p.b;
+					var exercise = _v2.b;
+					if (!exercise.$) {
+						var _v1 = exercise.a;
+						var pose = _v1.a;
+						var t = _v1.b;
 						return _List_fromArray(
 							[
 								A2(
@@ -10716,54 +10788,13 @@ var $author$project$Main$viewWorkout = function (model) {
 								_Utils_eq(i, model.av))
 							]);
 					} else {
-						var _v1 = p.a;
-						var t = p.b;
+						var t = exercise.a;
 						return _List_fromArray(
 							[
 								A2(
-								$rtfeldman$elm_css$Html$Styled$tr,
-								_List_fromArray(
-									[
-										$rtfeldman$elm_css$Html$Styled$Attributes$css(
-										_List_fromArray(
-											[
-												$rtfeldman$elm_css$Css$textAlign($rtfeldman$elm_css$Css$center)
-											]))
-									]),
-								_List_fromArray(
-									[
-										A2(
-										$rtfeldman$elm_css$Html$Styled$td,
-										_List_fromArray(
-											[
-												$rtfeldman$elm_css$Html$Styled$Attributes$colspan(2),
-												$rtfeldman$elm_css$Html$Styled$Attributes$css(
-												_Utils_ap(
-													_List_fromArray(
-														[
-															$rtfeldman$elm_css$Css$padding(
-															$rtfeldman$elm_css$Css$em(1)),
-															$rtfeldman$elm_css$Css$fontSize(
-															$rtfeldman$elm_css$Css$em(1))
-														]),
-													_Utils_eq(i, model.av) ? _List_fromArray(
-														[
-															$rtfeldman$elm_css$Css$backgroundColor(
-															$rtfeldman$elm_css$Css$hex('#f5f5f5'))
-														]) : _List_Nil))
-											]),
-										_List_fromArray(
-											[
-												A2(
-												$rtfeldman$elm_css$Html$Styled$div,
-												_List_Nil,
-												_List_fromArray(
-													[
-														$rtfeldman$elm_css$Html$Styled$text('Break '),
-														$author$project$Main$viewTime(t)
-													]))
-											]))
-									]))
+								$author$project$Main$viewBreak,
+								t,
+								_Utils_eq(i, model.av))
 							]);
 					}
 				};
