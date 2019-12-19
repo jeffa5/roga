@@ -10777,7 +10777,7 @@ var $author$project$Main$viewWorkout = function (model) {
 												_List_fromArray(
 													[
 														$rtfeldman$elm_css$Html$Styled$text(
-														'Exercise ' + $author$project$Main$viewTime(t))
+														'Exercise ' + ((!$elm$time$Time$posixToMillis(t)) ? 'complete' : $author$project$Main$viewTime(t)))
 													]))
 											]))
 									])),

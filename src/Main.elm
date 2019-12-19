@@ -298,7 +298,17 @@ viewWorkout model =
                                             , Css.fontSize (Css.em 1)
                                             ]
                                         ]
-                                        [ div [] [ text <| "Exercise " ++ viewTime t ] ]
+                                        [ div []
+                                            [ text <|
+                                                "Exercise "
+                                                    ++ (if Time.posixToMillis t == 0 then
+                                                            "complete"
+
+                                                        else
+                                                            viewTime t
+                                                       )
+                                            ]
+                                        ]
                                     ]
                                 , viewPose pose (i == model.workoutIndex)
                                 ]
