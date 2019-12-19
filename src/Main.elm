@@ -40,7 +40,8 @@ type alias Model =
     , inWorkout : Bool
     , exerciseDuration : Posix
     , breakDuration : Posix
-    , workoutPoses : List ( Maybe Pose, Maybe Posix )
+    , workoutPoses : List ( Maybe Pose, Posix )
+    , workoutIndex : Int
     }
 
 
@@ -67,6 +68,7 @@ init _ =
       , exerciseDuration = Time.millisToPosix 30000
       , breakDuration = Time.millisToPosix 5000
       , workoutPoses = []
+      , workoutIndex = 0
       }
     , getPoses
     )
@@ -140,10 +142,10 @@ update msg model =
                 Finished p ->
                     let
                         sequence =
-                            List.map (\i -> ( Just i, Just model.exerciseDuration )) p
+                            List.map (\i -> ( Just i, model.exerciseDuration )) p
                                 |> List.intersperse
-                                    ( Nothing, Just model.breakDuration )
-                                |> (\l -> ( Nothing, Just model.breakDuration ) :: l)
+                                    ( Nothing, model.breakDuration )
+                                |> (\l -> ( Nothing, model.breakDuration ) :: l)
                     in
                     ( { model | inWorkout = True, workoutPoses = sequence }, Cmd.none )
 
@@ -155,34 +157,33 @@ update msg model =
 
         Tick _ ->
             let
-                poses =
-                    case model.workoutPoses of
-                        p :: ps ->
-                            case p of
-                                ( i, Just time ) ->
-                                    let
-                                        decremented =
-                                            Time.millisToPosix (Time.posixToMillis time - 1000)
-                                    in
-                                    if decremented == Time.millisToPosix 0 then
-                                        ps
+                ( j, poses ) =
+                    let
+                        f ( i, ( pose, time ) ) ( newI, ps ) =
+                            if i == model.workoutIndex then
+                                let
+                                    decremented =
+                                        Time.millisToPosix (Time.posixToMillis time - 1000)
+                                in
+                                if decremented == Time.millisToPosix 0 then
+                                    ( newI + 1, ( pose, decremented ) :: ps )
 
-                                    else
-                                        ( i, Just decremented ) :: ps
+                                else
+                                    ( newI, ( pose, decremented ) :: ps )
 
-                                e ->
-                                    e :: ps
-
-                        e ->
-                            e
+                            else
+                                ( newI, ( pose, time ) :: ps )
+                    in
+                    List.indexedMap Tuple.pair model.workoutPoses
+                        |> List.foldr f ( model.workoutIndex, [] )
             in
             let
                 newModel =
-                    if List.length poses == 0 then
+                    if j == List.length poses then
                         { model | inWorkout = False }
 
                     else
-                        model
+                        { model | workoutIndex = j }
             in
             ( { newModel | workoutPoses = poses }, Cmd.none )
 
@@ -252,6 +253,7 @@ viewWorkout model =
                         [ Css.displayFlex
                         , Css.alignItems Css.center
                         , Css.justifyContent Css.center
+                        , Css.paddingBottom (Css.em 1)
                         ]
                     ]
                     [ button
@@ -260,39 +262,46 @@ viewWorkout model =
                     ]
                 ]
             ]
-            :: List.concatMap
-                (\i ->
-                    case i of
-                        ( Just p, Just t ) ->
-                            [ tr [ css [ Css.textAlign Css.center ] ]
-                                [ td
-                                    [ Attrs.colspan 2
-                                    , css
-                                        [ Css.borderBottom3 (Css.px 1) Css.dashed (Css.hex "#dddddd")
-                                        , Css.borderTop3 (Css.px 1) Css.solid (Css.hex "#dddddd")
-                                        , Css.padding (Css.px 20)
-                                        , Css.fontSize (Css.px 20)
+            :: (let
+                    f ( i, p ) =
+                        case p of
+                            ( Just pose, t ) ->
+                                [ tr [ css [ Css.textAlign Css.center ] ]
+                                    [ td
+                                        [ Attrs.colspan 2
+                                        , css
+                                            [ Css.borderBottom3 (Css.px 1) Css.dashed (Css.hex "#dddddd")
+                                            , Css.borderTop3 (Css.px 1) Css.solid (Css.hex "#dddddd")
+                                            , Css.padding (Css.em 1)
+                                            , Css.fontSize (Css.em 1)
+                                            ]
                                         ]
+                                        [ div [] [ text "Exercise ", viewTime t ] ]
                                     ]
-                                    [ div [] [ text "Exercise ", viewTime t ] ]
+                                , viewPose pose (i == model.workoutIndex)
                                 ]
-                            , viewPose p
-                            ]
 
-                        ( Nothing, Just t ) ->
-                            [ tr [ css [ Css.textAlign Css.center ] ]
-                                [ td
-                                    [ Attrs.colspan 2
-                                    , css [ Css.padding (Css.px 20), Css.fontSize (Css.px 20) ]
+                            ( Nothing, t ) ->
+                                [ tr [ css [ Css.textAlign Css.center ] ]
+                                    [ td
+                                        [ Attrs.colspan 2
+                                        , css
+                                            ([ Css.padding (Css.em 1), Css.fontSize (Css.em 1) ]
+                                                ++ (if i == model.workoutIndex then
+                                                        [ Css.backgroundColor (Css.hex "#f5f5f5") ]
+
+                                                    else
+                                                        []
+                                                   )
+                                            )
+                                        ]
+                                        [ div [] [ text "Break ", viewTime t ] ]
                                     ]
-                                    [ div [] [ text "Break ", viewTime t ] ]
                                 ]
-                            ]
-
-                        _ ->
-                            [ text "Error" ]
-                )
-                model.workoutPoses
+                in
+                List.indexedMap Tuple.pair model.workoutPoses
+                    |> List.concatMap f
+               )
         )
 
 
@@ -325,7 +334,7 @@ viewFilters model numPoses =
         exerciseDuration =
             Time.posixToMillis model.exerciseDuration // 1000
     in
-    table [ css [ Css.width Css.inherit, Css.marginBottom (Css.px 20) ] ]
+    table [ css [ Css.width Css.inherit, Css.marginBottom (Css.em 1) ] ]
         [ tr []
             (viewNumberInput "Number of Poses" 0 numPoses model.filterNum (\s -> FilterNum (String.toInt s |> Maybe.withDefault model.filterNum))
                 ++ viewCheckbox "Beginner" model.filterBeginner FilterBeginner
@@ -406,7 +415,7 @@ viewPoses model =
 
                         _ ->
                             table [ css [ Css.borderCollapse Css.collapse ] ]
-                                (List.map (\p -> viewPose p) poses)
+                                (List.map (\p -> viewPose p False) poses)
 
                 Filtering ->
                     div [ css [ Css.textAlign Css.center ] ] [ text "Filtering..." ]
@@ -418,12 +427,16 @@ viewPoses model =
             div [ css [ Css.textAlign Css.center ] ] [ text "Failed to load" ]
 
 
-viewPose : Pose -> Html Msg
-viewPose p =
+viewPose : Pose -> Bool -> Html Msg
+viewPose p highlight =
     tr
         [ css
-            [ Css.hover [ Css.backgroundColor (Css.hex "#f5f5f5") ]
-            ]
+            (if highlight then
+                [ Css.backgroundColor (Css.hex "#f5f5f5") ]
+
+             else
+                []
+            )
         ]
         [ td
             [ css
@@ -431,7 +444,7 @@ viewPose p =
                 , Css.borderTop3 (Css.px 1) Css.dashed (Css.hex "#ddd")
                 ]
             ]
-            [ div [ css [ Css.margin (Css.px 20) ] ]
+            [ div [ css [ Css.margin (Css.em 1) ] ]
                 [ h3 [] [ text p.pose, em [] [ text (" (" ++ p.asana ++ ")") ] ]
                 , h4 [] [ text p.level ]
                 , ul []
@@ -446,7 +459,7 @@ viewPose p =
             ]
             [ a [ Attrs.href p.image ]
                 [ img
-                    [ src p.image, Attrs.width 128, css [ Css.margin (Css.px 20) ] ]
+                    [ src p.image, Attrs.width 128, css [ Css.margin (Css.em 1) ] ]
                     []
                 ]
             ]
