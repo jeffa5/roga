@@ -290,9 +290,17 @@ viewWorkout model =
                             highlight =
                                 i == model.workoutIndex
                         in
+                        let
+                            time t =
+                                if Time.posixToMillis t == 0 then
+                                    "complete"
+
+                                else
+                                    viewTime t
+                        in
                         case exercise of
                             Position ( pose, t ) ->
-                                [ tr [ css [ Css.textAlign Css.center ] ]
+                                [ tr [ css [ Css.textAlign Css.center ], Attrs.id ("exercise" ++ String.fromInt i) ]
                                     [ td
                                         [ Attrs.colspan 2
                                         , css
@@ -312,12 +320,7 @@ viewWorkout model =
                                         [ div []
                                             [ text <|
                                                 "Exercise "
-                                                    ++ (if Time.posixToMillis t == 0 then
-                                                            "complete"
-
-                                                        else
-                                                            viewTime t
-                                                       )
+                                                    ++ time t
                                             ]
                                         ]
                                     ]
@@ -325,7 +328,7 @@ viewWorkout model =
                                 ]
 
                             Break t ->
-                                [ viewBreak t highlight ]
+                                [ viewBreak ("exercise" ++ String.fromInt i) (time t) highlight ]
                 in
                 List.indexedMap Tuple.pair model.workoutPoses
                     |> List.concatMap f
@@ -333,9 +336,9 @@ viewWorkout model =
         )
 
 
-viewBreak : Posix -> Bool -> Html Msg
-viewBreak t highlight =
-    tr [ css [ Css.textAlign Css.center ] ]
+viewBreak : String -> String -> Bool -> Html Msg
+viewBreak id t highlight =
+    tr [ css [ Css.textAlign Css.center ], Attrs.id id ]
         [ td
             [ Attrs.colspan 2
             , css
@@ -351,12 +354,7 @@ viewBreak t highlight =
             [ div []
                 [ text <|
                     "Break "
-                        ++ (if Time.posixToMillis t == 0 then
-                                "complete"
-
-                            else
-                                viewTime t
-                           )
+                        ++ t
                 ]
             ]
         ]
