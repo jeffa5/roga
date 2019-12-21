@@ -9,6 +9,8 @@ import Http
 import Json.Decode exposing (Decoder, field, list, map5, string)
 import Random
 import Random.List
+import SmoothScroll exposing (defaultConfig, scrollTo, scrollToWithOptions)
+import Task
 import Time exposing (Posix, toMinute, toSecond, utc)
 
 
@@ -84,7 +86,8 @@ init _ =
 
 
 type Msg
-    = LoadPoses
+    = NoOp
+    | LoadPoses
     | GotPoses (Result Http.Error (List Pose))
     | FilterNum Int
     | FilterBeginner Bool
@@ -102,6 +105,9 @@ type Msg
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        NoOp ->
+            ( model, Cmd.none )
+
         LoadPoses ->
             ( { model | original = Loading }, getPoses )
 
@@ -152,7 +158,7 @@ update msg model =
                                     (Break model.breakDuration)
                                 |> (\l -> Break model.breakDuration :: l)
                     in
-                    ( { model | inWorkout = True, workoutPoses = sequence }, Cmd.none )
+                    ( { model | inWorkout = True, workoutPoses = sequence }, scrollToExercise 0 )
 
                 Filtering ->
                     ( model, Cmd.none )
@@ -207,7 +213,14 @@ update msg model =
                     else
                         { model | workoutIndex = j }
             in
-            ( { newModel | workoutPoses = poses }, Cmd.none )
+            ( { newModel | workoutPoses = poses }
+            , scrollToExercise newModel.workoutIndex
+            )
+
+
+scrollToExercise : Int -> Cmd Msg
+scrollToExercise i =
+    Task.attempt (always NoOp) (scrollToWithOptions { defaultConfig | speed = 10, offset = 150 } ("exercise" ++ String.fromInt i))
 
 
 
