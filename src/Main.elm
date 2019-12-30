@@ -516,7 +516,8 @@ viewPose p highlight =
         ]
         [ td
             [ css
-                [ Css.borderBottom3 (Css.px 1) Css.solid (Css.hex "#dddddd")
+                [ Css.width (Css.pct 80)
+                , Css.borderBottom3 (Css.px 1) Css.solid (Css.hex "#dddddd")
                 , Css.borderTop3 (Css.px 1) Css.dashed (Css.hex "#ddd")
                 ]
             ]
@@ -529,7 +530,8 @@ viewPose p highlight =
             ]
         , td
             [ css
-                [ Css.borderTop3 (Css.px 1) Css.dashed (Css.hex "#ddd")
+                [ Css.width (Css.pct 20)
+                , Css.borderTop3 (Css.px 1) Css.dashed (Css.hex "#ddd")
                 , Css.borderBottom3 (Css.px 1) Css.solid (Css.hex "#ddd")
                 ]
             ]
