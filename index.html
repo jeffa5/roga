@@ -6230,11 +6230,14 @@ var $author$project$Main$getPoses = $elm$http$Http$get(
 	});
 var $elm$time$Time$Posix = $elm$core$Basics$identity;
 var $elm$time$Time$millisToPosix = $elm$core$Basics$identity;
+var $author$project$Main$seconds = function (s) {
+	return $elm$time$Time$millisToPosix(s * 1000);
+};
 var $author$project$Main$init = function (_v0) {
 	return _Utils_Tuple2(
 		{
-			aA: $elm$time$Time$millisToPosix(5000),
-			a_: $elm$time$Time$millisToPosix(30000),
+			aA: $author$project$Main$seconds(5),
+			a_: $author$project$Main$seconds(30),
 			a$: true,
 			a0: true,
 			a1: true,
@@ -7268,7 +7271,7 @@ var $author$project$Main$update = F2(
 					_Utils_update(
 						model,
 						{
-							aA: $elm$time$Time$millisToPosix(t * 1000)
+							aA: $author$project$Main$seconds(t)
 						}),
 					$elm$core$Platform$Cmd$none);
 			case 10:
@@ -7277,7 +7280,7 @@ var $author$project$Main$update = F2(
 					_Utils_update(
 						model,
 						{
-							a_: $elm$time$Time$millisToPosix(t * 1000)
+							a_: $author$project$Main$seconds(t)
 						}),
 					$elm$core$Platform$Cmd$none);
 			case 11:

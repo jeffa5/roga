@@ -63,6 +63,11 @@ type FilteringPoses
     | Finished (List Pose)
 
 
+seconds : Int -> Posix
+seconds s =
+    Time.millisToPosix (s * 1000)
+
+
 init : () -> ( Model, Cmd Msg )
 init _ =
     ( { original = Loading
@@ -72,8 +77,8 @@ init _ =
       , filterIntermediate = True
       , filterAdvanced = True
       , inWorkout = False
-      , exerciseDuration = Time.millisToPosix 30000
-      , breakDuration = Time.millisToPosix 5000
+      , exerciseDuration = seconds 30
+      , breakDuration = seconds 5
       , workoutPoses = []
       , workoutIndex = 0
       }
@@ -143,10 +148,10 @@ update msg model =
             ( { model | poses = Finished poses }, Cmd.none )
 
         SetBreakDuration t ->
-            ( { model | breakDuration = Time.millisToPosix (t * 1000) }, Cmd.none )
+            ( { model | breakDuration = seconds t }, Cmd.none )
 
         SetExerciseDuration t ->
-            ( { model | exerciseDuration = Time.millisToPosix (t * 1000) }, Cmd.none )
+            ( { model | exerciseDuration = seconds t }, Cmd.none )
 
         StartWorkout ->
             case model.poses of
