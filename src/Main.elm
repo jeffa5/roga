@@ -217,10 +217,15 @@ update msg model =
 
                     else
                         { model | workoutIndex = j }
+
+                cmd =
+                    if model.inWorkout then
+                        scrollToExercise newModel.workoutIndex
+
+                    else
+                        Cmd.none
             in
-            ( { newModel | workoutPoses = poses }
-            , scrollToExercise newModel.workoutIndex
-            )
+            ( { newModel | workoutPoses = poses }, cmd )
 
 
 scrollToExercise : Int -> Cmd Msg
