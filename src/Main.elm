@@ -158,13 +158,13 @@ update msg model =
                                     (Break model.breakDuration)
                                 |> (\l -> Break model.breakDuration :: l)
                     in
-                    ( { model | inWorkout = True, workoutPoses = sequence }, scrollToExercise 0 )
+                    ( { model | inWorkout = True, workoutIndex = 0, workoutPoses = sequence }, scrollToExercise 0 )
 
                 Filtering ->
                     ( model, Cmd.none )
 
         CancelWorkout ->
-            ( { model | inWorkout = False, workoutIndex = 0, workoutPoses = [] }, Cmd.none )
+            ( { model | inWorkout = False, workoutPoses = [] }, Cmd.none )
 
         Tick _ ->
             let
