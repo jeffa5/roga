@@ -284,7 +284,7 @@ originalDefault g =
 viewWorkout : Model -> Html Msg
 viewWorkout model =
     table
-        [ css [ Css.borderCollapse Css.collapse ] ]
+        [ css [ Css.width Css.inherit, Css.borderCollapse Css.collapse ] ]
         (tr []
             [ td
                 [ Attrs.colspan 2 ]
@@ -485,7 +485,7 @@ viewPoses model =
                             div [ css [ Css.textAlign Css.center ] ] [ text "No poses to show" ]
 
                         _ ->
-                            table [ css [ Css.borderCollapse Css.collapse ] ]
+                            table [ css [ Css.width Css.inherit, Css.borderCollapse Css.collapse ] ]
                                 (List.map (\p -> viewPose p False) poses)
 
                 Filtering ->
