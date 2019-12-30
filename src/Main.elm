@@ -9,7 +9,7 @@ import Http
 import Json.Decode exposing (Decoder, field, list, map5, string)
 import Random
 import Random.List
-import SmoothScroll exposing (defaultConfig, scrollTo, scrollToWithOptions)
+import SmoothScroll exposing (defaultConfig, scrollToWithOptions)
 import Task
 import Time exposing (Posix, toMinute, toSecond, utc)
 

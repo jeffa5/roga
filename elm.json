@@ -14,6 +14,7 @@
             "elm/random": "1.0.0",
             "elm/time": "1.0.0",
             "elm-community/random-extra": "3.1.0",
+            "linuss/smooth-scroll": "1.1.0",
             "mdgriffith/elm-ui": "1.1.5",
             "rtfeldman/elm-css": "16.0.1"
         },
@@ -23,6 +24,7 @@
             "elm/file": "1.0.5",
             "elm/url": "1.0.0",
             "elm/virtual-dom": "1.0.2",
+            "elm-community/easing-functions": "2.0.0",
             "owanturist/elm-union-find": "1.0.0",
             "rtfeldman/elm-hex": "1.0.0"
         }
