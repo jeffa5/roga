@@ -274,13 +274,23 @@ view model =
     let
         numPoses =
             List.length (originalDefault model.original)
+
+        ( width, _ ) =
+            model.interactive.windowSize
+
+        widthPct =
+            if width >= 800 then
+                80
+
+            else
+                100
     in
     { title = "Roga"
     , body =
         [ toUnstyled <|
             div
                 [ css
-                    [ Css.width <| Css.px 800
+                    [ Css.width <| Css.pct widthPct
                     , Css.margin Css.auto
                     , Css.fontFamily Css.sansSerif
                     ]
@@ -432,43 +442,76 @@ viewFilters model numPoses =
 
         exerciseDuration =
             Time.posixToMillis model.exerciseDuration // 1000
+
+        ( width, height ) =
+            model.interactive.windowSize
+
+        beginnerCheckbox =
+            viewCheckbox "Beginner" model.filterBeginner FilterBeginner
+
+        intermediateCheckbox =
+            viewCheckbox "Intermediate" model.filterIntermediate FilterIntermediate
+
+        advancedCheckbox =
+            viewCheckbox "Advanced" model.filterAdvanced FilterAdvanced
+
+        numPosesInput =
+            viewNumberInput "Number of Poses" 0 numPoses model.filterNum (\s -> FilterNum (String.toInt s |> Maybe.withDefault model.filterNum))
+
+        breakDurationInput =
+            viewNumberInput "Break duration" 1 30 breakDuration (\s -> SetBreakDuration (String.toInt s |> Maybe.withDefault breakDuration))
+
+        exerciseDurationInput =
+            viewNumberInput "Exercise duration" 10 60 exerciseDuration (\s -> SetExerciseDuration (String.toInt s |> Maybe.withDefault exerciseDuration))
     in
-    table [ css [ Css.width Css.inherit, Css.marginBottom (Css.em 1) ] ]
-        [ tr []
-            (viewNumberInput "Number of Poses" 0 numPoses model.filterNum (\s -> FilterNum (String.toInt s |> Maybe.withDefault model.filterNum))
-                ++ viewCheckbox "Beginner" model.filterBeginner FilterBeginner
-            )
-        , tr []
-            (viewNumberInput "Break duration" 1 30 breakDuration (\s -> SetBreakDuration (String.toInt s |> Maybe.withDefault breakDuration))
-                ++ viewCheckbox "Intermediate" model.filterIntermediate FilterIntermediate
-            )
-        , tr []
-            (viewNumberInput "Exercise duration" 10 60 exerciseDuration (\s -> SetExerciseDuration (String.toInt s |> Maybe.withDefault exerciseDuration))
-                ++ viewCheckbox "Advanced" model.filterAdvanced FilterAdvanced
-            )
-        , tr []
-            [ td [ Attrs.colspan 2 ]
-                [ div
-                    [ css
-                        [ Css.displayFlex
-                        , Css.alignItems Css.center
-                        , Css.justifyContent Css.center
-                        ]
-                    ]
-                    [ button [ onClick Filter ] [ text "Filter" ] ]
-                ]
-            , td [ Attrs.colspan 2 ]
-                [ div
-                    [ css
-                        [ Css.displayFlex
-                        , Css.alignItems Css.center
-                        , Css.justifyContent Css.center
-                        ]
-                    ]
-                    [ button [ onClick StartWorkout ] [ text "Start workout" ] ]
-                ]
+    table
+        [ css
+            [ Css.width Css.inherit
+            , Css.marginRight Css.auto
+            , Css.marginLeft Css.auto
+            , Css.marginBottom (Css.em 1)
             ]
         ]
+        (if width >= 800 then
+            [ tr []
+                (numPosesInput ++ beginnerCheckbox)
+            , tr []
+                (breakDurationInput ++ intermediateCheckbox)
+            , tr []
+                (exerciseDurationInput ++ advancedCheckbox)
+            , tr []
+                [ td [ Attrs.colspan 2 ]
+                    [ div
+                        [ css
+                            [ Css.displayFlex
+                            , Css.alignItems Css.center
+                            , Css.justifyContent Css.center
+                            ]
+                        ]
+                        [ button [ onClick Filter ] [ text "Filter" ] ]
+                    ]
+                , td [ Attrs.colspan 2 ]
+                    [ div
+                        [ css
+                            [ Css.displayFlex
+                            , Css.alignItems Css.center
+                            , Css.justifyContent Css.center
+                            ]
+                        ]
+                        [ button [ onClick StartWorkout ] [ text "Start workout" ] ]
+                    ]
+                ]
+            ]
+
+         else
+            [ tr [] numPosesInput
+            , tr [] breakDurationInput
+            , tr [] exerciseDurationInput
+            , tr [] beginnerCheckbox
+            , tr [] intermediateCheckbox
+            , tr [] advancedCheckbox
+            ]
+        )
 
 
 viewNumberInput : String -> Int -> Int -> Int -> (String -> Msg) -> List (Html Msg)
@@ -513,7 +556,14 @@ viewPoses model =
                             div [ css [ Css.textAlign Css.center ] ] [ text "No poses to show" ]
 
                         _ ->
-                            table [ css [ Css.width Css.inherit, Css.borderCollapse Css.collapse ] ]
+                            table
+                                [ css
+                                    [ Css.width Css.inherit
+                                    , Css.marginLeft Css.auto
+                                    , Css.marginRight Css.auto
+                                    , Css.borderCollapse Css.collapse
+                                    ]
+                                ]
                                 (List.map (\p -> viewPose model p False) poses)
 
                 Filtering ->
@@ -544,6 +594,8 @@ viewPose model p highlight =
         (td
             [ css
                 [ Css.width (Css.pct 80)
+                , Css.marginLeft Css.auto
+                , Css.marginRight Css.auto
                 , Css.borderBottom3 (Css.px 1) Css.solid (Css.hex "#dddddd")
                 , Css.borderTop3 (Css.px 1) Css.dashed (Css.hex "#ddd")
                 ]
