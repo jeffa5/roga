@@ -6,6 +6,7 @@ import Html.Styled exposing (Html, a, button, div, em, h2, h3, h4, img, input, l
 import Html.Styled.Attributes as Attrs exposing (css, src, type_, value)
 import Html.Styled.Events exposing (onCheck, onClick, onInput)
 import Http
+import Interactive
 import Json.Decode exposing (Decoder, field, list, map5, string)
 import Random
 import Random.List
@@ -49,6 +50,7 @@ type alias Model =
     , breakDuration : Posix
     , workoutPoses : List Exercise
     , workoutIndex : Int
+    , interactive : Interactive.Model
     }
 
 
@@ -70,6 +72,10 @@ seconds s =
 
 init : () -> ( Model, Cmd Msg )
 init _ =
+    let
+        ( iModel, subCmd ) =
+            Interactive.init
+    in
     ( { original = Loading
       , poses = Filtering
       , filterNum = 0
@@ -81,8 +87,12 @@ init _ =
       , breakDuration = seconds 5
       , workoutPoses = []
       , workoutIndex = 0
+      , interactive = iModel
       }
-    , getPoses
+    , Cmd.batch
+        [ getPoses
+        , Cmd.map InteractiveMsg subCmd
+        ]
     )
 
 
@@ -105,6 +115,7 @@ type Msg
     | StartWorkout
     | CancelWorkout
     | Tick Posix
+    | InteractiveMsg Interactive.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -227,6 +238,15 @@ update msg model =
             in
             ( { newModel | workoutPoses = poses }, cmd )
 
+        InteractiveMsg subMsg ->
+            ( { model
+                | interactive =
+                    Interactive.update subMsg model.interactive
+                        |> Tuple.first
+              }
+            , Cmd.none
+            )
+
 
 scrollToExercise : Int -> Cmd Msg
 scrollToExercise i =
@@ -239,7 +259,10 @@ scrollToExercise i =
 
 subscriptions : Model -> Sub Msg
 subscriptions _ =
-    Time.every 1000 Tick
+    Sub.batch
+        [ Time.every 1000 Tick
+        , Sub.map InteractiveMsg Interactive.subWindowResize
+        ]
 
 
 
@@ -347,7 +370,7 @@ viewWorkout model =
                                             ]
                                         ]
                                     ]
-                                , viewPose pose highlight
+                                , viewPose model pose highlight
                                 ]
 
                             Break t ->
@@ -491,7 +514,7 @@ viewPoses model =
 
                         _ ->
                             table [ css [ Css.width Css.inherit, Css.borderCollapse Css.collapse ] ]
-                                (List.map (\p -> viewPose p False) poses)
+                                (List.map (\p -> viewPose model p False) poses)
 
                 Filtering ->
                     div [ css [ Css.textAlign Css.center ] ] [ text "Filtering..." ]
@@ -503,8 +526,12 @@ viewPoses model =
             div [ css [ Css.textAlign Css.center ] ] [ text "Failed to load" ]
 
 
-viewPose : Pose -> Bool -> Html Msg
-viewPose p highlight =
+viewPose : Model -> Pose -> Bool -> Html Msg
+viewPose model p highlight =
+    let
+        ( width, height ) =
+            model.interactive.windowSize
+    in
     tr
         [ css
             (if highlight then
@@ -514,7 +541,7 @@ viewPose p highlight =
                 []
             )
         ]
-        [ td
+        (td
             [ css
                 [ Css.width (Css.pct 80)
                 , Css.borderBottom3 (Css.px 1) Css.solid (Css.hex "#dddddd")
@@ -528,20 +555,26 @@ viewPose p highlight =
                     (List.map (\b -> li [] [ text b ]) p.benefits)
                 ]
             ]
-        , td
-            [ css
-                [ Css.width (Css.pct 20)
-                , Css.borderTop3 (Css.px 1) Css.dashed (Css.hex "#ddd")
-                , Css.borderBottom3 (Css.px 1) Css.solid (Css.hex "#ddd")
-                ]
-            ]
-            [ a [ Attrs.href p.image ]
-                [ img
-                    [ src p.image, Attrs.width 128, css [ Css.margin (Css.em 1) ] ]
+            :: (if width >= 800 then
+                    [ td
+                        [ css
+                            [ Css.width (Css.pct 20)
+                            , Css.borderTop3 (Css.px 1) Css.dashed (Css.hex "#ddd")
+                            , Css.borderBottom3 (Css.px 1) Css.solid (Css.hex "#ddd")
+                            ]
+                        ]
+                        [ a [ Attrs.href p.image ]
+                            [ img
+                                [ src p.image, Attrs.width 128, css [ Css.margin (Css.em 1) ] ]
+                                []
+                            ]
+                        ]
+                    ]
+
+                else
                     []
-                ]
-            ]
-        ]
+               )
+        )
 
 
 
