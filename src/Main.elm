@@ -278,19 +278,19 @@ view model =
         ( width, height ) =
             model.interactive.windowSize
 
-        widthPct =
+        widthStyle =
             if width >= 1000 then
-                80
+                Css.maxWidth (Css.px 800)
 
             else
-                100
+                Css.width (Css.pct 100)
     in
     { title = "Roga"
     , body =
         [ toUnstyled <|
             div
                 [ css
-                    [ Css.width <| Css.pct widthPct
+                    [ widthStyle
                     , Css.margin Css.auto
                     , Css.fontFamily Css.sansSerif
                     ]

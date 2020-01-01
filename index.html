@@ -9812,6 +9812,7 @@ var $rtfeldman$elm_css$Css$fontFamily = $rtfeldman$elm_css$Css$prop1('font-famil
 var $elm$core$String$fromFloat = _String_fromNumber;
 var $rtfeldman$elm_css$Html$Styled$h2 = $rtfeldman$elm_css$Html$Styled$node('h2');
 var $rtfeldman$elm_css$Css$margin = $rtfeldman$elm_css$Css$prop1('margin');
+var $rtfeldman$elm_css$Css$maxWidth = $rtfeldman$elm_css$Css$prop1('max-width');
 var $author$project$Main$originalDefault = function (g) {
 	if (g.$ === 2) {
 		var p = g.a;
@@ -9846,6 +9847,8 @@ var $rtfeldman$elm_css$Css$Internal$lengthConverter = F3(
 		};
 	});
 var $rtfeldman$elm_css$Css$pct = A2($rtfeldman$elm_css$Css$Internal$lengthConverter, 0, '%');
+var $rtfeldman$elm_css$Css$PxUnits = 0;
+var $rtfeldman$elm_css$Css$px = A2($rtfeldman$elm_css$Css$Internal$lengthConverter, 0, 'px');
 var $rtfeldman$elm_css$Css$sansSerif = {ah: 0, N: 'sans-serif'};
 var $rtfeldman$elm_css$VirtualDom$Styled$Unstyled = function (a) {
 	return {$: 4, a: a};
@@ -10618,8 +10621,6 @@ var $rtfeldman$elm_css$Html$Styled$Events$onInput = function (tagger) {
 			$rtfeldman$elm_css$Html$Styled$Events$alwaysStop,
 			A2($elm$json$Json$Decode$map, tagger, $rtfeldman$elm_css$Html$Styled$Events$targetValue)));
 };
-var $rtfeldman$elm_css$Css$PxUnits = 0;
-var $rtfeldman$elm_css$Css$px = A2($rtfeldman$elm_css$Css$Internal$lengthConverter, 0, 'px');
 var $rtfeldman$elm_css$Html$Styled$Attributes$value = $rtfeldman$elm_css$Html$Styled$Attributes$stringProperty('value');
 var $rtfeldman$elm_css$Css$width = $rtfeldman$elm_css$Css$prop1('width');
 var $author$project$Main$viewNumberInput = F5(
@@ -11729,7 +11730,9 @@ var $author$project$Main$view = function (model) {
 	var _v0 = model.al.ce;
 	var width = _v0.a;
 	var height = _v0.b;
-	var widthPct = (width >= 1000) ? 80 : 100;
+	var widthStyle = (width >= 1000) ? $rtfeldman$elm_css$Css$maxWidth(
+		$rtfeldman$elm_css$Css$px(800)) : $rtfeldman$elm_css$Css$width(
+		$rtfeldman$elm_css$Css$pct(100));
 	return {
 		dZ: _List_fromArray(
 			[
@@ -11741,8 +11744,7 @@ var $author$project$Main$view = function (model) {
 							$rtfeldman$elm_css$Html$Styled$Attributes$css(
 							_List_fromArray(
 								[
-									$rtfeldman$elm_css$Css$width(
-									$rtfeldman$elm_css$Css$pct(widthPct)),
+									widthStyle,
 									$rtfeldman$elm_css$Css$margin($rtfeldman$elm_css$Css$auto),
 									$rtfeldman$elm_css$Css$fontFamily($rtfeldman$elm_css$Css$sansSerif)
 								]))
