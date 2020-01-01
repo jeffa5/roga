@@ -9809,6 +9809,7 @@ var $rtfeldman$elm_css$VirtualDom$Styled$node = $rtfeldman$elm_css$VirtualDom$St
 var $rtfeldman$elm_css$Html$Styled$node = $rtfeldman$elm_css$VirtualDom$Styled$node;
 var $rtfeldman$elm_css$Html$Styled$div = $rtfeldman$elm_css$Html$Styled$node('div');
 var $rtfeldman$elm_css$Css$fontFamily = $rtfeldman$elm_css$Css$prop1('font-family');
+var $elm$core$String$fromFloat = _String_fromNumber;
 var $rtfeldman$elm_css$Html$Styled$h2 = $rtfeldman$elm_css$Html$Styled$node('h2');
 var $rtfeldman$elm_css$Css$margin = $rtfeldman$elm_css$Css$prop1('margin');
 var $author$project$Main$originalDefault = function (g) {
@@ -9820,7 +9821,6 @@ var $author$project$Main$originalDefault = function (g) {
 	}
 };
 var $rtfeldman$elm_css$Css$PercentageUnits = 0;
-var $elm$core$String$fromFloat = _String_fromNumber;
 var $rtfeldman$elm_css$Css$Internal$lengthConverter = F3(
 	function (units, unitLabel, numericValue) {
 		return {
@@ -11728,6 +11728,7 @@ var $author$project$Main$view = function (model) {
 		$author$project$Main$originalDefault(model.Y));
 	var _v0 = model.al.ce;
 	var width = _v0.a;
+	var height = _v0.b;
 	var widthPct = (width >= 800) ? 80 : 100;
 	return {
 		dZ: _List_fromArray(
@@ -11760,7 +11761,8 @@ var $author$project$Main$view = function (model) {
 								]),
 							_List_fromArray(
 								[
-									$rtfeldman$elm_css$Html$Styled$text('Roga')
+									$rtfeldman$elm_css$Html$Styled$text(
+									'Roga ' + ($elm$core$String$fromFloat(width) + ('x' + $elm$core$String$fromFloat(height))))
 								])),
 						model.ak ? _List_fromArray(
 							[

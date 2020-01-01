@@ -275,7 +275,7 @@ view model =
         numPoses =
             List.length (originalDefault model.original)
 
-        ( width, _ ) =
+        ( width, height ) =
             model.interactive.windowSize
 
         widthPct =
@@ -295,7 +295,7 @@ view model =
                     , Css.fontFamily Css.sansSerif
                     ]
                 ]
-                (h2 [ css [ Css.textAlign Css.center ] ] [ text "Roga" ]
+                (h2 [ css [ Css.textAlign Css.center ] ] [ text ("Roga " ++ String.fromFloat width ++ "x" ++ String.fromFloat height) ]
                     :: (if model.inWorkout then
                             [ viewWorkout model ]
 
