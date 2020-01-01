@@ -279,7 +279,7 @@ view model =
             model.interactive.windowSize
 
         widthPct =
-            if width >= 800 then
+            if width >= 1000 then
                 80
 
             else
