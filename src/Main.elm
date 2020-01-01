@@ -466,9 +466,7 @@ viewFilters model numPoses =
     in
     table
         [ css
-            [ Css.width Css.inherit
-            , Css.marginRight Css.auto
-            , Css.marginLeft Css.auto
+            [ Css.width (Css.pct 100)
             , Css.marginBottom (Css.em 1)
             ]
         ]

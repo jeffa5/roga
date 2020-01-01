@@ -10464,10 +10464,6 @@ var $rtfeldman$elm_css$Html$Styled$Attributes$colspan = function (n) {
 var $rtfeldman$elm_css$Css$displayFlex = A2($rtfeldman$elm_css$Css$property, 'display', 'flex');
 var $rtfeldman$elm_css$Css$EmUnits = 0;
 var $rtfeldman$elm_css$Css$em = A2($rtfeldman$elm_css$Css$Internal$lengthConverter, 0, 'em');
-var $rtfeldman$elm_css$Css$initial = {ci: 0, cl: 0, aZ: 0, cn: 0, az: 0, co: 0, aA: 0, P: 0, t: 0, bh: 0, aE: 0, a: 0, h: 0, aH: 0, bS: 0, a3: 0, bq: 0, ah: 0, r: 0, aI: 0, e: 0, U: 0, bs: 0, cS: 0, bY: 0, a4: 0, aL: 0, V: 0, aM: 0, aN: 0, am: 0, an: 0, J: 0, bv: 0, c: 0, b: 0, b1: 0, a6: 0, X: 0, bB: 0, aP: 0, D: 0, bG: 0, aS: 0, au: 0, aT: 0, aU: 0, av: 0, y: 0, aV: '', bd: 0, N: 'initial', be: 0, ab: 0};
-var $rtfeldman$elm_css$Css$inherit = _Utils_update(
-	$rtfeldman$elm_css$Css$initial,
-	{N: 'inherit'});
 var $rtfeldman$elm_css$Css$justifyContent = function (fn) {
 	return A3(
 		$rtfeldman$elm_css$Css$Internal$getOverloadedProperty,
@@ -10476,8 +10472,6 @@ var $rtfeldman$elm_css$Css$justifyContent = function (fn) {
 		fn($rtfeldman$elm_css$Css$Internal$lengthForOverloadedProperty));
 };
 var $rtfeldman$elm_css$Css$marginBottom = $rtfeldman$elm_css$Css$prop1('margin-bottom');
-var $rtfeldman$elm_css$Css$marginLeft = $rtfeldman$elm_css$Css$prop1('margin-left');
-var $rtfeldman$elm_css$Css$marginRight = $rtfeldman$elm_css$Css$prop1('margin-right');
 var $elm$virtual_dom$VirtualDom$Normal = function (a) {
 	return {$: 0, a: a};
 };
@@ -10724,9 +10718,8 @@ var $author$project$Main$viewFilters = F2(
 					$rtfeldman$elm_css$Html$Styled$Attributes$css(
 					_List_fromArray(
 						[
-							$rtfeldman$elm_css$Css$width($rtfeldman$elm_css$Css$inherit),
-							$rtfeldman$elm_css$Css$marginRight($rtfeldman$elm_css$Css$auto),
-							$rtfeldman$elm_css$Css$marginLeft($rtfeldman$elm_css$Css$auto),
+							$rtfeldman$elm_css$Css$width(
+							$rtfeldman$elm_css$Css$pct(100)),
 							$rtfeldman$elm_css$Css$marginBottom(
 							$rtfeldman$elm_css$Css$em(1))
 						]))
@@ -10831,6 +10824,12 @@ var $author$project$Main$viewFilters = F2(
 	});
 var $rtfeldman$elm_css$Css$borderCollapse = $rtfeldman$elm_css$Css$prop1('border-collapse');
 var $rtfeldman$elm_css$Css$collapse = {cs: 0, N: 'collapse', be: 0};
+var $rtfeldman$elm_css$Css$initial = {ci: 0, cl: 0, aZ: 0, cn: 0, az: 0, co: 0, aA: 0, P: 0, t: 0, bh: 0, aE: 0, a: 0, h: 0, aH: 0, bS: 0, a3: 0, bq: 0, ah: 0, r: 0, aI: 0, e: 0, U: 0, bs: 0, cS: 0, bY: 0, a4: 0, aL: 0, V: 0, aM: 0, aN: 0, am: 0, an: 0, J: 0, bv: 0, c: 0, b: 0, b1: 0, a6: 0, X: 0, bB: 0, aP: 0, D: 0, bG: 0, aS: 0, au: 0, aT: 0, aU: 0, av: 0, y: 0, aV: '', bd: 0, N: 'initial', be: 0, ab: 0};
+var $rtfeldman$elm_css$Css$inherit = _Utils_update(
+	$rtfeldman$elm_css$Css$initial,
+	{N: 'inherit'});
+var $rtfeldman$elm_css$Css$marginLeft = $rtfeldman$elm_css$Css$prop1('margin-left');
+var $rtfeldman$elm_css$Css$marginRight = $rtfeldman$elm_css$Css$prop1('margin-right');
 var $rtfeldman$elm_css$Html$Styled$a = $rtfeldman$elm_css$Html$Styled$node('a');
 var $rtfeldman$elm_css$Css$backgroundColor = function (c) {
 	return A2($rtfeldman$elm_css$Css$property, 'background-color', c.N);
