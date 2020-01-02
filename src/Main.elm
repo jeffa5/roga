@@ -15,7 +15,7 @@ import Random
 import Random.List
 import SmoothScroll exposing (defaultConfig, scrollToWithOptions)
 import Task
-import Time exposing (Posix, toMinute, toSecond, utc)
+import Time exposing (Posix, toHour, toMinute, toSecond, utc)
 
 
 
@@ -389,7 +389,7 @@ viewExercise model ( i, exercise ) =
 
 viewWorkout : Model -> Element Msg
 viewWorkout model =
-    Element.column []
+    Element.column [ Element.width Element.fill ]
         (el [ Element.centerX, Element.padding 10 ] (viewButton CancelWorkout "Cancel Workout")
             :: (List.indexedMap Tuple.pair model.workoutPoses
                     |> List.map (viewExercise model)
@@ -410,21 +410,34 @@ viewBreak id t =
 viewTime : Posix -> String
 viewTime t =
     let
+        hour =
+            toHour utc t
+
         min =
             toMinute utc t
 
         sec =
             toSecond utc t
     in
-    if min /= 0 then
-        if sec == 0 then
-            String.fromInt min ++ "m"
+    (if hour /= 0 then
+        [ String.fromInt hour ++ "h" ]
 
-        else
-            String.fromInt min ++ "m " ++ String.fromInt sec ++ "s"
+     else
+        []
+    )
+        ++ (if min /= 0 then
+                [ String.fromInt min ++ "m" ]
 
-    else
-        String.fromInt sec ++ "s"
+            else
+                []
+           )
+        ++ (if sec /= 0 then
+                [ String.fromInt sec ++ "s" ]
+
+            else
+                []
+           )
+        |> String.join " "
 
 
 viewFilters : Model -> Int -> Element Msg
@@ -435,6 +448,11 @@ viewFilters model numPoses =
 
         exerciseDuration =
             Time.posixToMillis model.exerciseDuration // 1000
+
+        workoutDuration =
+            model.filterNum
+                * (Time.posixToMillis model.breakDuration + Time.posixToMillis model.exerciseDuration)
+                |> Time.millisToPosix
     in
     Element.column
         [ Element.width Element.fill ]
@@ -446,7 +464,7 @@ viewFilters model numPoses =
                     [ Element.spacing 10
                     , Element.centerX
                     ]
-                    [ viewNumberInput ("Number of Poses: " ++ String.fromInt model.filterNum) 0 numPoses model.filterNum FilterNum
+                    [ viewNumberInput ("Number of Poses: " ++ String.fromInt model.filterNum) 1 numPoses model.filterNum FilterNum
                     , viewNumberInput ("Break duration: " ++ viewTime model.breakDuration) 1 30 breakDuration SetBreakDuration
                     , viewNumberInput ("Exercise duration: " ++ viewTime model.exerciseDuration) 10 60 exerciseDuration SetExerciseDuration
                     ]
@@ -464,6 +482,7 @@ viewFilters model numPoses =
             ]
         , Element.wrappedRow [ Element.width Element.fill, Element.paddingXY 0 10 ]
             [ el [ Element.width Element.fill ] (el [ Element.centerX ] (viewButton Filter "Filter"))
+            , el [] (Element.text <| viewTime workoutDuration)
             , el [ Element.width Element.fill ] (el [ Element.centerX ] (viewButton StartWorkout "Start Workout"))
             ]
         ]
