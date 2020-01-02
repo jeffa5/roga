@@ -446,7 +446,7 @@ viewFilters model numPoses =
                     [ Element.spacing 10
                     , Element.centerX
                     ]
-                    [ viewNumberInput "Number of Poses" 0 numPoses model.filterNum FilterNum
+                    [ viewNumberInput ("Number of Poses: " ++ String.fromInt model.filterNum) 0 numPoses model.filterNum FilterNum
                     , viewNumberInput ("Break duration: " ++ viewTime model.breakDuration) 1 30 breakDuration SetBreakDuration
                     , viewNumberInput ("Exercise duration: " ++ viewTime model.exerciseDuration) 10 60 exerciseDuration SetExerciseDuration
                     ]

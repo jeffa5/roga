@@ -6268,17 +6268,17 @@ var $author$project$Main$init = function (_v0) {
 	return _Utils_Tuple2(
 		{
 			ac: $author$project$Main$seconds(5),
-			aD: $author$project$Main$seconds(30),
+			aE: $author$project$Main$seconds(30),
 			a_: true,
 			a$: true,
 			a0: true,
-			aE: 0,
-			ai: false,
+			af: 0,
+			aj: false,
 			br: iModel,
 			W: $author$project$Main$Loading,
-			ao: $author$project$Main$Filtering,
+			ap: $author$project$Main$Filtering,
 			aa: 0,
-			av: _List_Nil
+			aw: _List_Nil
 		},
 		$elm$core$Platform$Cmd$batch(
 			_List_fromArray(
@@ -7308,7 +7308,7 @@ var $author$project$Main$filterPoses = F2(
 			A2(
 				$author$project$Main$randomPoses,
 				A4($author$project$Main$preFilter, model.a$, model.a0, model.a_, poses),
-				model.aE));
+				model.af));
 	});
 var $elm$core$List$intersperse = F2(
 	function (sep, xs) {
@@ -7979,9 +7979,9 @@ var $author$project$Main$update = F2(
 						_Utils_update(
 							model,
 							{
-								aE: $elm$core$List$length(poses),
+								af: $elm$core$List$length(poses),
 								W: $author$project$Main$Success(poses),
-								ao: $author$project$Main$Finished(poses)
+								ap: $author$project$Main$Finished(poses)
 							}),
 						$elm$core$Platform$Cmd$none);
 				} else {
@@ -7999,7 +7999,7 @@ var $author$project$Main$update = F2(
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{aE: n}),
+						{af: n}),
 					$elm$core$Platform$Cmd$none);
 			case 4:
 				var b = msg.a;
@@ -8029,7 +8029,7 @@ var $author$project$Main$update = F2(
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{ao: $author$project$Main$Filtering}),
+							{ap: $author$project$Main$Filtering}),
 						A2($author$project$Main$filterPoses, model, p));
 				} else {
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
@@ -8040,7 +8040,7 @@ var $author$project$Main$update = F2(
 					_Utils_update(
 						model,
 						{
-							ao: $author$project$Main$Finished(poses)
+							ap: $author$project$Main$Finished(poses)
 						}),
 					$elm$core$Platform$Cmd$none);
 			case 9:
@@ -8058,11 +8058,11 @@ var $author$project$Main$update = F2(
 					_Utils_update(
 						model,
 						{
-							aD: $author$project$Main$seconds(t)
+							aE: $author$project$Main$seconds(t)
 						}),
 					$elm$core$Platform$Cmd$none);
 			case 11:
-				var _v3 = model.ao;
+				var _v3 = model.ap;
 				if (_v3.$ === 1) {
 					var p = _v3.a;
 					var sequence = function (l) {
@@ -8078,13 +8078,13 @@ var $author$project$Main$update = F2(
 								$elm$core$List$map,
 								function (i) {
 									return $author$project$Main$Position(
-										_Utils_Tuple2(i, model.aD));
+										_Utils_Tuple2(i, model.aE));
 								},
 								p)));
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{ai: true, aa: 0, av: sequence}),
+							{aj: true, aa: 0, aw: sequence}),
 						$author$project$Main$scrollToExercise(0));
 				} else {
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
@@ -8093,7 +8093,7 @@ var $author$project$Main$update = F2(
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{ai: false, av: _List_Nil}),
+						{aj: false, aw: _List_Nil}),
 					$elm$core$Platform$Cmd$none);
 			case 13:
 				var _v4 = function () {
@@ -8153,7 +8153,7 @@ var $author$project$Main$update = F2(
 						$elm$core$List$foldr,
 						f,
 						_Utils_Tuple2(model.aa, _List_Nil),
-						A2($elm$core$List$indexedMap, $elm$core$Tuple$pair, model.av));
+						A2($elm$core$List$indexedMap, $elm$core$Tuple$pair, model.aw));
 				}();
 				var j = _v4.a;
 				var poses = _v4.b;
@@ -8161,14 +8161,14 @@ var $author$project$Main$update = F2(
 					j,
 					$elm$core$List$length(poses)) ? _Utils_update(
 					model,
-					{ai: false}) : _Utils_update(
+					{aj: false}) : _Utils_update(
 					model,
 					{aa: j});
-				var cmd = model.ai ? $author$project$Main$scrollToExercise(newModel.aa) : $elm$core$Platform$Cmd$none;
+				var cmd = model.aj ? $author$project$Main$scrollToExercise(newModel.aa) : $elm$core$Platform$Cmd$none;
 				return _Utils_Tuple2(
 					_Utils_update(
 						newModel,
-						{av: poses}),
+						{aw: poses}),
 					cmd);
 			default:
 				var subMsg = msg.a;
@@ -8191,7 +8191,7 @@ var $mdgriffith$elm_ui$Internal$Model$Unkeyed = function (a) {
 };
 var $mdgriffith$elm_ui$Internal$Model$AsColumn = 1;
 var $mdgriffith$elm_ui$Internal$Model$asColumn = 1;
-var $mdgriffith$elm_ui$Internal$Style$classes = {dB: 'a', bI: 'atv', dD: 'ab', dE: 'cx', dF: 'cy', dG: 'acb', dH: 'accx', dI: 'accy', dJ: 'acr', cj: 'al', ck: 'ar', dL: 'at', bJ: 'ah', bK: 'av', dP: 's', dT: 'bh', dU: 'b', dW: 'w7', dY: 'bd', dZ: 'bdt', be: 'bn', d_: 'bs', bg: 'cpe', d7: 'cp', d8: 'cpx', d9: 'cpy', O: 'c', bi: 'ctr', bj: 'cb', bk: 'ccx', P: 'ccy', aZ: 'cl', bl: 'cr', ec: 'ct', ee: 'cptr', ef: 'ctxt', et: 'fcs', cD: 'focus-within', eu: 'fs', ev: 'g', bT: 'hbh', bU: 'hc', cI: 'he', bV: 'hf', cJ: 'hfp', ex: 'hv', eC: 'ic', eE: 'fr', eG: 'iml', eH: 'imlf', eI: 'imlp', eJ: 'implw', eK: 'it', eM: 'i', cS: 'lnk', aM: 'nb', cW: 'notxt', eZ: 'ol', e$: 'or', am: 'oq', e3: 'oh', c1: 'pg', c2: 'p', e5: 'ppe', fd: 'ui', D: 'r', fi: 'sb', fj: 'sbx', fk: 'sby', fl: 'sbt', fo: 'e', fp: 'cap', fq: 'sev', fz: 'sk', w: 't', fD: 'tc', fE: 'w8', fF: 'w2', fG: 'w9', fH: 'tj', bG: 'tja', fI: 'tl', fJ: 'w3', fK: 'w5', fL: 'w4', fM: 'tr', fN: 'w6', fO: 'w1', fP: 'tun', dq: 'ts', at: 'clr', fY: 'u', cc: 'wc', dw: 'we', cd: 'wf', dx: 'wfp', cf: 'wrp'};
+var $mdgriffith$elm_ui$Internal$Style$classes = {dB: 'a', bI: 'atv', dD: 'ab', dE: 'cx', dF: 'cy', dG: 'acb', dH: 'accx', dI: 'accy', dJ: 'acr', cj: 'al', ck: 'ar', dL: 'at', bJ: 'ah', bK: 'av', dP: 's', dT: 'bh', dU: 'b', dW: 'w7', dY: 'bd', dZ: 'bdt', be: 'bn', d_: 'bs', bg: 'cpe', d7: 'cp', d8: 'cpx', d9: 'cpy', O: 'c', bi: 'ctr', bj: 'cb', bk: 'ccx', P: 'ccy', aZ: 'cl', bl: 'cr', ec: 'ct', ee: 'cptr', ef: 'ctxt', et: 'fcs', cD: 'focus-within', eu: 'fs', ev: 'g', bT: 'hbh', bU: 'hc', cI: 'he', bV: 'hf', cJ: 'hfp', ex: 'hv', eC: 'ic', eE: 'fr', eG: 'iml', eH: 'imlf', eI: 'imlp', eJ: 'implw', eK: 'it', eM: 'i', cS: 'lnk', aM: 'nb', cW: 'notxt', eZ: 'ol', e$: 'or', an: 'oq', e3: 'oh', c1: 'pg', c2: 'p', e5: 'ppe', fd: 'ui', D: 'r', fi: 'sb', fj: 'sbx', fk: 'sby', fl: 'sbt', fo: 'e', fp: 'cap', fq: 'sev', fz: 'sk', w: 't', fD: 'tc', fE: 'w8', fF: 'w2', fG: 'w9', fH: 'tj', bG: 'tja', fI: 'tl', fJ: 'w3', fK: 'w5', fL: 'w4', fM: 'tr', fN: 'w6', fO: 'w1', fP: 'tun', dq: 'ts', au: 'clr', fY: 'u', cc: 'wc', dw: 'we', cd: 'wf', dx: 'wfp', cf: 'wrp'};
 var $mdgriffith$elm_ui$Internal$Model$Generic = {$: 0};
 var $mdgriffith$elm_ui$Internal$Model$div = $mdgriffith$elm_ui$Internal$Model$Generic;
 var $mdgriffith$elm_ui$Internal$Model$NoNearbyChildren = {$: 0};
@@ -8538,11 +8538,11 @@ var $mdgriffith$elm_ui$Internal$Model$formatBoxShadow = function (shadow) {
 					$elm$core$Maybe$Just(
 					$elm$core$String$fromFloat(shadow.eX.b) + 'px'),
 					$elm$core$Maybe$Just(
-					$elm$core$String$fromFloat(shadow.ay) + 'px'),
+					$elm$core$String$fromFloat(shadow.az) + 'px'),
 					$elm$core$Maybe$Just(
 					$elm$core$String$fromFloat(shadow.di) + 'px'),
 					$elm$core$Maybe$Just(
-					$mdgriffith$elm_ui$Internal$Model$formatColor(shadow.aA))
+					$mdgriffith$elm_ui$Internal$Model$formatColor(shadow.aB))
 				])));
 };
 var $mdgriffith$elm_ui$Internal$Model$renderFocusStyle = function (focus) {
@@ -8582,8 +8582,8 @@ var $mdgriffith$elm_ui$Internal$Model$renderFocusStyle = function (focus) {
 								'box-shadow',
 								$mdgriffith$elm_ui$Internal$Model$formatBoxShadow(
 									{
-										ay: shadow.ay,
-										aA: shadow.aA,
+										az: shadow.az,
+										aB: shadow.aB,
 										cO: false,
 										eX: A2(
 											$elm$core$Tuple$mapSecond,
@@ -8630,8 +8630,8 @@ var $mdgriffith$elm_ui$Internal$Model$renderFocusStyle = function (focus) {
 								'box-shadow',
 								$mdgriffith$elm_ui$Internal$Model$formatBoxShadow(
 									{
-										ay: shadow.ay,
-										aA: shadow.aA,
+										az: shadow.az,
+										aB: shadow.aB,
 										cO: false,
 										eX: A2(
 											$elm$core$Tuple$mapSecond,
@@ -9290,14 +9290,14 @@ var $mdgriffith$elm_ui$Internal$Style$baseSheet = _List_fromArray(
 					])),
 				A2(
 				$mdgriffith$elm_ui$Internal$Style$Descriptor,
-				$mdgriffith$elm_ui$Internal$Style$dot($mdgriffith$elm_ui$Internal$Style$classes.at),
+				$mdgriffith$elm_ui$Internal$Style$dot($mdgriffith$elm_ui$Internal$Style$classes.au),
 				_List_fromArray(
 					[
 						A2($mdgriffith$elm_ui$Internal$Style$Prop, 'opacity', '0')
 					])),
 				A2(
 				$mdgriffith$elm_ui$Internal$Style$Descriptor,
-				$mdgriffith$elm_ui$Internal$Style$dot($mdgriffith$elm_ui$Internal$Style$classes.am),
+				$mdgriffith$elm_ui$Internal$Style$dot($mdgriffith$elm_ui$Internal$Style$classes.an),
 				_List_fromArray(
 					[
 						A2($mdgriffith$elm_ui$Internal$Style$Prop, 'opacity', '1')
@@ -9305,7 +9305,7 @@ var $mdgriffith$elm_ui$Internal$Style$baseSheet = _List_fromArray(
 				A2(
 				$mdgriffith$elm_ui$Internal$Style$Descriptor,
 				$mdgriffith$elm_ui$Internal$Style$dot(
-					_Utils_ap($mdgriffith$elm_ui$Internal$Style$classes.ex, $mdgriffith$elm_ui$Internal$Style$classes.at)) + ':hover',
+					_Utils_ap($mdgriffith$elm_ui$Internal$Style$classes.ex, $mdgriffith$elm_ui$Internal$Style$classes.au)) + ':hover',
 				_List_fromArray(
 					[
 						A2($mdgriffith$elm_ui$Internal$Style$Prop, 'opacity', '0')
@@ -9313,7 +9313,7 @@ var $mdgriffith$elm_ui$Internal$Style$baseSheet = _List_fromArray(
 				A2(
 				$mdgriffith$elm_ui$Internal$Style$Descriptor,
 				$mdgriffith$elm_ui$Internal$Style$dot(
-					_Utils_ap($mdgriffith$elm_ui$Internal$Style$classes.ex, $mdgriffith$elm_ui$Internal$Style$classes.am)) + ':hover',
+					_Utils_ap($mdgriffith$elm_ui$Internal$Style$classes.ex, $mdgriffith$elm_ui$Internal$Style$classes.an)) + ':hover',
 				_List_fromArray(
 					[
 						A2($mdgriffith$elm_ui$Internal$Style$Prop, 'opacity', '1')
@@ -9321,7 +9321,7 @@ var $mdgriffith$elm_ui$Internal$Style$baseSheet = _List_fromArray(
 				A2(
 				$mdgriffith$elm_ui$Internal$Style$Descriptor,
 				$mdgriffith$elm_ui$Internal$Style$dot(
-					_Utils_ap($mdgriffith$elm_ui$Internal$Style$classes.et, $mdgriffith$elm_ui$Internal$Style$classes.at)) + ':focus',
+					_Utils_ap($mdgriffith$elm_ui$Internal$Style$classes.et, $mdgriffith$elm_ui$Internal$Style$classes.au)) + ':focus',
 				_List_fromArray(
 					[
 						A2($mdgriffith$elm_ui$Internal$Style$Prop, 'opacity', '0')
@@ -9329,7 +9329,7 @@ var $mdgriffith$elm_ui$Internal$Style$baseSheet = _List_fromArray(
 				A2(
 				$mdgriffith$elm_ui$Internal$Style$Descriptor,
 				$mdgriffith$elm_ui$Internal$Style$dot(
-					_Utils_ap($mdgriffith$elm_ui$Internal$Style$classes.et, $mdgriffith$elm_ui$Internal$Style$classes.am)) + ':focus',
+					_Utils_ap($mdgriffith$elm_ui$Internal$Style$classes.et, $mdgriffith$elm_ui$Internal$Style$classes.an)) + ':focus',
 				_List_fromArray(
 					[
 						A2($mdgriffith$elm_ui$Internal$Style$Prop, 'opacity', '1')
@@ -9337,7 +9337,7 @@ var $mdgriffith$elm_ui$Internal$Style$baseSheet = _List_fromArray(
 				A2(
 				$mdgriffith$elm_ui$Internal$Style$Descriptor,
 				$mdgriffith$elm_ui$Internal$Style$dot(
-					_Utils_ap($mdgriffith$elm_ui$Internal$Style$classes.bI, $mdgriffith$elm_ui$Internal$Style$classes.at)) + ':active',
+					_Utils_ap($mdgriffith$elm_ui$Internal$Style$classes.bI, $mdgriffith$elm_ui$Internal$Style$classes.au)) + ':active',
 				_List_fromArray(
 					[
 						A2($mdgriffith$elm_ui$Internal$Style$Prop, 'opacity', '0')
@@ -9345,7 +9345,7 @@ var $mdgriffith$elm_ui$Internal$Style$baseSheet = _List_fromArray(
 				A2(
 				$mdgriffith$elm_ui$Internal$Style$Descriptor,
 				$mdgriffith$elm_ui$Internal$Style$dot(
-					_Utils_ap($mdgriffith$elm_ui$Internal$Style$classes.bI, $mdgriffith$elm_ui$Internal$Style$classes.am)) + ':active',
+					_Utils_ap($mdgriffith$elm_ui$Internal$Style$classes.bI, $mdgriffith$elm_ui$Internal$Style$classes.an)) + ':active',
 				_List_fromArray(
 					[
 						A2($mdgriffith$elm_ui$Internal$Style$Prop, 'opacity', '1')
@@ -12024,8 +12024,8 @@ var $mdgriffith$elm_ui$Internal$Model$createElement = F3(
 				return $mdgriffith$elm_ui$Internal$Model$Unstyled(
 					A5(
 						$mdgriffith$elm_ui$Internal$Model$finalizeNode,
-						rendered.ah,
-						rendered.al,
+						rendered.ai,
+						rendered.am,
 						rendered.ab,
 						$mdgriffith$elm_ui$Internal$Model$Keyed(
 							A3($mdgriffith$elm_ui$Internal$Model$addKeyedChildren, 'nearby-element-pls', keyed, rendered.ad)),
@@ -12036,8 +12036,8 @@ var $mdgriffith$elm_ui$Internal$Model$createElement = F3(
 					{
 						ez: A4(
 							$mdgriffith$elm_ui$Internal$Model$finalizeNode,
-							rendered.ah,
-							rendered.al,
+							rendered.ai,
+							rendered.am,
 							rendered.ab,
 							$mdgriffith$elm_ui$Internal$Model$Keyed(
 								A3($mdgriffith$elm_ui$Internal$Model$addKeyedChildren, 'nearby-element-pls', keyed, rendered.ad))),
@@ -12058,8 +12058,8 @@ var $mdgriffith$elm_ui$Internal$Model$createElement = F3(
 				return $mdgriffith$elm_ui$Internal$Model$Unstyled(
 					A5(
 						$mdgriffith$elm_ui$Internal$Model$finalizeNode,
-						rendered.ah,
-						rendered.al,
+						rendered.ai,
+						rendered.am,
 						rendered.ab,
 						$mdgriffith$elm_ui$Internal$Model$Unkeyed(
 							A2($mdgriffith$elm_ui$Internal$Model$addChildren, unkeyed, rendered.ad)),
@@ -12070,8 +12070,8 @@ var $mdgriffith$elm_ui$Internal$Model$createElement = F3(
 					{
 						ez: A4(
 							$mdgriffith$elm_ui$Internal$Model$finalizeNode,
-							rendered.ah,
-							rendered.al,
+							rendered.ai,
+							rendered.am,
 							rendered.ab,
 							$mdgriffith$elm_ui$Internal$Model$Unkeyed(
 								A2($mdgriffith$elm_ui$Internal$Model$addChildren, unkeyed, rendered.ad))),
@@ -12629,8 +12629,8 @@ var $mdgriffith$elm_ui$Internal$Model$gatherAttrRecursive = F8(
 							$elm$html$Html$Attributes$class(classes),
 							attrs),
 						ad: children,
-						ah: has,
-						al: node,
+						ai: has,
+						am: node,
 						fA: styles
 					};
 				} else {
@@ -12641,8 +12641,8 @@ var $mdgriffith$elm_ui$Internal$Model$gatherAttrRecursive = F8(
 							$elm$html$Html$Attributes$class(classes + (' ' + _class)),
 							attrs),
 						ad: children,
-						ah: has,
-						al: node,
+						ai: has,
+						am: node,
 						fA: A2(
 							$elm$core$List$cons,
 							$mdgriffith$elm_ui$Internal$Model$Transform(transform),
@@ -13577,8 +13577,8 @@ var $mdgriffith$elm_ui$Internal$Model$focusDefaultStyle = {
 	dX: $elm$core$Maybe$Nothing,
 	fn: $elm$core$Maybe$Just(
 		{
-			ay: 0,
-			aA: A4($mdgriffith$elm_ui$Internal$Model$Rgba, 155 / 255, 203 / 255, 1, 1),
+			az: 0,
+			aB: A4($mdgriffith$elm_ui$Internal$Model$Rgba, 155 / 255, 203 / 255, 1, 1),
 			eX: _Utils_Tuple2(0, 0),
 			di: 3
 		})
@@ -14357,14 +14357,14 @@ var $mdgriffith$elm_ui$Internal$Model$boxShadowClass = function (shadow) {
 				shadow.cO ? 'box-inset' : 'box-',
 				$mdgriffith$elm_ui$Internal$Model$floatClass(shadow.eX.a) + 'px',
 				$mdgriffith$elm_ui$Internal$Model$floatClass(shadow.eX.b) + 'px',
-				$mdgriffith$elm_ui$Internal$Model$floatClass(shadow.ay) + 'px',
+				$mdgriffith$elm_ui$Internal$Model$floatClass(shadow.az) + 'px',
 				$mdgriffith$elm_ui$Internal$Model$floatClass(shadow.di) + 'px',
-				$mdgriffith$elm_ui$Internal$Model$formatColorClass(shadow.aA)
+				$mdgriffith$elm_ui$Internal$Model$formatColorClass(shadow.aB)
 			]));
 };
 var $mdgriffith$elm_ui$Internal$Flag$shadows = $mdgriffith$elm_ui$Internal$Flag$flag(19);
 var $mdgriffith$elm_ui$Element$Border$shadow = function (almostShade) {
-	var shade = {ay: almostShade.ay, aA: almostShade.aA, cO: false, eX: almostShade.eX, di: almostShade.di};
+	var shade = {az: almostShade.az, aB: almostShade.aB, cO: false, eX: almostShade.eX, di: almostShade.di};
 	return A2(
 		$mdgriffith$elm_ui$Internal$Model$StyleClass,
 		$mdgriffith$elm_ui$Internal$Flag$shadows,
@@ -14445,8 +14445,8 @@ var $mdgriffith$elm_ui$Element$Input$defaultCheckbox = function (checked) {
 				checked ? A3($mdgriffith$elm_ui$Element$rgb, 59 / 255, 153 / 255, 252 / 255) : A3($mdgriffith$elm_ui$Element$rgb, 211 / 255, 211 / 255, 211 / 255)),
 				$mdgriffith$elm_ui$Element$Border$shadow(
 				{
-					ay: 1,
-					aA: checked ? A4($mdgriffith$elm_ui$Element$rgba, 238 / 255, 238 / 255, 238 / 255, 0) : A3($mdgriffith$elm_ui$Element$rgb, 238 / 255, 238 / 255, 238 / 255),
+					az: 1,
+					aB: checked ? A4($mdgriffith$elm_ui$Element$rgba, 238 / 255, 238 / 255, 238 / 255, 0) : A3($mdgriffith$elm_ui$Element$rgb, 238 / 255, 238 / 255, 238 / 255),
 					eX: _Utils_Tuple2(0, 0),
 					di: 1
 				}),
@@ -15345,7 +15345,7 @@ var $mdgriffith$elm_ui$Element$wrappedRow = F2(
 	});
 var $author$project$Main$viewFilters = F2(
 	function (model, numPoses) {
-		var exerciseDuration = ($elm$time$Time$posixToMillis(model.aD) / 1000) | 0;
+		var exerciseDuration = ($elm$time$Time$posixToMillis(model.aE) / 1000) | 0;
 		var breakDuration = ($elm$time$Time$posixToMillis(model.ac) / 1000) | 0;
 		return A2(
 			$mdgriffith$elm_ui$Element$column,
@@ -15378,7 +15378,13 @@ var $author$project$Main$viewFilters = F2(
 									]),
 								_List_fromArray(
 									[
-										A5($author$project$Main$viewNumberInput, 'Number of Poses', 0, numPoses, model.aE, $author$project$Main$FilterNum),
+										A5(
+										$author$project$Main$viewNumberInput,
+										'Number of Poses: ' + $elm$core$String$fromInt(model.af),
+										0,
+										numPoses,
+										model.af,
+										$author$project$Main$FilterNum),
 										A5(
 										$author$project$Main$viewNumberInput,
 										'Break duration: ' + $author$project$Main$viewTime(model.ac),
@@ -15388,7 +15394,7 @@ var $author$project$Main$viewFilters = F2(
 										$author$project$Main$SetBreakDuration),
 										A5(
 										$author$project$Main$viewNumberInput,
-										'Exercise duration: ' + $author$project$Main$viewTime(model.aD),
+										'Exercise duration: ' + $author$project$Main$viewTime(model.aE),
 										10,
 										60,
 										exerciseDuration,
@@ -15663,7 +15669,7 @@ var $author$project$Main$viewPoses = function (model) {
 	var _v0 = model.W;
 	switch (_v0.$) {
 		case 2:
-			var _v1 = model.ao;
+			var _v1 = model.ap;
 			if (_v1.$ === 1) {
 				var poses = _v1.a;
 				var _v2 = $elm$core$List$length(poses);
@@ -15824,7 +15830,7 @@ var $author$project$Main$viewWorkout = function (model) {
 			A2(
 				$elm$core$List$map,
 				$author$project$Main$viewExercise(model),
-				A2($elm$core$List$indexedMap, $elm$core$Tuple$pair, model.av))));
+				A2($elm$core$List$indexedMap, $elm$core$Tuple$pair, model.aw))));
 };
 var $author$project$Main$view = function (model) {
 	var numPoses = $elm$core$List$length(
@@ -15857,7 +15863,7 @@ var $author$project$Main$view = function (model) {
 										[
 											$elm$html$Html$text('Roga')
 										])))),
-						model.ai ? _List_fromArray(
+						model.aj ? _List_fromArray(
 							[
 								$author$project$Main$viewWorkout(model)
 							]) : _List_fromArray(
