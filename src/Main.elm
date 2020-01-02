@@ -1,15 +1,13 @@
 module Main exposing (Model, Msg(..), getPoses, init, main, subscriptions, update, view)
 
 import Browser exposing (Document)
-import Css
 import Element exposing (Element, el)
 import Element.Background as Background
 import Element.Border as Border
 import Element.Font as Font
 import Element.Input as Input
-import Html.Styled exposing (Html, a, button, div, em, fromUnstyled, h2, h3, h4, img, li, table, td, text, toUnstyled, tr, ul)
-import Html.Styled.Attributes as Attrs exposing (css, src)
-import Html.Styled.Events exposing (onClick)
+import Html exposing (h2, li, text, ul)
+import Html.Attributes as Attrs
 import Http
 import Interactive
 import Json.Decode exposing (Decoder, field, list, map5, string)
@@ -26,7 +24,12 @@ import Time exposing (Posix, toMinute, toSecond, utc)
 
 grey : Element.Color
 grey =
-    Element.rgb255 200 200 200
+    Element.rgb255 221 221 221
+
+
+highlight : Element.Color
+highlight =
+    Element.rgb255 245 245 245
 
 
 
@@ -291,27 +294,22 @@ view model =
     in
     { title = "Roga"
     , body =
-        [ toUnstyled <|
-            div
-                [ css
-                    [ Css.maxWidth (Css.px 800)
-                    , Css.margin Css.auto
-                    , Css.fontFamily Css.sansSerif
-                    ]
-                ]
-                [ Element.column
-                    []
-                    (el [ Element.centerX ] (Element.html (h2 [] [ text "Roga" ] |> toUnstyled))
-                        :: (if model.inWorkout then
-                                [ viewWorkout model |> toUnstyled |> Element.html ]
+        [ el
+            [ Element.width (Element.px 800)
+            , Element.centerX
+            ]
+            (Element.column
+                []
+                (el [ Element.centerX ] (Element.html (h2 [] [ text "Roga" ]))
+                    :: (if model.inWorkout then
+                            [ viewWorkout model ]
 
-                            else
-                                [ viewFilters model numPoses, viewPoses model ]
-                           )
-                    )
-                    |> Element.layout []
-                    |> fromUnstyled
-                ]
+                        else
+                            [ viewFilters model numPoses, viewPoses model ]
+                       )
+                )
+            )
+            |> Element.layout []
         ]
     }
 
@@ -326,10 +324,10 @@ originalDefault g =
             []
 
 
-viewExercise : Model -> ( Int, Exercise ) -> List (Html Msg)
+viewExercise : Model -> ( Int, Exercise ) -> Element Msg
 viewExercise model ( i, exercise ) =
     let
-        highlight =
+        isHighlighted =
             i == model.workoutIndex
 
         time t =
@@ -341,86 +339,46 @@ viewExercise model ( i, exercise ) =
     in
     case exercise of
         Position ( pose, t ) ->
-            [ tr [ css [ Css.textAlign Css.center ], Attrs.id ("exercise" ++ String.fromInt i) ]
-                [ td
-                    [ Attrs.colspan 2
-                    , css
-                        ([ Css.borderBottom3 (Css.px 1) Css.dashed (Css.hex "#dddddd")
-                         , Css.borderTop3 (Css.px 1) Css.solid (Css.hex "#dddddd")
-                         , Css.padding (Css.em 1)
-                         , Css.fontSize (Css.em 1)
-                         ]
-                            ++ (if highlight then
-                                    [ Css.backgroundColor (Css.hex "#f5f5f5") ]
+            Element.column
+                (if isHighlighted then
+                    [ Background.color highlight ]
 
-                                else
-                                    []
-                               )
-                        )
-                    ]
-                    [ div []
-                        [ text <|
-                            "Exercise "
-                                ++ time t
-                        ]
-                    ]
+                 else
+                    []
+                )
+                [ el [] (Element.text <| "Exercise " ++ time t)
+                , viewPose ("exercise" ++ String.fromInt i) pose
                 ]
-            , viewPose model pose highlight
-            ]
 
         Break t ->
-            [ viewBreak ("exercise" ++ String.fromInt i) (time t) highlight ]
+            el
+                (if isHighlighted then
+                    [ Background.color highlight ]
+
+                 else
+                    []
+                )
+                (viewBreak ("exercise" ++ String.fromInt i) (time t))
 
 
-viewWorkout : Model -> Html Msg
+viewWorkout : Model -> Element Msg
 viewWorkout model =
-    table
-        [ css [ Css.width Css.inherit, Css.borderCollapse Css.collapse ] ]
-        (tr []
-            [ td
-                [ Attrs.colspan 2 ]
-                [ div
-                    [ css
-                        [ Css.displayFlex
-                        , Css.alignItems Css.center
-                        , Css.justifyContent Css.center
-                        , Css.paddingBottom (Css.em 1)
-                        ]
-                    ]
-                    [ button
-                        [ onClick CancelWorkout ]
-                        [ text "Cancel Workout" ]
-                    ]
-                ]
-            ]
+    Element.column []
+        (el [ Element.centerX ] (viewButton CancelWorkout "Cancel Workout")
             :: (List.indexedMap Tuple.pair model.workoutPoses
-                    |> List.concatMap (viewExercise model)
+                    |> List.map (viewExercise model)
                )
         )
 
 
-viewBreak : String -> String -> Bool -> Html Msg
-viewBreak id t highlight =
-    tr [ css [ Css.textAlign Css.center ], Attrs.id id ]
-        [ td
-            [ Attrs.colspan 2
-            , css
-                ([ Css.padding (Css.em 1), Css.fontSize (Css.em 1) ]
-                    ++ (if highlight then
-                            [ Css.backgroundColor (Css.hex "#f5f5f5") ]
-
-                        else
-                            []
-                       )
-                )
-            ]
-            [ div []
-                [ text <|
-                    "Break "
-                        ++ t
-                ]
-            ]
+viewBreak : String -> String -> Element Msg
+viewBreak id t =
+    el
+        [ Element.centerX
+        , Element.padding 20
+        , Element.htmlAttribute (Attrs.id id)
         ]
+        (Element.text <| "Break " ++ t)
 
 
 viewTime : Posix -> String
@@ -552,14 +510,7 @@ viewPoses model =
                                             , Element.width Element.fill
                                             , Element.height Element.fill
                                             ]
-                                            (Element.row
-                                                [ Element.width Element.fill
-                                                , Element.spacingXY 10 0
-                                                ]
-                                                [ viewPoseImage pose False
-                                                , viewPoseText pose False
-                                                ]
-                                            )
+                                            (viewPose "" pose)
                                     )
                                     poses
                                 )
@@ -574,8 +525,8 @@ viewPoses model =
             el [ Font.center ] (Element.text "Failed to load")
 
 
-viewPoseText : Pose -> Bool -> Element Msg
-viewPoseText p highlight =
+viewPoseText : Pose -> Element Msg
+viewPoseText p =
     Element.column
         [ Element.height Element.fill
         , Element.spacingXY 0 10
@@ -594,13 +545,12 @@ viewPoseText p highlight =
         , Element.html
             (ul []
                 (List.map (\b -> li [] [ text b ]) p.benefits)
-                |> toUnstyled
             )
         ]
 
 
-viewPoseImage : Pose -> Bool -> Element Msg
-viewPoseImage p highlight =
+viewPoseImage : Pose -> Element Msg
+viewPoseImage p =
     el
         [ Element.height Element.fill
         , Element.paddingXY 0 20
@@ -614,57 +564,16 @@ viewPoseImage p highlight =
         )
 
 
-viewPose : Model -> Pose -> Bool -> Html Msg
-viewPose model p highlight =
-    let
-        ( width, height ) =
-            model.interactive.windowSize
-    in
-    tr
-        [ css
-            (if highlight then
-                [ Css.backgroundColor (Css.hex "#f5f5f5") ]
-
-             else
-                []
-            )
+viewPose : String -> Pose -> Element Msg
+viewPose id pose =
+    Element.wrappedRow
+        [ Element.width Element.fill
+        , Element.spacingXY 10 0
+        , Element.htmlAttribute (Attrs.id id)
         ]
-        (td
-            [ css
-                [ Css.width (Css.pct 80)
-                , Css.marginLeft Css.auto
-                , Css.marginRight Css.auto
-                , Css.borderBottom3 (Css.px 1) Css.solid (Css.hex "#dddddd")
-                , Css.borderTop3 (Css.px 1) Css.dashed (Css.hex "#ddd")
-                ]
-            ]
-            [ div [ css [ Css.margin (Css.em 1) ] ]
-                [ h3 [] [ text p.pose, em [] [ text (" (" ++ p.asana ++ ")") ] ]
-                , h4 [] [ text p.level ]
-                , ul []
-                    (List.map (\b -> li [] [ text b ]) p.benefits)
-                ]
-            ]
-            :: (if width >= 800 then
-                    [ td
-                        [ css
-                            [ Css.width (Css.pct 20)
-                            , Css.borderTop3 (Css.px 1) Css.dashed (Css.hex "#ddd")
-                            , Css.borderBottom3 (Css.px 1) Css.solid (Css.hex "#ddd")
-                            ]
-                        ]
-                        [ a [ Attrs.href p.image ]
-                            [ img
-                                [ src p.image, Attrs.width 128, css [ Css.margin (Css.em 1) ] ]
-                                []
-                            ]
-                        ]
-                    ]
-
-                else
-                    []
-               )
-        )
+        [ viewPoseImage pose
+        , viewPoseText pose
+        ]
 
 
 
