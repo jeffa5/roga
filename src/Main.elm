@@ -351,7 +351,6 @@ viewExercise model ( i, exercise ) =
         Position ( pose, t ) ->
             column
                 ([ width fill
-                 , padding 10
                  , Border.widthXY 0 1
                  , Border.color grey
                  ]
@@ -368,7 +367,7 @@ viewExercise model ( i, exercise ) =
                     , Border.widthEach { sides | bottom = 1 }
                     , Border.color grey
                     , Border.dashed
-                    , padding 10
+                    , padding 20
                     ]
                     (text <| "Exercise " ++ time t)
                 , viewPose ("exercise" ++ String.fromInt i) pose
