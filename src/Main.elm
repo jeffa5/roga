@@ -24,6 +24,7 @@ import Time exposing (Posix, toMinute, toSecond, utc)
 -- THEME
 
 
+grey : Element.Color
 grey =
     Element.rgb255 200 200 200
 
@@ -325,6 +326,52 @@ originalDefault g =
             []
 
 
+viewExercise : Model -> ( Int, Exercise ) -> List (Html Msg)
+viewExercise model ( i, exercise ) =
+    let
+        highlight =
+            i == model.workoutIndex
+
+        time t =
+            if Time.posixToMillis t == 0 then
+                "complete"
+
+            else
+                viewTime t
+    in
+    case exercise of
+        Position ( pose, t ) ->
+            [ tr [ css [ Css.textAlign Css.center ], Attrs.id ("exercise" ++ String.fromInt i) ]
+                [ td
+                    [ Attrs.colspan 2
+                    , css
+                        ([ Css.borderBottom3 (Css.px 1) Css.dashed (Css.hex "#dddddd")
+                         , Css.borderTop3 (Css.px 1) Css.solid (Css.hex "#dddddd")
+                         , Css.padding (Css.em 1)
+                         , Css.fontSize (Css.em 1)
+                         ]
+                            ++ (if highlight then
+                                    [ Css.backgroundColor (Css.hex "#f5f5f5") ]
+
+                                else
+                                    []
+                               )
+                        )
+                    ]
+                    [ div []
+                        [ text <|
+                            "Exercise "
+                                ++ time t
+                        ]
+                    ]
+                ]
+            , viewPose model pose highlight
+            ]
+
+        Break t ->
+            [ viewBreak ("exercise" ++ String.fromInt i) (time t) highlight ]
+
+
 viewWorkout : Model -> Html Msg
 viewWorkout model =
     table
@@ -346,54 +393,8 @@ viewWorkout model =
                     ]
                 ]
             ]
-            :: (let
-                    f ( i, exercise ) =
-                        let
-                            highlight =
-                                i == model.workoutIndex
-                        in
-                        let
-                            time t =
-                                if Time.posixToMillis t == 0 then
-                                    "complete"
-
-                                else
-                                    viewTime t
-                        in
-                        case exercise of
-                            Position ( pose, t ) ->
-                                [ tr [ css [ Css.textAlign Css.center ], Attrs.id ("exercise" ++ String.fromInt i) ]
-                                    [ td
-                                        [ Attrs.colspan 2
-                                        , css
-                                            ([ Css.borderBottom3 (Css.px 1) Css.dashed (Css.hex "#dddddd")
-                                             , Css.borderTop3 (Css.px 1) Css.solid (Css.hex "#dddddd")
-                                             , Css.padding (Css.em 1)
-                                             , Css.fontSize (Css.em 1)
-                                             ]
-                                                ++ (if highlight then
-                                                        [ Css.backgroundColor (Css.hex "#f5f5f5") ]
-
-                                                    else
-                                                        []
-                                                   )
-                                            )
-                                        ]
-                                        [ div []
-                                            [ text <|
-                                                "Exercise "
-                                                    ++ time t
-                                            ]
-                                        ]
-                                    ]
-                                , viewPose model pose highlight
-                                ]
-
-                            Break t ->
-                                [ viewBreak ("exercise" ++ String.fromInt i) (time t) highlight ]
-                in
-                List.indexedMap Tuple.pair model.workoutPoses
-                    |> List.concatMap f
+            :: (List.indexedMap Tuple.pair model.workoutPoses
+                    |> List.concatMap (viewExercise model)
                )
         )
 
@@ -450,9 +451,6 @@ viewFilters model numPoses =
 
         exerciseDuration =
             Time.posixToMillis model.exerciseDuration // 1000
-
-        ( width, height ) =
-            model.interactive.windowSize
     in
     Element.column
         [ Element.width Element.fill ]
@@ -545,19 +543,26 @@ viewPoses model =
                             el [ Font.center ] (Element.text "No poses to show")
 
                         _ ->
-                            Element.table []
-                                { data = poses
-                                , columns =
-                                    [ { header = Element.none
-                                      , width = Element.fill
-                                      , view = \pose -> viewPoseText pose False
-                                      }
-                                    , { header = Element.none
-                                      , width = Element.fill
-                                      , view = \pose -> viewPoseImage pose False
-                                      }
-                                    ]
-                                }
+                            Element.column [ Element.width Element.fill ]
+                                (List.map
+                                    (\pose ->
+                                        el
+                                            [ Border.widthXY 0 1
+                                            , Border.color grey
+                                            , Element.width Element.fill
+                                            , Element.height Element.fill
+                                            ]
+                                            (Element.row
+                                                [ Element.width Element.fill
+                                                , Element.spacingXY 10 0
+                                                ]
+                                                [ viewPoseImage pose False
+                                                , viewPoseText pose False
+                                                ]
+                                            )
+                                    )
+                                    poses
+                                )
 
                 Filtering ->
                     el [ Font.center ] (Element.text "Filtering...")
@@ -572,9 +577,7 @@ viewPoses model =
 viewPoseText : Pose -> Bool -> Element Msg
 viewPoseText p highlight =
     Element.column
-        [ Border.widthXY 0 1
-        , Border.color grey
-        , Element.height Element.fill
+        [ Element.height Element.fill
         , Element.spacingXY 0 10
         , Element.paddingXY 0 20
         ]
@@ -599,9 +602,7 @@ viewPoseText p highlight =
 viewPoseImage : Pose -> Bool -> Element Msg
 viewPoseImage p highlight =
     el
-        [ Border.widthXY 0 1
-        , Border.color grey
-        , Element.height Element.fill
+        [ Element.height Element.fill
         , Element.paddingXY 0 20
         ]
         (Element.link []
