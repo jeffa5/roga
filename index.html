@@ -15471,9 +15471,16 @@ var $author$project$Main$viewFilters = F2(
 								A2($author$project$Main$viewButton, $author$project$Main$Filter, 'Filter'))),
 							A2(
 							$mdgriffith$elm_ui$Element$el,
-							_List_Nil,
-							$mdgriffith$elm_ui$Element$text(
-								$author$project$Main$viewTime(workoutDuration))),
+							_List_fromArray(
+								[
+									$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
+								]),
+							A2(
+								$mdgriffith$elm_ui$Element$el,
+								_List_fromArray(
+									[$mdgriffith$elm_ui$Element$centerX]),
+								$mdgriffith$elm_ui$Element$text(
+									$author$project$Main$viewTime(workoutDuration)))),
 							A2(
 							$mdgriffith$elm_ui$Element$el,
 							_List_fromArray(
@@ -15632,6 +15639,7 @@ var $author$project$Main$viewPoseText = function (p) {
 		_List_fromArray(
 			[
 				$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill),
+				$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
 				A2($mdgriffith$elm_ui$Element$spacingXY, 0, 10),
 				A2($mdgriffith$elm_ui$Element$paddingXY, 0, 20)
 			]),

@@ -1,12 +1,12 @@
 module Main exposing (Model, Msg(..), getPoses, init, main, subscriptions, update, view)
 
 import Browser exposing (Document)
-import Element exposing (Element, el)
+import Element exposing (Color, Element, centerX, column, el, fill, padding, paddingXY, rgb255, spacing, spacingXY, text, width, wrappedRow)
 import Element.Background as Background
 import Element.Border as Border
 import Element.Font as Font
 import Element.Input as Input
-import Html exposing (h2, li, text, ul)
+import Html exposing (h2, li, ul)
 import Html.Attributes as Attrs
 import Http
 import Interactive
@@ -22,14 +22,14 @@ import Time exposing (Posix, toHour, toMinute, toSecond, utc)
 -- THEME
 
 
-grey : Element.Color
+grey : Color
 grey =
-    Element.rgb255 221 221 221
+    rgb255 221 221 221
 
 
-highlight : Element.Color
+highlight : Color
 highlight =
-    Element.rgb255 245 245 245
+    rgb255 245 245 245
 
 
 type alias Sides =
@@ -307,11 +307,11 @@ view model =
     in
     { title = "Roga"
     , body =
-        [ Element.column
-            [ Element.width (Element.px 800)
-            , Element.centerX
+        [ column
+            [ width (Element.px 800)
+            , centerX
             ]
-            (el [ Element.centerX ] (Element.html (h2 [] [ text "Roga" ]))
+            (el [ centerX ] (Element.html (h2 [] [ Html.text "Roga" ]))
                 :: (if model.inWorkout then
                         [ viewWorkout model ]
 
@@ -349,9 +349,9 @@ viewExercise model ( i, exercise ) =
     in
     case exercise of
         Position ( pose, t ) ->
-            Element.column
-                ([ Element.width Element.fill
-                 , Element.padding 10
+            column
+                ([ width fill
+                 , padding 10
                  , Border.widthXY 0 1
                  , Border.color grey
                  ]
@@ -363,20 +363,20 @@ viewExercise model ( i, exercise ) =
                        )
                 )
                 [ el
-                    [ Element.width Element.fill
+                    [ width fill
                     , Font.center
                     , Border.widthEach { sides | bottom = 1 }
                     , Border.color grey
                     , Border.dashed
-                    , Element.padding 10
+                    , padding 10
                     ]
-                    (Element.text <| "Exercise " ++ time t)
+                    (text <| "Exercise " ++ time t)
                 , viewPose ("exercise" ++ String.fromInt i) pose
                 ]
 
         Break t ->
             el
-                (Element.width Element.fill
+                (width fill
                     :: (if isHighlighted then
                             [ Background.color highlight ]
 
@@ -389,8 +389,8 @@ viewExercise model ( i, exercise ) =
 
 viewWorkout : Model -> Element Msg
 viewWorkout model =
-    Element.column [ Element.width Element.fill ]
-        (el [ Element.centerX, Element.padding 10 ] (viewButton CancelWorkout "Cancel Workout")
+    column [ width fill ]
+        (el [ centerX, padding 10 ] (viewButton CancelWorkout "Cancel Workout")
             :: (List.indexedMap Tuple.pair model.workoutPoses
                     |> List.map (viewExercise model)
                )
@@ -400,11 +400,11 @@ viewWorkout model =
 viewBreak : String -> String -> Element Msg
 viewBreak id t =
     el
-        [ Element.centerX
-        , Element.padding 20
+        [ centerX
+        , padding 20
         , Element.htmlAttribute (Attrs.id id)
         ]
-        (Element.text <| "Break " ++ t)
+        (text <| "Break " ++ t)
 
 
 viewTime : Posix -> String
@@ -454,25 +454,25 @@ viewFilters model numPoses =
                 * (Time.posixToMillis model.breakDuration + Time.posixToMillis model.exerciseDuration)
                 |> Time.millisToPosix
     in
-    Element.column
-        [ Element.width Element.fill ]
-        [ Element.wrappedRow
-            [ Element.width Element.fill
+    column
+        [ width fill ]
+        [ wrappedRow
+            [ width fill
             ]
-            [ el [ Element.width Element.fill ]
-                (Element.column
-                    [ Element.spacing 10
-                    , Element.centerX
+            [ el [ width fill ]
+                (column
+                    [ spacing 10
+                    , centerX
                     ]
                     [ viewNumberInput ("Number of Poses: " ++ String.fromInt model.filterNum) 1 numPoses model.filterNum FilterNum
                     , viewNumberInput ("Break duration: " ++ viewTime model.breakDuration) 1 30 breakDuration SetBreakDuration
                     , viewNumberInput ("Exercise duration: " ++ viewTime model.exerciseDuration) 10 60 exerciseDuration SetExerciseDuration
                     ]
                 )
-            , el [ Element.width Element.fill ]
-                (Element.column
-                    [ Element.spacing 20
-                    , Element.centerX
+            , el [ width fill ]
+                (column
+                    [ spacing 20
+                    , centerX
                     ]
                     [ viewCheckbox "Beginner" model.filterBeginner FilterBeginner
                     , viewCheckbox "Intermediate" model.filterIntermediate FilterIntermediate
@@ -480,10 +480,10 @@ viewFilters model numPoses =
                     ]
                 )
             ]
-        , Element.wrappedRow [ Element.width Element.fill, Element.paddingXY 0 10 ]
-            [ el [ Element.width Element.fill ] (el [ Element.centerX ] (viewButton Filter "Filter"))
-            , el [] (Element.text <| viewTime workoutDuration)
-            , el [ Element.width Element.fill ] (el [ Element.centerX ] (viewButton StartWorkout "Start Workout"))
+        , wrappedRow [ width fill, paddingXY 0 10 ]
+            [ el [ width fill ] (el [ centerX ] (viewButton Filter "Filter"))
+            , el [ width fill ] (el [ centerX ] (text <| viewTime workoutDuration))
+            , el [ width fill ] (el [ centerX ] (viewButton StartWorkout "Start Workout"))
             ]
         ]
 
@@ -493,20 +493,20 @@ viewButton op l =
     Input.button
         [ Border.rounded 5
         , Background.color grey
-        , Element.padding 10
+        , padding 10
         ]
         { onPress = Just op
-        , label = Element.text l
+        , label = text l
         }
 
 
 viewNumberInput : String -> Int -> Int -> Int -> (Int -> Msg) -> Element Msg
 viewNumberInput name min max val oi =
     Input.slider
-        [ Element.width (Element.px 200)
+        [ width (Element.px 200)
         , Element.behindContent
             (el
-                [ Element.width Element.fill
+                [ width fill
                 , Element.height (Element.px 2)
                 , Element.centerY
                 , Background.color grey
@@ -516,7 +516,7 @@ viewNumberInput name min max val oi =
             )
         ]
         { onChange = round >> oi
-        , label = Input.labelAbove [] (Element.text name)
+        , label = Input.labelAbove [] (text name)
         , min = toFloat min
         , max = toFloat max
         , value = toFloat val
@@ -531,7 +531,7 @@ viewCheckbox l c oc =
         { onChange = oc
         , icon = Input.defaultCheckbox
         , checked = c
-        , label = Input.labelRight [] (Element.text l)
+        , label = Input.labelRight [] (text l)
         }
 
 
@@ -543,10 +543,10 @@ viewPoses model =
                 Finished poses ->
                     case List.length poses of
                         0 ->
-                            el [ Font.center ] (Element.text "No poses to show")
+                            el [ Font.center ] (text "No poses to show")
 
                         _ ->
-                            Element.column [ Element.width Element.fill ]
+                            column [ width fill ]
                                 (List.indexedMap
                                     (\i pose ->
                                         el
@@ -556,8 +556,8 @@ viewPoses model =
                                               else
                                                 Border.widthEach { sides | bottom = 1 }
                                             , Border.color grey
-                                            , Element.width Element.fill
-                                            , Element.height Element.fill
+                                            , width fill
+                                            , Element.height fill
                                             ]
                                             (viewPose "" pose)
                                     )
@@ -565,35 +565,36 @@ viewPoses model =
                                 )
 
                 Filtering ->
-                    el [ Font.center ] (Element.text "Filtering...")
+                    el [ Font.center ] (text "Filtering...")
 
         Loading ->
-            el [ Font.center ] (Element.text "Loading...")
+            el [ Font.center ] (text "Loading...")
 
         Failure _ ->
-            el [ Font.center ] (Element.text "Failed to load")
+            el [ Font.center ] (text "Failed to load")
 
 
 viewPoseText : Pose -> Element Msg
 viewPoseText p =
-    Element.column
-        [ Element.height Element.fill
-        , Element.spacingXY 0 10
-        , Element.paddingXY 0 20
+    column
+        [ Element.height fill
+        , width fill
+        , spacingXY 0 10
+        , paddingXY 0 20
         ]
         [ el []
             (Element.paragraph
                 [ Font.bold
                 , Font.size 20
                 ]
-                [ Element.text p.pose
-                , el [ Font.italic ] (Element.text (" (" ++ p.asana ++ ")"))
+                [ text p.pose
+                , el [ Font.italic ] (text (" (" ++ p.asana ++ ")"))
                 ]
             )
-        , el [ Font.bold, Font.size 18 ] (Element.text p.level)
+        , el [ Font.bold, Font.size 18 ] (text p.level)
         , Element.html
             (ul []
-                (List.map (\b -> li [] [ text b ]) p.benefits)
+                (List.map (\b -> li [] [ Html.text b ]) p.benefits)
             )
         ]
 
@@ -601,13 +602,13 @@ viewPoseText p =
 viewPoseImage : Pose -> Element Msg
 viewPoseImage p =
     el
-        [ Element.height Element.fill
-        , Element.paddingXY 0 20
+        [ Element.height fill
+        , paddingXY 0 20
         ]
         (Element.link []
             { url = p.image
             , label =
-                Element.image [ Element.width (Element.px 128) ]
+                Element.image [ width (Element.px 128) ]
                     { src = p.image, description = p.pose }
             }
         )
@@ -615,9 +616,9 @@ viewPoseImage p =
 
 viewPose : String -> Pose -> Element Msg
 viewPose id pose =
-    Element.wrappedRow
-        [ Element.width Element.fill
-        , Element.spacingXY 10 0
+    wrappedRow
+        [ width fill
+        , spacingXY 10 0
         , Element.htmlAttribute (Attrs.id id)
         ]
         [ viewPoseImage pose
