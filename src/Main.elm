@@ -32,6 +32,19 @@ highlight =
     Element.rgb255 245 245 245
 
 
+type alias Sides =
+    { top : Int
+    , right : Int
+    , bottom : Int
+    , left : Int
+    }
+
+
+sides : Sides
+sides =
+    { top = 0, right = 0, bottom = 0, left = 0 }
+
+
 
 -- MAIN
 
@@ -294,20 +307,17 @@ view model =
     in
     { title = "Roga"
     , body =
-        [ el
+        [ Element.column
             [ Element.width (Element.px 800)
             , Element.centerX
             ]
-            (Element.column
-                []
-                (el [ Element.centerX ] (Element.html (h2 [] [ text "Roga" ]))
-                    :: (if model.inWorkout then
-                            [ viewWorkout model ]
+            (el [ Element.centerX ] (Element.html (h2 [] [ text "Roga" ]))
+                :: (if model.inWorkout then
+                        [ viewWorkout model ]
 
-                        else
-                            [ viewFilters model numPoses, viewPoses model ]
-                       )
-                )
+                    else
+                        [ viewFilters model numPoses, viewPoses model ]
+                   )
             )
             |> Element.layout []
         ]
@@ -340,23 +350,39 @@ viewExercise model ( i, exercise ) =
     case exercise of
         Position ( pose, t ) ->
             Element.column
-                (if isHighlighted then
-                    [ Background.color highlight ]
+                ([ Element.width Element.fill
+                 , Element.padding 10
+                 , Border.widthXY 0 1
+                 , Border.color grey
+                 ]
+                    ++ (if isHighlighted then
+                            [ Background.color highlight ]
 
-                 else
-                    []
+                        else
+                            []
+                       )
                 )
-                [ el [] (Element.text <| "Exercise " ++ time t)
+                [ el
+                    [ Element.width Element.fill
+                    , Font.center
+                    , Border.widthEach { sides | bottom = 1 }
+                    , Border.color grey
+                    , Border.dashed
+                    , Element.padding 10
+                    ]
+                    (Element.text <| "Exercise " ++ time t)
                 , viewPose ("exercise" ++ String.fromInt i) pose
                 ]
 
         Break t ->
             el
-                (if isHighlighted then
-                    [ Background.color highlight ]
+                (Element.width Element.fill
+                    :: (if isHighlighted then
+                            [ Background.color highlight ]
 
-                 else
-                    []
+                        else
+                            []
+                       )
                 )
                 (viewBreak ("exercise" ++ String.fromInt i) (time t))
 
@@ -364,7 +390,7 @@ viewExercise model ( i, exercise ) =
 viewWorkout : Model -> Element Msg
 viewWorkout model =
     Element.column []
-        (el [ Element.centerX ] (viewButton CancelWorkout "Cancel Workout")
+        (el [ Element.centerX, Element.padding 10 ] (viewButton CancelWorkout "Cancel Workout")
             :: (List.indexedMap Tuple.pair model.workoutPoses
                     |> List.map (viewExercise model)
                )
@@ -502,10 +528,14 @@ viewPoses model =
 
                         _ ->
                             Element.column [ Element.width Element.fill ]
-                                (List.map
-                                    (\pose ->
+                                (List.indexedMap
+                                    (\i pose ->
                                         el
-                                            [ Border.widthXY 0 1
+                                            [ if i == 0 then
+                                                Border.widthEach { sides | top = 1, bottom = 1 }
+
+                                              else
+                                                Border.widthEach { sides | bottom = 1 }
                                             , Border.color grey
                                             , Element.width Element.fill
                                             , Element.height Element.fill
