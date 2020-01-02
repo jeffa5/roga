@@ -1,10 +1,15 @@
-module Main exposing (Model, Msg(..), getPoses, init, main, subscriptions, update, view, viewPoses)
+module Main exposing (Model, Msg(..), getPoses, init, main, subscriptions, update, view)
 
 import Browser exposing (Document)
-import Css exposing (display, inline)
-import Html.Styled exposing (Html, a, button, div, em, h2, h3, h4, img, input, legend, li, table, td, text, toUnstyled, tr, ul)
-import Html.Styled.Attributes as Attrs exposing (css, src, type_, value)
-import Html.Styled.Events exposing (onCheck, onClick, onInput)
+import Css
+import Element exposing (Element, el)
+import Element.Background as Background
+import Element.Border as Border
+import Element.Font as Font
+import Element.Input as Input
+import Html.Styled exposing (Html, a, button, div, em, fromUnstyled, h2, h3, h4, img, li, table, td, text, toUnstyled, tr, ul)
+import Html.Styled.Attributes as Attrs exposing (css, src)
+import Html.Styled.Events exposing (onClick)
 import Http
 import Interactive
 import Json.Decode exposing (Decoder, field, list, map5, string)
@@ -13,6 +18,14 @@ import Random.List
 import SmoothScroll exposing (defaultConfig, scrollToWithOptions)
 import Task
 import Time exposing (Posix, toMinute, toSecond, utc)
+
+
+
+-- THEME
+
+
+grey =
+    Element.rgb255 200 200 200
 
 
 
@@ -274,37 +287,30 @@ view model =
     let
         numPoses =
             List.length (originalDefault model.original)
-
-        ( width, height ) =
-            model.interactive.windowSize
-
-        widthStyle =
-            if width >= 1000 then
-                Css.maxWidth (Css.px 800)
-
-            else
-                Css.width (Css.pct 100)
     in
     { title = "Roga"
     , body =
         [ toUnstyled <|
             div
                 [ css
-                    [ widthStyle
+                    [ Css.maxWidth (Css.px 800)
                     , Css.margin Css.auto
                     , Css.fontFamily Css.sansSerif
                     ]
                 ]
-                (h2 [ css [ Css.textAlign Css.center ] ] [ text ("Roga " ++ String.fromFloat width ++ "x" ++ String.fromFloat height) ]
-                    :: (if model.inWorkout then
-                            [ viewWorkout model ]
+                [ Element.column
+                    []
+                    (el [ Element.centerX ] (Element.html (h2 [] [ text "Roga" ] |> toUnstyled))
+                        :: (if model.inWorkout then
+                                [ viewWorkout model |> toUnstyled |> Element.html ]
 
-                        else
-                            [ viewFilters model numPoses
-                            , viewPoses model
-                            ]
-                       )
-                )
+                            else
+                                [ viewFilters model numPoses, viewPoses model ]
+                           )
+                    )
+                    |> Element.layout []
+                    |> fromUnstyled
+                ]
         ]
     }
 
@@ -425,16 +431,18 @@ viewTime t =
         sec =
             toSecond utc t
     in
-    (if min /= 0 then
-        String.fromInt min ++ "m "
+    if min /= 0 then
+        if sec == 0 then
+            String.fromInt min ++ "m"
 
-     else
-        ""
-    )
-        ++ (String.fromInt sec ++ "s")
+        else
+            String.fromInt min ++ "m " ++ String.fromInt sec ++ "s"
+
+    else
+        String.fromInt sec ++ "s"
 
 
-viewFilters : Model -> Int -> Html Msg
+viewFilters : Model -> Int -> Element Msg
 viewFilters model numPoses =
     let
         breakDuration =
@@ -445,105 +453,88 @@ viewFilters model numPoses =
 
         ( width, height ) =
             model.interactive.windowSize
-
-        beginnerCheckbox =
-            viewCheckbox "Beginner" model.filterBeginner FilterBeginner
-
-        intermediateCheckbox =
-            viewCheckbox "Intermediate" model.filterIntermediate FilterIntermediate
-
-        advancedCheckbox =
-            viewCheckbox "Advanced" model.filterAdvanced FilterAdvanced
-
-        numPosesInput =
-            viewNumberInput "Number of Poses" 0 numPoses model.filterNum (\s -> FilterNum (String.toInt s |> Maybe.withDefault model.filterNum))
-
-        breakDurationInput =
-            viewNumberInput "Break duration" 1 30 breakDuration (\s -> SetBreakDuration (String.toInt s |> Maybe.withDefault breakDuration))
-
-        exerciseDurationInput =
-            viewNumberInput "Exercise duration" 10 60 exerciseDuration (\s -> SetExerciseDuration (String.toInt s |> Maybe.withDefault exerciseDuration))
     in
-    table
-        [ css
-            [ Css.width (Css.pct 100)
-            , Css.marginBottom (Css.em 1)
+    Element.column
+        [ Element.width Element.fill ]
+        [ Element.wrappedRow
+            [ Element.width Element.fill
+            ]
+            [ el [ Element.width Element.fill ]
+                (Element.column
+                    [ Element.spacing 10
+                    , Element.centerX
+                    ]
+                    [ viewNumberInput "Number of Poses" 0 numPoses model.filterNum FilterNum
+                    , viewNumberInput ("Break duration: " ++ viewTime model.breakDuration) 1 30 breakDuration SetBreakDuration
+                    , viewNumberInput ("Exercise duration: " ++ viewTime model.exerciseDuration) 10 60 exerciseDuration SetExerciseDuration
+                    ]
+                )
+            , el [ Element.width Element.fill ]
+                (Element.column
+                    [ Element.spacing 20
+                    , Element.centerX
+                    ]
+                    [ viewCheckbox "Beginner" model.filterBeginner FilterBeginner
+                    , viewCheckbox "Intermediate" model.filterIntermediate FilterIntermediate
+                    , viewCheckbox "Advanced" model.filterAdvanced FilterAdvanced
+                    ]
+                )
+            ]
+        , Element.wrappedRow [ Element.width Element.fill, Element.paddingXY 0 10 ]
+            [ el [ Element.width Element.fill ] (el [ Element.centerX ] (viewButton Filter "Filter"))
+            , el [ Element.width Element.fill ] (el [ Element.centerX ] (viewButton StartWorkout "Start Workout"))
             ]
         ]
-        (if width >= 800 then
-            [ tr []
-                (numPosesInput ++ beginnerCheckbox)
-            , tr []
-                (breakDurationInput ++ intermediateCheckbox)
-            , tr []
-                (exerciseDurationInput ++ advancedCheckbox)
-            , tr []
-                [ td [ Attrs.colspan 2 ]
-                    [ div
-                        [ css
-                            [ Css.displayFlex
-                            , Css.alignItems Css.center
-                            , Css.justifyContent Css.center
-                            ]
-                        ]
-                        [ button [ onClick Filter ] [ text "Filter" ] ]
-                    ]
-                , td [ Attrs.colspan 2 ]
-                    [ div
-                        [ css
-                            [ Css.displayFlex
-                            , Css.alignItems Css.center
-                            , Css.justifyContent Css.center
-                            ]
-                        ]
-                        [ button [ onClick StartWorkout ] [ text "Start workout" ] ]
-                    ]
-                ]
-            ]
-
-         else
-            [ tr [] numPosesInput
-            , tr [] breakDurationInput
-            , tr [] exerciseDurationInput
-            , tr [] beginnerCheckbox
-            , tr [] intermediateCheckbox
-            , tr [] advancedCheckbox
-            ]
-        )
 
 
-viewNumberInput : String -> Int -> Int -> Int -> (String -> Msg) -> List (Html Msg)
+viewButton : Msg -> String -> Element Msg
+viewButton op l =
+    Input.button
+        [ Border.rounded 5
+        , Background.color grey
+        , Element.padding 10
+        ]
+        { onPress = Just op
+        , label = Element.text l
+        }
+
+
+viewNumberInput : String -> Int -> Int -> Int -> (Int -> Msg) -> Element Msg
 viewNumberInput name min max val oi =
-    [ td [] [ legend [] [ text name ] ]
-    , td []
-        [ input
-            [ type_ "number"
-            , Attrs.min <| String.fromInt min
-            , Attrs.max <| String.fromInt max
-            , value <| String.fromInt val
-            , onInput oi
-            , css [ Css.width (Css.px 80) ]
-            ]
-            []
+    Input.slider
+        [ Element.width (Element.px 200)
+        , Element.behindContent
+            (el
+                [ Element.width Element.fill
+                , Element.height (Element.px 2)
+                , Element.centerY
+                , Background.color grey
+                , Border.rounded 5
+                ]
+                Element.none
+            )
         ]
-    ]
+        { onChange = round >> oi
+        , label = Input.labelAbove [] (Element.text name)
+        , min = toFloat min
+        , max = toFloat max
+        , value = toFloat val
+        , thumb = Input.defaultThumb
+        , step = Just 1
+        }
 
 
-viewCheckbox : String -> Bool -> (Bool -> Msg) -> List (Html Msg)
+viewCheckbox : String -> Bool -> (Bool -> Msg) -> Element Msg
 viewCheckbox l c oc =
-    [ td [] [ legend [ css [ display inline ] ] [ text l ] ]
-    , td []
-        [ input
-            [ Attrs.type_ "checkbox"
-            , Attrs.checked c
-            , onCheck oc
-            ]
-            []
-        ]
-    ]
+    Input.checkbox []
+        { onChange = oc
+        , icon = Input.defaultCheckbox
+        , checked = c
+        , label = Input.labelRight [] (Element.text l)
+        }
 
 
-viewPoses : Model -> Html Msg
+viewPoses : Model -> Element Msg
 viewPoses model =
     case model.original of
         Success _ ->
@@ -551,27 +542,75 @@ viewPoses model =
                 Finished poses ->
                     case List.length poses of
                         0 ->
-                            div [ css [ Css.textAlign Css.center ] ] [ text "No poses to show" ]
+                            el [ Font.center ] (Element.text "No poses to show")
 
                         _ ->
-                            table
-                                [ css
-                                    [ Css.width Css.inherit
-                                    , Css.marginLeft Css.auto
-                                    , Css.marginRight Css.auto
-                                    , Css.borderCollapse Css.collapse
+                            Element.table []
+                                { data = poses
+                                , columns =
+                                    [ { header = Element.none
+                                      , width = Element.fill
+                                      , view = \pose -> viewPoseText pose False
+                                      }
+                                    , { header = Element.none
+                                      , width = Element.fill
+                                      , view = \pose -> viewPoseImage pose False
+                                      }
                                     ]
-                                ]
-                                (List.map (\p -> viewPose model p False) poses)
+                                }
 
                 Filtering ->
-                    div [ css [ Css.textAlign Css.center ] ] [ text "Filtering..." ]
+                    el [ Font.center ] (Element.text "Filtering...")
 
         Loading ->
-            div [ css [ Css.textAlign Css.center ] ] [ text "Loading..." ]
+            el [ Font.center ] (Element.text "Loading...")
 
         Failure _ ->
-            div [ css [ Css.textAlign Css.center ] ] [ text "Failed to load" ]
+            el [ Font.center ] (Element.text "Failed to load")
+
+
+viewPoseText : Pose -> Bool -> Element Msg
+viewPoseText p highlight =
+    Element.column
+        [ Border.widthXY 0 1
+        , Border.color grey
+        , Element.height Element.fill
+        , Element.spacingXY 0 10
+        , Element.paddingXY 0 20
+        ]
+        [ el []
+            (Element.paragraph
+                [ Font.bold
+                , Font.size 20
+                ]
+                [ Element.text p.pose
+                , el [ Font.italic ] (Element.text (" (" ++ p.asana ++ ")"))
+                ]
+            )
+        , el [ Font.bold, Font.size 18 ] (Element.text p.level)
+        , Element.html
+            (ul []
+                (List.map (\b -> li [] [ text b ]) p.benefits)
+                |> toUnstyled
+            )
+        ]
+
+
+viewPoseImage : Pose -> Bool -> Element Msg
+viewPoseImage p highlight =
+    el
+        [ Border.widthXY 0 1
+        , Border.color grey
+        , Element.height Element.fill
+        , Element.paddingXY 0 20
+        ]
+        (Element.link []
+            { url = p.image
+            , label =
+                Element.image [ Element.width (Element.px 128) ]
+                    { src = p.image, description = p.pose }
+            }
+        )
 
 
 viewPose : Model -> Pose -> Bool -> Html Msg
