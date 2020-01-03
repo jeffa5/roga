@@ -340,6 +340,16 @@ viewExercise model ( i, exercise ) =
         isHighlighted =
             i == model.workoutIndex
 
+        cancelButton =
+            Element.inFront
+                (el
+                    [ Element.alignRight
+                    , Element.centerY
+                    , Element.paddingEach { sides | right = 10 }
+                    ]
+                    (viewButton CancelWorkout "Cancel Workout")
+                )
+
         time t =
             if Time.posixToMillis t == 0 then
                 "complete"
@@ -362,13 +372,20 @@ viewExercise model ( i, exercise ) =
                        )
                 )
                 [ el
-                    [ width fill
-                    , Font.center
-                    , Border.widthEach { sides | bottom = 1 }
-                    , Border.color grey
-                    , Border.dashed
-                    , padding 20
-                    ]
+                    ([ width fill
+                     , Font.center
+                     , Border.widthEach { sides | bottom = 1 }
+                     , Border.color grey
+                     , Border.dashed
+                     , padding 20
+                     ]
+                        ++ (if isHighlighted then
+                                [ cancelButton ]
+
+                            else
+                                []
+                           )
+                    )
                     (text <| "Exercise " ++ time t)
                 , viewPose ("exercise" ++ String.fromInt i) pose
                 ]
@@ -377,7 +394,9 @@ viewExercise model ( i, exercise ) =
             el
                 (width fill
                     :: (if isHighlighted then
-                            [ Background.color highlight ]
+                            [ Background.color highlight
+                            , cancelButton
+                            ]
 
                         else
                             []
@@ -389,10 +408,8 @@ viewExercise model ( i, exercise ) =
 viewWorkout : Model -> Element Msg
 viewWorkout model =
     column [ width fill ]
-        (el [ centerX, padding 10 ] (viewButton CancelWorkout "Cancel Workout")
-            :: (List.indexedMap Tuple.pair model.workoutPoses
-                    |> List.map (viewExercise model)
-               )
+        (List.indexedMap Tuple.pair model.workoutPoses
+            |> List.map (viewExercise model)
         )
 
 
