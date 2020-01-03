@@ -315,7 +315,7 @@ view model =
     { title = "Roga"
     , body =
         [ column
-            [ width (Element.px 800)
+            [ width shrink
             , centerX
             ]
             (el [ centerX ] (Element.html (h2 [] [ Html.text "Roga" ]))
