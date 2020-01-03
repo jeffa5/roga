@@ -280,7 +280,14 @@ update msg model =
 
 scrollToExercise : Int -> Cmd Msg
 scrollToExercise i =
-    Task.attempt (always NoOp) (scrollToWithOptions { defaultConfig | speed = 10, offset = 150 } ("exercise" ++ String.fromInt i))
+    Task.attempt (always NoOp)
+        (scrollToWithOptions
+            { defaultConfig
+                | speed = 100
+                , offset = 150
+            }
+            ("exercise" ++ String.fromInt i)
+        )
 
 
 
