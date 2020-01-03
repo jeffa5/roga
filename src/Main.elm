@@ -1,7 +1,37 @@
 module Main exposing (Model, Msg(..), getPoses, init, main, subscriptions, update, view)
 
 import Browser exposing (Document)
-import Element exposing (Color, Element, centerX, column, el, fill, padding, paddingXY, rgb255, spacing, spacingXY, text, width, wrappedRow)
+import Element
+    exposing
+        ( Color
+        , Element
+        , alignRight
+        , behindContent
+        , centerX
+        , centerY
+        , column
+        , el
+        , fill
+        , height
+        , html
+        , htmlAttribute
+        , image
+        , inFront
+        , layout
+        , link
+        , padding
+        , paddingEach
+        , paddingXY
+        , paragraph
+        , px
+        , rgb255
+        , shrink
+        , spacing
+        , spacingXY
+        , text
+        , width
+        , wrappedRow
+        )
 import Element.Background as Background
 import Element.Border as Border
 import Element.Font as Font
@@ -318,7 +348,7 @@ view model =
             [ width shrink
             , centerX
             ]
-            (el [ centerX ] (Element.html (h2 [] [ Html.text "Roga" ]))
+            (el [ centerX ] (html (h2 [] [ Html.text "Roga" ]))
                 :: (if model.inWorkout then
                         [ viewWorkout model ]
 
@@ -326,7 +356,7 @@ view model =
                         [ viewFilters model numPoses, viewPoses model ]
                    )
             )
-            |> Element.layout []
+            |> layout []
         ]
     }
 
@@ -348,11 +378,11 @@ viewExercise model ( i, exercise ) =
             i == model.workoutIndex
 
         cancelButton =
-            Element.inFront
+            inFront
                 (el
-                    [ Element.alignRight
-                    , Element.centerY
-                    , Element.paddingEach { sides | right = 10 }
+                    [ alignRight
+                    , centerY
+                    , paddingEach { sides | right = 10 }
                     ]
                     (viewButton CancelWorkout "Cancel Workout")
                 )
@@ -425,7 +455,7 @@ viewBreak id t =
     el
         [ centerX
         , padding 20
-        , Element.htmlAttribute (Attrs.id id)
+        , htmlAttribute (Attrs.id id)
         ]
         (text <| "Break " ++ t)
 
@@ -526,12 +556,12 @@ viewButton op l =
 viewNumberInput : String -> Int -> Int -> Int -> (Int -> Msg) -> Element Msg
 viewNumberInput name min max val oi =
     Input.slider
-        [ width (Element.px 200)
-        , Element.behindContent
+        [ width (px 200)
+        , behindContent
             (el
                 [ width fill
-                , Element.height (Element.px 2)
-                , Element.centerY
+                , height (px 2)
+                , centerY
                 , Background.color grey
                 , Border.rounded 5
                 ]
@@ -580,7 +610,7 @@ viewPoses model =
                                                 Border.widthEach { sides | bottom = 1 }
                                             , Border.color grey
                                             , width fill
-                                            , Element.height fill
+                                            , height fill
                                             ]
                                             (viewPose "" pose)
                                     )
@@ -600,13 +630,13 @@ viewPoses model =
 viewPoseText : Pose -> Element Msg
 viewPoseText p =
     column
-        [ Element.height fill
+        [ height fill
         , width fill
         , spacingXY 0 10
         , paddingXY 0 20
         ]
         [ el []
-            (Element.paragraph
+            (paragraph
                 [ Font.bold
                 , Font.size 20
                 ]
@@ -615,7 +645,7 @@ viewPoseText p =
                 ]
             )
         , el [ Font.bold, Font.size 18 ] (text p.level)
-        , Element.html
+        , html
             (ul []
                 (List.map (\b -> li [] [ Html.text b ]) p.benefits)
             )
@@ -625,13 +655,13 @@ viewPoseText p =
 viewPoseImage : Pose -> Element Msg
 viewPoseImage p =
     el
-        [ Element.height fill
+        [ height fill
         , paddingXY 0 20
         ]
-        (Element.link []
+        (link []
             { url = p.image
             , label =
-                Element.image [ width (Element.px 128) ]
+                image [ width (px 128) ]
                     { src = p.image, description = p.pose }
             }
         )
@@ -642,7 +672,7 @@ viewPose id pose =
     wrappedRow
         [ width fill
         , spacingXY 10 0
-        , Element.htmlAttribute (Attrs.id id)
+        , htmlAttribute (Attrs.id id)
         ]
         [ viewPoseImage pose
         , viewPoseText pose
