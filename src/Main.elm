@@ -260,7 +260,7 @@ update msg model =
                         { model | workoutIndex = j }
 
                 cmd =
-                    if model.inWorkout then
+                    if model.inWorkout && model.workoutIndex /= j then
                         scrollToExercise newModel.workoutIndex
 
                     else
