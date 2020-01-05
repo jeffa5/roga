@@ -2,6 +2,7 @@ module Main exposing (Model, Msg(..), getPoses, init, main, subscriptions, updat
 
 import Browser exposing (Document)
 import Browser.Navigation as Nav
+import Dict
 import Element
     exposing
         ( Color
@@ -76,10 +77,33 @@ numPosesParser =
     Query.map (Maybe.withDefault defaultQuery.numPoses) (Query.int "numPoses")
 
 
+boolParser : Bool -> String -> Query.Parser Bool
+boolParser default s =
+    Query.map (Maybe.withDefault default) (Query.enum s (Dict.fromList [ ( "true", True ), ( "false", False ) ]))
+
+
+beginnerParser : Query.Parser Bool
+beginnerParser =
+    boolParser defaultQuery.beginner "beginner"
+
+
+intermediateParser : Query.Parser Bool
+intermediateParser =
+    boolParser defaultQuery.intermediate "intermediate"
+
+
+advancedParser : Query.Parser Bool
+advancedParser =
+    boolParser defaultQuery.advanced "advanced"
+
+
 type alias Query =
     { breakDuration : Posix
     , exerciseDuration : Posix
     , numPoses : Int
+    , beginner : Bool
+    , intermediate : Bool
+    , advanced : Bool
     }
 
 
@@ -87,25 +111,43 @@ type QueryMsg
     = BreakDuration Int
     | ExerciseDuration Int
     | NumPoses Int
+    | Beginner Bool
+    | Intermediate Bool
+    | Advanced Bool
 
 
 defaultQuery : Query
 defaultQuery =
     { breakDuration = seconds 5
     , exerciseDuration = seconds 30
-    , numPoses = 0
+    , numPoses = 10
+    , beginner = True
+    , intermediate = True
+    , advanced = True
     }
 
 
 queryParser : Parser (Query -> a) a
 queryParser =
     query
-        (Query.map3
+        (Query.map6
             Query
             breakDurationParser
             exerciseDurationParser
             numPosesParser
+            beginnerParser
+            intermediateParser
+            advancedParser
         )
+
+
+boolToString : Bool -> String
+boolToString b =
+    if b then
+        "true"
+
+    else
+        "false"
 
 
 queryBuilder : Query -> String
@@ -114,6 +156,9 @@ queryBuilder q =
         [ URLBuilder.int "breakDuration" (toSecond utc q.breakDuration)
         , URLBuilder.int "exerciseDuration" (toSecond utc q.exerciseDuration)
         , URLBuilder.int "numPoses" q.numPoses
+        , URLBuilder.string "beginner" (boolToString q.beginner)
+        , URLBuilder.string "intermediate" (boolToString q.intermediate)
+        , URLBuilder.string "advanced" (boolToString q.advanced)
         ]
 
 
@@ -130,6 +175,15 @@ updateQuery msg key query =
 
                 NumPoses n ->
                     { query | numPoses = n }
+
+                Beginner b ->
+                    { query | beginner = b }
+
+                Intermediate b ->
+                    { query | intermediate = b }
+
+                Advanced b ->
+                    { query | advanced = b }
     in
     ( newQuery
     , Nav.pushUrl key (queryBuilder newQuery)
@@ -191,9 +245,6 @@ type Exercise
 type alias Model =
     { original : GettingPoses
     , poses : FilteringPoses
-    , filterBeginner : Bool
-    , filterIntermediate : Bool
-    , filterAdvanced : Bool
     , inWorkout : Bool
     , workoutComplete : Bool
     , workoutPoses : List Exercise
@@ -234,9 +285,6 @@ init _ url key =
     in
     ( { original = Loading
       , poses = Filtering
-      , filterBeginner = True
-      , filterIntermediate = True
-      , filterAdvanced = True
       , inWorkout = False
       , workoutComplete = False
       , workoutPoses = []
@@ -284,16 +332,11 @@ update msg model =
         GotPoses result ->
             case result of
                 Ok poses ->
-                    let
-                        ( query, cmd ) =
-                            updateQuery (NumPoses (List.length poses)) model.key model.query
-                    in
                     ( { model
                         | original = Success poses
                         , poses = Finished poses
-                        , query = query
                       }
-                    , cmd
+                    , Cmd.none
                     )
 
                 Err err ->
@@ -307,13 +350,25 @@ update msg model =
             ( { model | query = query }, cmd )
 
         FilterBeginner b ->
-            ( { model | filterBeginner = b }, Cmd.none )
+            let
+                ( query, cmd ) =
+                    updateQuery (Beginner b) model.key model.query
+            in
+            ( { model | query = query }, cmd )
 
         FilterIntermediate b ->
-            ( { model | filterIntermediate = b }, Cmd.none )
+            let
+                ( query, cmd ) =
+                    updateQuery (Intermediate b) model.key model.query
+            in
+            ( { model | query = query }, cmd )
 
         FilterAdvanced b ->
-            ( { model | filterAdvanced = b }, Cmd.none )
+            let
+                ( query, cmd ) =
+                    updateQuery (Advanced b) model.key model.query
+            in
+            ( { model | query = query }, cmd )
 
         Filter ->
             case model.original of
@@ -708,9 +763,9 @@ viewFilters model numPoses =
                     [ spacing 20
                     , centerX
                     ]
-                    [ viewCheckbox "Beginner" model.filterBeginner FilterBeginner
-                    , viewCheckbox "Intermediate" model.filterIntermediate FilterIntermediate
-                    , viewCheckbox "Advanced" model.filterAdvanced FilterAdvanced
+                    [ viewCheckbox "Beginner" model.query.beginner FilterBeginner
+                    , viewCheckbox "Intermediate" model.query.intermediate FilterIntermediate
+                    , viewCheckbox "Advanced" model.query.advanced FilterAdvanced
                     ]
                 )
             ]
@@ -931,9 +986,9 @@ filterPoses model poses =
     Random.generate Filtered
         (randomPoses
             (preFilter
-                model.filterBeginner
-                model.filterIntermediate
-                model.filterAdvanced
+                model.query.beginner
+                model.query.intermediate
+                model.query.advanced
                 poses
             )
             model.query.numPoses
