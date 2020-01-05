@@ -6267,19 +6267,19 @@ var $author$project$Main$init = function (_v0) {
 	var subCmd = _v1.b;
 	return _Utils_Tuple2(
 		{
-			R: $author$project$Main$seconds(5),
+			H: $author$project$Main$seconds(5),
 			ai: $author$project$Main$seconds(30),
 			a$: true,
 			a0: true,
 			a1: true,
 			U: 0,
-			J: false,
+			K: false,
 			bs: iModel,
 			aa: $author$project$Main$Loading,
 			ar: $author$project$Main$Filtering,
 			ay: false,
 			y: 0,
-			O: _List_Nil
+			P: _List_Nil
 		},
 		$elm$core$Platform$Cmd$batch(
 			_List_fromArray(
@@ -8051,7 +8051,7 @@ var $author$project$Main$update = F2(
 					_Utils_update(
 						model,
 						{
-							R: $author$project$Main$seconds(t)
+							H: $author$project$Main$seconds(t)
 						}),
 					$elm$core$Platform$Cmd$none);
 			case 10:
@@ -8068,25 +8068,28 @@ var $author$project$Main$update = F2(
 				if (_v3.$ === 1) {
 					var p = _v3.a;
 					var sequence = function (l) {
-						return A2(
-							$elm$core$List$cons,
-							$author$project$Main$Break(model.R),
-							l);
+						return (!(!$elm$time$Time$posixToMillis(model.H))) ? function (i) {
+							return A2(
+								$elm$core$List$cons,
+								$author$project$Main$Break(model.H),
+								i);
+						}(
+							A2(
+								$elm$core$List$intersperse,
+								$author$project$Main$Break(model.H),
+								l)) : l;
 					}(
 						A2(
-							$elm$core$List$intersperse,
-							$author$project$Main$Break(model.R),
-							A2(
-								$elm$core$List$map,
-								function (i) {
-									return $author$project$Main$Position(
-										_Utils_Tuple2(i, model.ai));
-								},
-								p)));
+							$elm$core$List$map,
+							function (i) {
+								return $author$project$Main$Position(
+									_Utils_Tuple2(i, model.ai));
+							},
+							p));
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{J: true, ay: false, y: 0, O: sequence}),
+							{K: true, ay: false, y: 0, P: sequence}),
 						$author$project$Main$scrollToExercise(0));
 				} else {
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
@@ -8095,16 +8098,16 @@ var $author$project$Main$update = F2(
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{J: false, ay: false, O: _List_Nil}),
+						{K: false, ay: false, P: _List_Nil}),
 					$elm$core$Platform$Cmd$none);
 			case 13:
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{J: false, ay: false, O: _List_Nil}),
+						{K: false, ay: false, P: _List_Nil}),
 					$elm$core$Platform$Cmd$none);
 			case 14:
-				if (!model.J) {
+				if (!model.K) {
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				} else {
 					if (model.ay) {
@@ -8167,7 +8170,7 @@ var $author$project$Main$update = F2(
 								$elm$core$List$foldr,
 								f,
 								_Utils_Tuple2(model.y, _List_Nil),
-								A2($elm$core$List$indexedMap, $elm$core$Tuple$pair, model.O));
+								A2($elm$core$List$indexedMap, $elm$core$Tuple$pair, model.P));
 						}();
 						var j = _v4.a;
 						var poses = _v4.b;
@@ -8175,14 +8178,14 @@ var $author$project$Main$update = F2(
 							j,
 							$elm$core$List$length(poses)) ? _Utils_update(
 							model,
-							{J: true, ay: true, y: j}) : _Utils_update(
+							{K: true, ay: true, y: j}) : _Utils_update(
 							model,
 							{y: j});
-						var cmd = (model.J && (!_Utils_eq(model.y, j))) ? $author$project$Main$scrollToExercise(newModel.y) : $elm$core$Platform$Cmd$none;
+						var cmd = (model.K && (!_Utils_eq(model.y, j))) ? $author$project$Main$scrollToExercise(newModel.y) : $elm$core$Platform$Cmd$none;
 						return _Utils_Tuple2(
 							_Utils_update(
 								newModel,
-								{O: poses}),
+								{P: poses}),
 							cmd);
 					}
 				}
@@ -8449,7 +8452,7 @@ var $mdgriffith$elm_ui$Internal$Model$getStyleName = function (style) {
 				A2($elm$core$List$map, $mdgriffith$elm_ui$Internal$Model$lengthClassName, template.ff)) + ('-cols-' + (A2(
 				$elm$core$String$join,
 				'-',
-				A2($elm$core$List$map, $mdgriffith$elm_ui$Internal$Model$lengthClassName, template.H)) + ('-space-x-' + ($mdgriffith$elm_ui$Internal$Model$lengthClassName(template.fs.a) + ('-space-y-' + $mdgriffith$elm_ui$Internal$Model$lengthClassName(template.fs.b)))))));
+				A2($elm$core$List$map, $mdgriffith$elm_ui$Internal$Model$lengthClassName, template.I)) + ('-space-x-' + ($mdgriffith$elm_ui$Internal$Model$lengthClassName(template.fs.a) + ('-space-y-' + $mdgriffith$elm_ui$Internal$Model$lengthClassName(template.fs.b)))))));
 		case 9:
 			var pos = style.a;
 			return 'gp grid-pos-' + ($elm$core$String$fromInt(pos.E) + ('-' + ($elm$core$String$fromInt(pos.eb) + ('-' + ($elm$core$String$fromInt(pos.dw) + ('-' + $elm$core$String$fromInt(pos.cK)))))));
@@ -10483,7 +10486,7 @@ var $elm$core$String$concat = function (strings) {
 var $mdgriffith$elm_ui$Internal$Style$Intermediate = $elm$core$Basics$identity;
 var $mdgriffith$elm_ui$Internal$Style$emptyIntermediate = F2(
 	function (selector, closing) {
-		return {bi: closing, o: _List_Nil, ac: _List_Nil, N: selector};
+		return {bi: closing, o: _List_Nil, ac: _List_Nil, O: selector};
 	});
 var $mdgriffith$elm_ui$Internal$Style$renderRules = F2(
 	function (_v0, rulesToRender) {
@@ -10512,7 +10515,7 @@ var $mdgriffith$elm_ui$Internal$Style$renderRules = F2(
 							{
 								o: A2(
 									$elm$core$List$cons,
-									{bi: '\n}', o: _List_Nil, ac: props, N: '@supports (' + (prop + (':' + (value + (') {' + parent.N))))},
+									{bi: '\n}', o: _List_Nil, ac: props, O: '@supports (' + (prop + (':' + (value + (') {' + parent.O))))},
 									rendered.o)
 							});
 					case 4:
@@ -10525,7 +10528,7 @@ var $mdgriffith$elm_ui$Internal$Style$renderRules = F2(
 									$elm$core$List$cons,
 									A2(
 										$mdgriffith$elm_ui$Internal$Style$renderRules,
-										A2($mdgriffith$elm_ui$Internal$Style$emptyIntermediate, parent.N + (' + ' + selector), ''),
+										A2($mdgriffith$elm_ui$Internal$Style$emptyIntermediate, parent.O + (' + ' + selector), ''),
 										adjRules),
 									rendered.o)
 							});
@@ -10539,7 +10542,7 @@ var $mdgriffith$elm_ui$Internal$Style$renderRules = F2(
 									$elm$core$List$cons,
 									A2(
 										$mdgriffith$elm_ui$Internal$Style$renderRules,
-										A2($mdgriffith$elm_ui$Internal$Style$emptyIntermediate, parent.N + (' > ' + child), ''),
+										A2($mdgriffith$elm_ui$Internal$Style$emptyIntermediate, parent.O + (' > ' + child), ''),
 										childRules),
 									rendered.o)
 							});
@@ -10555,7 +10558,7 @@ var $mdgriffith$elm_ui$Internal$Style$renderRules = F2(
 										$mdgriffith$elm_ui$Internal$Style$renderRules,
 										A2(
 											$mdgriffith$elm_ui$Internal$Style$emptyIntermediate,
-											_Utils_ap(parent.N, descriptor),
+											_Utils_ap(parent.O, descriptor),
 											''),
 										descriptorRules),
 									rendered.o)
@@ -10569,7 +10572,7 @@ var $mdgriffith$elm_ui$Internal$Style$renderRules = F2(
 									$elm$core$List$cons,
 									A2(
 										$mdgriffith$elm_ui$Internal$Style$renderRules,
-										A2($mdgriffith$elm_ui$Internal$Style$emptyIntermediate, parent.N, ''),
+										A2($mdgriffith$elm_ui$Internal$Style$emptyIntermediate, parent.O, ''),
 										batched),
 									rendered.o)
 							});
@@ -10594,7 +10597,7 @@ var $mdgriffith$elm_ui$Internal$Style$renderCompact = function (styleClasses) {
 		if (!_v2.b) {
 			return '';
 		} else {
-			return rule.N + ('{' + (renderValues(rule.ac) + (rule.bi + '}')));
+			return rule.O + ('{' + (renderValues(rule.ac) + (rule.bi + '}')));
 		}
 	};
 	var renderIntermediate = function (_v0) {
@@ -11269,14 +11272,14 @@ var $mdgriffith$elm_ui$Internal$Model$renderStyleRule = F3(
 					A2(
 						$elm$core$String$join,
 						ySpacing,
-						A2($elm$core$List$map, toGridLength, template.H)));
+						A2($elm$core$List$map, toGridLength, template.I)));
 				var msColumns = function (x) {
 					return '-ms-grid-columns: ' + (x + ';');
 				}(
 					A2(
 						$elm$core$String$join,
 						ySpacing,
-						A2($elm$core$List$map, toGridLength, template.H)));
+						A2($elm$core$List$map, toGridLength, template.I)));
 				var gapY = 'grid-row-gap:' + (toGridLength(template.fs.b) + ';');
 				var gapX = 'grid-column-gap:' + (toGridLength(template.fs.a) + ';');
 				var columns = function (x) {
@@ -11285,14 +11288,14 @@ var $mdgriffith$elm_ui$Internal$Model$renderStyleRule = F3(
 					A2(
 						$elm$core$String$join,
 						' ',
-						A2($elm$core$List$map, toGridLength, template.H)));
+						A2($elm$core$List$map, toGridLength, template.I)));
 				var _class = '.grid-rows-' + (A2(
 					$elm$core$String$join,
 					'-',
 					A2($elm$core$List$map, $mdgriffith$elm_ui$Internal$Model$lengthClassName, template.ff)) + ('-cols-' + (A2(
 					$elm$core$String$join,
 					'-',
-					A2($elm$core$List$map, $mdgriffith$elm_ui$Internal$Model$lengthClassName, template.H)) + ('-space-x-' + ($mdgriffith$elm_ui$Internal$Model$lengthClassName(template.fs.a) + ('-space-y-' + $mdgriffith$elm_ui$Internal$Model$lengthClassName(template.fs.b)))))));
+					A2($elm$core$List$map, $mdgriffith$elm_ui$Internal$Model$lengthClassName, template.I)) + ('-space-x-' + ($mdgriffith$elm_ui$Internal$Model$lengthClassName(template.fs.a) + ('-space-y-' + $mdgriffith$elm_ui$Internal$Model$lengthClassName(template.fs.b)))))));
 				var modernGrid = _class + ('{' + (columns + (rows + (gapX + (gapY + '}')))));
 				var supports = '@supports (display:grid) {' + (modernGrid + '}');
 				var base = _class + ('{' + (msColumns + (msRows + '}')));
@@ -15391,9 +15394,9 @@ var $mdgriffith$elm_ui$Element$wrappedRow = F2(
 var $author$project$Main$viewFilters = F2(
 	function (model, numPoses) {
 		var workoutDuration = $elm$time$Time$millisToPosix(
-			model.U * ($elm$time$Time$posixToMillis(model.R) + $elm$time$Time$posixToMillis(model.ai)));
+			model.U * ($elm$time$Time$posixToMillis(model.H) + $elm$time$Time$posixToMillis(model.ai)));
 		var exerciseDuration = ($elm$time$Time$posixToMillis(model.ai) / 1000) | 0;
-		var breakDuration = ($elm$time$Time$posixToMillis(model.R) / 1000) | 0;
+		var breakDuration = ($elm$time$Time$posixToMillis(model.H) / 1000) | 0;
 		return A2(
 			$mdgriffith$elm_ui$Element$column,
 			_List_fromArray(
@@ -15434,7 +15437,7 @@ var $author$project$Main$viewFilters = F2(
 										$author$project$Main$FilterNum),
 										A5(
 										$author$project$Main$viewNumberInput,
-										'Break duration: ' + $author$project$Main$viewTime(model.R),
+										'Break duration: ' + $author$project$Main$viewTime(model.H),
 										0,
 										30,
 										breakDuration,
@@ -15921,10 +15924,10 @@ var $author$project$Main$viewWorkout = function (model) {
 			A2(
 				$elm$core$List$map,
 				$author$project$Main$viewExercise(model),
-				A2($elm$core$List$indexedMap, $elm$core$Tuple$pair, model.O)),
+				A2($elm$core$List$indexedMap, $elm$core$Tuple$pair, model.P)),
 			_Utils_eq(
 				model.y,
-				$elm$core$List$length(model.O)) ? _List_fromArray(
+				$elm$core$List$length(model.P)) ? _List_fromArray(
 				[
 					A2(
 					$mdgriffith$elm_ui$Element$el,
@@ -15976,7 +15979,7 @@ var $author$project$Main$view = function (model) {
 										[
 											$elm$html$Html$text('Roga')
 										])))),
-						model.J ? _List_fromArray(
+						model.K ? _List_fromArray(
 							[
 								$author$project$Main$viewWorkout(model)
 							]) : _List_fromArray(

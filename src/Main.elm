@@ -234,9 +234,14 @@ update msg model =
                     let
                         sequence =
                             List.map (\i -> Position ( i, model.exerciseDuration )) p
-                                |> List.intersperse
-                                    (Break model.breakDuration)
-                                |> (\l -> Break model.breakDuration :: l)
+                                |> (\l ->
+                                        if Time.posixToMillis model.breakDuration /= 0 then
+                                            List.intersperse (Break model.breakDuration) l
+                                                |> (\i -> Break model.breakDuration :: i)
+
+                                        else
+                                            l
+                                   )
                     in
                     ( { model
                         | inWorkout = True
