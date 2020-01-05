@@ -1,6 +1,7 @@
 module Main exposing (Model, Msg(..), getPoses, init, main, subscriptions, update, view)
 
 import Browser exposing (Document)
+import Browser.Navigation as Nav
 import Element
     exposing
         ( Color
@@ -46,6 +47,93 @@ import Random.List
 import SmoothScroll exposing (defaultConfig, scrollToWithOptions)
 import Task
 import Time exposing (Posix, toHour, toMinute, toSecond, utc)
+import Url
+import Url.Builder as URLBuilder exposing (relative)
+import Url.Parser exposing (Parser, int, parse, query)
+import Url.Parser.Query as Query
+
+
+breakDurationParser : Query.Parser Posix
+breakDurationParser =
+    Query.map seconds
+        (Query.map
+            (Maybe.withDefault (toSecond utc defaultQuery.breakDuration))
+            (Query.int "breakDuration")
+        )
+
+
+exerciseDurationParser : Query.Parser Posix
+exerciseDurationParser =
+    Query.map seconds
+        (Query.map
+            (Maybe.withDefault (toSecond utc defaultQuery.breakDuration))
+            (Query.int "exerciseDuration")
+        )
+
+
+numPosesParser : Query.Parser Int
+numPosesParser =
+    Query.map (Maybe.withDefault defaultQuery.numPoses) (Query.int "numPoses")
+
+
+type alias Query =
+    { breakDuration : Posix
+    , exerciseDuration : Posix
+    , numPoses : Int
+    }
+
+
+type QueryMsg
+    = BreakDuration Int
+    | ExerciseDuration Int
+    | NumPoses Int
+
+
+defaultQuery : Query
+defaultQuery =
+    { breakDuration = seconds 5
+    , exerciseDuration = seconds 30
+    , numPoses = 0
+    }
+
+
+queryParser : Parser (Query -> a) a
+queryParser =
+    query
+        (Query.map3
+            Query
+            breakDurationParser
+            exerciseDurationParser
+            numPosesParser
+        )
+
+
+queryBuilder : Query -> String
+queryBuilder q =
+    relative []
+        [ URLBuilder.int "breakDuration" (toSecond utc q.breakDuration)
+        , URLBuilder.int "exerciseDuration" (toSecond utc q.exerciseDuration)
+        , URLBuilder.int "numPoses" q.numPoses
+        ]
+
+
+updateQuery : QueryMsg -> Nav.Key -> Query -> ( Query, Cmd Msg )
+updateQuery msg key query =
+    let
+        newQuery =
+            case msg of
+                BreakDuration t ->
+                    { query | breakDuration = seconds t }
+
+                ExerciseDuration t ->
+                    { query | exerciseDuration = seconds t }
+
+                NumPoses n ->
+                    { query | numPoses = n }
+    in
+    ( newQuery
+    , Nav.pushUrl key (queryBuilder newQuery)
+    )
 
 
 
@@ -81,11 +169,13 @@ sides =
 
 main : Program () Model Msg
 main =
-    Browser.document
+    Browser.application
         { init = init
+        , view = view
         , update = update
         , subscriptions = subscriptions
-        , view = view
+        , onUrlChange = UrlChanged
+        , onUrlRequest = LinkClicked
         }
 
 
@@ -101,16 +191,15 @@ type Exercise
 type alias Model =
     { original : GettingPoses
     , poses : FilteringPoses
-    , filterNum : Int
     , filterBeginner : Bool
     , filterIntermediate : Bool
     , filterAdvanced : Bool
     , inWorkout : Bool
     , workoutComplete : Bool
-    , exerciseDuration : Posix
-    , breakDuration : Posix
     , workoutPoses : List Exercise
     , workoutIndex : Int
+    , key : Nav.Key
+    , query : Query
     }
 
 
@@ -130,20 +219,30 @@ seconds s =
     Time.millisToPosix (s * 1000)
 
 
-init : () -> ( Model, Cmd Msg )
-init _ =
+init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
+init _ url key =
+    let
+        query =
+            case
+                parse queryParser url
+            of
+                Just q ->
+                    q
+
+                Nothing ->
+                    defaultQuery
+    in
     ( { original = Loading
       , poses = Filtering
-      , filterNum = 0
       , filterBeginner = True
       , filterIntermediate = True
       , filterAdvanced = True
       , inWorkout = False
       , workoutComplete = False
-      , exerciseDuration = seconds 30
-      , breakDuration = seconds 5
       , workoutPoses = []
       , workoutIndex = 0
+      , key = key
+      , query = query
       }
     , getPoses
     )
@@ -169,6 +268,8 @@ type Msg
     | CancelWorkout
     | CompleteWorkout
     | Tick Posix
+    | LinkClicked Browser.UrlRequest
+    | UrlChanged Url.Url
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -183,13 +284,27 @@ update msg model =
         GotPoses result ->
             case result of
                 Ok poses ->
-                    ( { model | original = Success poses, poses = Finished poses, filterNum = List.length poses }, Cmd.none )
+                    let
+                        ( query, cmd ) =
+                            updateQuery (NumPoses (List.length poses)) model.key model.query
+                    in
+                    ( { model
+                        | original = Success poses
+                        , poses = Finished poses
+                        , query = query
+                      }
+                    , cmd
+                    )
 
                 Err err ->
                     ( { model | original = Failure err }, Cmd.none )
 
         FilterNum n ->
-            ( { model | filterNum = n }, Cmd.none )
+            let
+                ( query, cmd ) =
+                    updateQuery (NumPoses n) model.key model.query
+            in
+            ( { model | query = query }, cmd )
 
         FilterBeginner b ->
             ( { model | filterBeginner = b }, Cmd.none )
@@ -212,22 +327,30 @@ update msg model =
             ( { model | poses = Finished poses }, Cmd.none )
 
         SetBreakDuration t ->
-            ( { model | breakDuration = seconds t }, Cmd.none )
+            let
+                ( query, cmd ) =
+                    updateQuery (BreakDuration t) model.key model.query
+            in
+            ( { model | query = query }, cmd )
 
         SetExerciseDuration t ->
-            ( { model | exerciseDuration = seconds t }, Cmd.none )
+            let
+                ( query, cmd ) =
+                    updateQuery (ExerciseDuration t) model.key model.query
+            in
+            ( { model | query = query }, cmd )
 
         StartWorkout ->
             case model.poses of
                 Finished p ->
                     let
                         positions =
-                            List.map (\i -> Position ( i, model.exerciseDuration )) p
+                            List.map (\i -> Position ( i, model.query.exerciseDuration )) p
 
                         workout =
-                            if Time.posixToMillis model.breakDuration /= 0 then
-                                List.intersperse (Break model.breakDuration) positions
-                                    |> (\i -> Break model.breakDuration :: i)
+                            if Time.posixToMillis model.query.breakDuration /= 0 then
+                                List.intersperse (Break model.query.breakDuration) positions
+                                    |> (\i -> Break model.query.breakDuration :: i)
 
                             else
                                 positions
@@ -324,6 +447,17 @@ update msg model =
                             Cmd.none
                 in
                 ( { newModel | workoutPoses = poses }, cmd )
+
+        LinkClicked urlRequest ->
+            case urlRequest of
+                Browser.Internal url ->
+                    ( model, Nav.pushUrl model.key (Url.toString url) )
+
+                Browser.External href ->
+                    ( model, Nav.load href )
+
+        UrlChanged _ ->
+            ( model, Cmd.none )
 
 
 scrollToExercise : Int -> Cmd Msg
@@ -544,14 +678,14 @@ viewFilters : Model -> Int -> Element Msg
 viewFilters model numPoses =
     let
         breakDuration =
-            Time.posixToMillis model.breakDuration // 1000
+            Time.posixToMillis model.query.breakDuration // 1000
 
         exerciseDuration =
-            Time.posixToMillis model.exerciseDuration // 1000
+            Time.posixToMillis model.query.exerciseDuration // 1000
 
         workoutDuration =
-            model.filterNum
-                * (Time.posixToMillis model.breakDuration + Time.posixToMillis model.exerciseDuration)
+            model.query.numPoses
+                * (Time.posixToMillis model.query.breakDuration + Time.posixToMillis model.query.exerciseDuration)
                 |> Time.millisToPosix
     in
     column
@@ -564,9 +698,9 @@ viewFilters model numPoses =
                     [ spacing 10
                     , centerX
                     ]
-                    [ viewNumberInput ("Number of Poses: " ++ String.fromInt model.filterNum) 1 numPoses model.filterNum FilterNum
-                    , viewNumberInput ("Break duration: " ++ viewTime model.breakDuration) 0 30 breakDuration SetBreakDuration
-                    , viewNumberInput ("Exercise duration: " ++ viewTime model.exerciseDuration) 10 60 exerciseDuration SetExerciseDuration
+                    [ viewNumberInput ("Number of Poses: " ++ String.fromInt model.query.numPoses) 1 numPoses model.query.numPoses FilterNum
+                    , viewNumberInput ("Break duration: " ++ viewTime model.query.breakDuration) 0 30 breakDuration SetBreakDuration
+                    , viewNumberInput ("Exercise duration: " ++ viewTime model.query.exerciseDuration) 10 60 exerciseDuration SetExerciseDuration
                     ]
                 )
             , el [ width fill ]
@@ -802,7 +936,7 @@ filterPoses model poses =
                 model.filterAdvanced
                 poses
             )
-            model.filterNum
+            model.query.numPoses
         )
 
 
