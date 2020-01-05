@@ -8067,29 +8067,27 @@ var $author$project$Main$update = F2(
 				var _v3 = model.ar;
 				if (_v3.$ === 1) {
 					var p = _v3.a;
-					var sequence = function (l) {
-						return (!(!$elm$time$Time$posixToMillis(model.H))) ? function (i) {
-							return A2(
-								$elm$core$List$cons,
-								$author$project$Main$Break(model.H),
-								i);
-						}(
-							A2(
-								$elm$core$List$intersperse,
-								$author$project$Main$Break(model.H),
-								l)) : l;
+					var positions = A2(
+						$elm$core$List$map,
+						function (i) {
+							return $author$project$Main$Position(
+								_Utils_Tuple2(i, model.ai));
+						},
+						p);
+					var workout = (!(!$elm$time$Time$posixToMillis(model.H))) ? function (i) {
+						return A2(
+							$elm$core$List$cons,
+							$author$project$Main$Break(model.H),
+							i);
 					}(
 						A2(
-							$elm$core$List$map,
-							function (i) {
-								return $author$project$Main$Position(
-									_Utils_Tuple2(i, model.ai));
-							},
-							p));
+							$elm$core$List$intersperse,
+							$author$project$Main$Break(model.H),
+							positions)) : positions;
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{K: true, ay: false, y: 0, P: sequence}),
+							{K: true, ay: false, y: 0, P: workout}),
 						$author$project$Main$scrollToExercise(0));
 				} else {
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);

@@ -232,22 +232,22 @@ update msg model =
             case model.poses of
                 Finished p ->
                     let
-                        sequence =
+                        positions =
                             List.map (\i -> Position ( i, model.exerciseDuration )) p
-                                |> (\l ->
-                                        if Time.posixToMillis model.breakDuration /= 0 then
-                                            List.intersperse (Break model.breakDuration) l
-                                                |> (\i -> Break model.breakDuration :: i)
 
-                                        else
-                                            l
-                                   )
+                        workout =
+                            if Time.posixToMillis model.breakDuration /= 0 then
+                                List.intersperse (Break model.breakDuration) positions
+                                    |> (\i -> Break model.breakDuration :: i)
+
+                            else
+                                positions
                     in
                     ( { model
                         | inWorkout = True
                         , workoutComplete = False
                         , workoutIndex = 0
-                        , workoutPoses = sequence
+                        , workoutPoses = workout
                       }
                     , scrollToExercise 0
                     )
