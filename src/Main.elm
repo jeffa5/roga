@@ -488,6 +488,7 @@ viewWorkout model =
                         (el
                             [ centerX
                             , padding 10
+                            , Attrs.id ("exercise" ++ String.fromInt model.workoutIndex) |> htmlAttribute
                             ]
                             (viewButton CompleteWorkout "Complete Workout")
                         )

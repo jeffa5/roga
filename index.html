@@ -6278,7 +6278,7 @@ var $author$project$Main$init = function (_v0) {
 			aa: $author$project$Main$Loading,
 			ar: $author$project$Main$Filtering,
 			ay: false,
-			z: 0,
+			y: 0,
 			O: _List_Nil
 		},
 		$elm$core$Platform$Cmd$batch(
@@ -8086,7 +8086,7 @@ var $author$project$Main$update = F2(
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{J: true, ay: false, z: 0, O: sequence}),
+							{J: true, ay: false, y: 0, O: sequence}),
 						$author$project$Main$scrollToExercise(0));
 				} else {
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
@@ -8138,7 +8138,7 @@ var $author$project$Main$update = F2(
 												return $author$project$Main$Break(t);
 											}
 										});
-									if (_Utils_eq(i, model.z)) {
+									if (_Utils_eq(i, model.y)) {
 										var decremented = $elm$time$Time$millisToPosix(
 											$elm$time$Time$posixToMillis(time) - 1000);
 										return _Utils_eq(
@@ -8166,7 +8166,7 @@ var $author$project$Main$update = F2(
 							return A3(
 								$elm$core$List$foldr,
 								f,
-								_Utils_Tuple2(model.z, _List_Nil),
+								_Utils_Tuple2(model.y, _List_Nil),
 								A2($elm$core$List$indexedMap, $elm$core$Tuple$pair, model.O));
 						}();
 						var j = _v4.a;
@@ -8175,10 +8175,10 @@ var $author$project$Main$update = F2(
 							j,
 							$elm$core$List$length(poses)) ? _Utils_update(
 							model,
-							{J: true, ay: true, z: j}) : _Utils_update(
+							{J: true, ay: true, y: j}) : _Utils_update(
 							model,
-							{z: j});
-						var cmd = (model.J && (!_Utils_eq(model.z, j))) ? $author$project$Main$scrollToExercise(newModel.z) : $elm$core$Platform$Cmd$none;
+							{y: j});
+						var cmd = (model.J && (!_Utils_eq(model.y, j))) ? $author$project$Main$scrollToExercise(newModel.y) : $elm$core$Platform$Cmd$none;
 						return _Utils_Tuple2(
 							_Utils_update(
 								newModel,
@@ -15818,7 +15818,7 @@ var $author$project$Main$viewExercise = F2(
 		var time = function (t) {
 			return (!$elm$time$Time$posixToMillis(t)) ? 'complete' : $author$project$Main$viewTime(t);
 		};
-		var isHighlighted = _Utils_eq(i, model.z);
+		var isHighlighted = _Utils_eq(i, model.y);
 		var cancelButton = $mdgriffith$elm_ui$Element$inFront(
 			A2(
 				$mdgriffith$elm_ui$Element$el,
@@ -15906,7 +15906,7 @@ var $author$project$Main$viewWorkout = function (model) {
 				$author$project$Main$viewExercise(model),
 				A2($elm$core$List$indexedMap, $elm$core$Tuple$pair, model.O)),
 			_Utils_eq(
-				model.z,
+				model.y,
 				$elm$core$List$length(model.O)) ? _List_fromArray(
 				[
 					A2(
@@ -15921,7 +15921,10 @@ var $author$project$Main$viewWorkout = function (model) {
 						_List_fromArray(
 							[
 								$mdgriffith$elm_ui$Element$centerX,
-								$mdgriffith$elm_ui$Element$padding(10)
+								$mdgriffith$elm_ui$Element$padding(10),
+								$mdgriffith$elm_ui$Element$htmlAttribute(
+								$elm$html$Html$Attributes$id(
+									'exercise' + $elm$core$String$fromInt(model.y)))
 							]),
 						A2($author$project$Main$viewButton, $author$project$Main$CompleteWorkout, 'Complete Workout')))
 				]) : _List_Nil));
