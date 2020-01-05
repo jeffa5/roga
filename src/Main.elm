@@ -106,6 +106,7 @@ type alias Model =
     , filterIntermediate : Bool
     , filterAdvanced : Bool
     , inWorkout : Bool
+    , workoutComplete : Bool
     , exerciseDuration : Posix
     , breakDuration : Posix
     , workoutPoses : List Exercise
@@ -143,6 +144,7 @@ init _ =
       , filterIntermediate = True
       , filterAdvanced = True
       , inWorkout = False
+      , workoutComplete = False
       , exerciseDuration = seconds 30
       , breakDuration = seconds 5
       , workoutPoses = []
@@ -174,6 +176,7 @@ type Msg
     | SetExerciseDuration Int
     | StartWorkout
     | CancelWorkout
+    | CompleteWorkout
     | Tick Posix
     | InteractiveMsg Interactive.Msg
 
@@ -234,69 +237,98 @@ update msg model =
                                     (Break model.breakDuration)
                                 |> (\l -> Break model.breakDuration :: l)
                     in
-                    ( { model | inWorkout = True, workoutIndex = 0, workoutPoses = sequence }, scrollToExercise 0 )
+                    ( { model
+                        | inWorkout = True
+                        , workoutComplete = False
+                        , workoutIndex = 0
+                        , workoutPoses = sequence
+                      }
+                    , scrollToExercise 0
+                    )
 
                 Filtering ->
                     ( model, Cmd.none )
 
         CancelWorkout ->
-            ( { model | inWorkout = False, workoutPoses = [] }, Cmd.none )
+            ( { model
+                | inWorkout = False
+                , workoutComplete = False
+                , workoutPoses = []
+              }
+            , Cmd.none
+            )
+
+        CompleteWorkout ->
+            ( { model
+                | inWorkout = False
+                , workoutComplete = False
+                , workoutPoses = []
+              }
+            , Cmd.none
+            )
 
         Tick _ ->
-            let
-                ( j, poses ) =
-                    let
-                        f ( i, exercise ) ( newI, es ) =
-                            let
-                                time =
-                                    case exercise of
-                                        Position ( _, t ) ->
-                                            t
+            if not model.inWorkout then
+                ( model, Cmd.none )
 
-                                        Break t ->
-                                            t
+            else if model.workoutComplete then
+                ( model, Cmd.none )
 
-                                set e t =
-                                    case e of
-                                        Position ( p, _ ) ->
-                                            Position ( p, t )
-
-                                        Break _ ->
-                                            Break t
-                            in
-                            if i == model.workoutIndex then
+            else
+                let
+                    ( j, poses ) =
+                        let
+                            f ( i, exercise ) ( newI, es ) =
                                 let
-                                    decremented =
-                                        Time.millisToPosix (Time.posixToMillis time - 1000)
+                                    time =
+                                        case exercise of
+                                            Position ( _, t ) ->
+                                                t
+
+                                            Break t ->
+                                                t
+
+                                    set e t =
+                                        case e of
+                                            Position ( p, _ ) ->
+                                                Position ( p, t )
+
+                                            Break _ ->
+                                                Break t
                                 in
-                                if decremented == Time.millisToPosix 0 then
-                                    ( newI + 1, set exercise decremented :: es )
+                                if i == model.workoutIndex then
+                                    let
+                                        decremented =
+                                            Time.millisToPosix (Time.posixToMillis time - 1000)
+                                    in
+                                    if decremented == Time.millisToPosix 0 then
+                                        ( newI + 1, set exercise decremented :: es )
+
+                                    else
+                                        ( newI, set exercise decremented :: es )
 
                                 else
-                                    ( newI, set exercise decremented :: es )
+                                    ( newI, set exercise time :: es )
+                        in
+                        List.indexedMap Tuple.pair model.workoutPoses
+                            |> List.foldr f ( model.workoutIndex, [] )
+                in
+                let
+                    newModel =
+                        if j == List.length poses then
+                            { model | inWorkout = True, workoutComplete = True, workoutIndex = j }
 
-                            else
-                                ( newI, set exercise time :: es )
-                    in
-                    List.indexedMap Tuple.pair model.workoutPoses
-                        |> List.foldr f ( model.workoutIndex, [] )
-            in
-            let
-                newModel =
-                    if j == List.length poses then
-                        { model | inWorkout = False }
+                        else
+                            { model | workoutIndex = j }
 
-                    else
-                        { model | workoutIndex = j }
+                    cmd =
+                        if model.inWorkout && model.workoutIndex /= j then
+                            scrollToExercise newModel.workoutIndex
 
-                cmd =
-                    if model.inWorkout && model.workoutIndex /= j then
-                        scrollToExercise newModel.workoutIndex
-
-                    else
-                        Cmd.none
-            in
-            ( { newModel | workoutPoses = poses }, cmd )
+                        else
+                            Cmd.none
+                in
+                ( { newModel | workoutPoses = poses }, cmd )
 
         InteractiveMsg subMsg ->
             ( { model
@@ -445,8 +477,25 @@ viewExercise model ( i, exercise ) =
 viewWorkout : Model -> Element Msg
 viewWorkout model =
     column [ width fill ]
-        (List.indexedMap Tuple.pair model.workoutPoses
+        ((List.indexedMap Tuple.pair model.workoutPoses
             |> List.map (viewExercise model)
+         )
+            ++ (if model.workoutIndex == List.length model.workoutPoses then
+                    [ el
+                        [ width fill
+                        , Background.color highlight
+                        ]
+                        (el
+                            [ centerX
+                            , padding 10
+                            ]
+                            (viewButton CompleteWorkout "Complete Workout")
+                        )
+                    ]
+
+                else
+                    []
+               )
         )
 
 
