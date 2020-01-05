@@ -5,6 +5,7 @@ import Element
     exposing
         ( Color
         , Element
+        , alignLeft
         , alignRight
         , behindContent
         , centerX
@@ -420,11 +421,21 @@ viewExercise model ( i, exercise ) =
                 )
 
         time t =
-            if Time.posixToMillis t == 0 then
-                "complete"
+            inFront
+                (el
+                    [ alignLeft
+                    , centerY
+                    , paddingEach { sides | left = 10 }
+                    ]
+                    (text
+                        (if Time.posixToMillis t == 0 then
+                            ""
 
-            else
-                viewTime t
+                         else
+                            viewTime t
+                        )
+                    )
+                )
     in
     case exercise of
         Position ( pose, t ) ->
@@ -449,13 +460,13 @@ viewExercise model ( i, exercise ) =
                      , padding 20
                      ]
                         ++ (if isHighlighted then
-                                [ cancelButton ]
+                                [ cancelButton, time t ]
 
                             else
                                 []
                            )
                     )
-                    (text <| "Exercise " ++ time t)
+                    (text "Exercise")
                 , viewPose ("exercise" ++ String.fromInt i) pose
                 ]
 
@@ -465,13 +476,14 @@ viewExercise model ( i, exercise ) =
                     :: (if isHighlighted then
                             [ Background.color highlight
                             , cancelButton
+                            , time t
                             ]
 
                         else
                             []
                        )
                 )
-                (viewBreak ("exercise" ++ String.fromInt i) (time t))
+                (viewBreak ("exercise" ++ String.fromInt i))
 
 
 viewWorkout : Model -> Element Msg
@@ -500,14 +512,14 @@ viewWorkout model =
         )
 
 
-viewBreak : String -> String -> Element Msg
-viewBreak id t =
+viewBreak : String -> Element Msg
+viewBreak id =
     el
         [ centerX
         , padding 20
         , htmlAttribute (Attrs.id id)
         ]
-        (text <| "Break " ++ t)
+        (text <| "Break")
 
 
 viewTime : Posix -> String
@@ -722,6 +734,7 @@ viewPose id pose =
     wrappedRow
         [ width fill
         , spacingXY 10 0
+        , paddingXY 10 0
         , htmlAttribute (Attrs.id id)
         ]
         [ viewPoseImage pose
