@@ -549,6 +549,9 @@ viewTime t =
         ++ (if sec /= 0 then
                 [ String.fromInt sec ++ "s" ]
 
+            else if hour == 0 && min == 0 then
+                [ String.fromInt sec ++ "s" ]
+
             else
                 []
            )
@@ -580,7 +583,7 @@ viewFilters model numPoses =
                     , centerX
                     ]
                     [ viewNumberInput ("Number of Poses: " ++ String.fromInt model.filterNum) 1 numPoses model.filterNum FilterNum
-                    , viewNumberInput ("Break duration: " ++ viewTime model.breakDuration) 1 30 breakDuration SetBreakDuration
+                    , viewNumberInput ("Break duration: " ++ viewTime model.breakDuration) 0 30 breakDuration SetBreakDuration
                     , viewNumberInput ("Exercise duration: " ++ viewTime model.exerciseDuration) 10 60 exerciseDuration SetExerciseDuration
                     ]
                 )

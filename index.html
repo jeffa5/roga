@@ -15184,7 +15184,10 @@ var $author$project$Main$viewTime = function (t) {
 				(!(!sec)) ? _List_fromArray(
 					[
 						$elm$core$String$fromInt(sec) + 's'
-					]) : _List_Nil)));
+					]) : (((!hour) && (!min)) ? _List_fromArray(
+					[
+						$elm$core$String$fromInt(sec) + 's'
+					]) : _List_Nil))));
 };
 var $mdgriffith$elm_ui$Internal$Model$Padding = F5(
 	function (a, b, c, d, e) {
@@ -15432,7 +15435,7 @@ var $author$project$Main$viewFilters = F2(
 										A5(
 										$author$project$Main$viewNumberInput,
 										'Break duration: ' + $author$project$Main$viewTime(model.R),
-										1,
+										0,
 										30,
 										breakDuration,
 										$author$project$Main$SetBreakDuration),
