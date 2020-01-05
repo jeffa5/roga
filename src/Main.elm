@@ -40,7 +40,6 @@ import Element.Input as Input
 import Html exposing (h2, li, ul)
 import Html.Attributes as Attrs
 import Http
-import Interactive
 import Json.Decode exposing (Decoder, field, list, map5, string)
 import Random
 import Random.List
@@ -112,7 +111,6 @@ type alias Model =
     , breakDuration : Posix
     , workoutPoses : List Exercise
     , workoutIndex : Int
-    , interactive : Interactive.Model
     }
 
 
@@ -134,10 +132,6 @@ seconds s =
 
 init : () -> ( Model, Cmd Msg )
 init _ =
-    let
-        ( iModel, subCmd ) =
-            Interactive.init
-    in
     ( { original = Loading
       , poses = Filtering
       , filterNum = 0
@@ -150,12 +144,8 @@ init _ =
       , breakDuration = seconds 5
       , workoutPoses = []
       , workoutIndex = 0
-      , interactive = iModel
       }
-    , Cmd.batch
-        [ getPoses
-        , Cmd.map InteractiveMsg subCmd
-        ]
+    , getPoses
     )
 
 
@@ -179,7 +169,6 @@ type Msg
     | CancelWorkout
     | CompleteWorkout
     | Tick Posix
-    | InteractiveMsg Interactive.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -336,15 +325,6 @@ update msg model =
                 in
                 ( { newModel | workoutPoses = poses }, cmd )
 
-        InteractiveMsg subMsg ->
-            ( { model
-                | interactive =
-                    Interactive.update subMsg model.interactive
-                        |> Tuple.first
-              }
-            , Cmd.none
-            )
-
 
 scrollToExercise : Int -> Cmd Msg
 scrollToExercise i =
@@ -364,10 +344,7 @@ scrollToExercise i =
 
 subscriptions : Model -> Sub Msg
 subscriptions _ =
-    Sub.batch
-        [ Time.every 1000 Tick
-        , Sub.map InteractiveMsg Interactive.subWindowResize
-        ]
+    Time.every 1000 Tick
 
 
 
