@@ -15415,10 +15415,7 @@ var $author$project$Main$viewPoseImage = function (p) {
 				b4: p.a$
 			}));
 };
-var $mdgriffith$elm_ui$Internal$Model$unstyled = A2($elm$core$Basics$composeL, $mdgriffith$elm_ui$Internal$Model$Unstyled, $elm$core$Basics$always);
-var $mdgriffith$elm_ui$Element$html = $mdgriffith$elm_ui$Internal$Model$unstyled;
 var $mdgriffith$elm_ui$Element$Font$italic = $mdgriffith$elm_ui$Internal$Model$htmlClass($mdgriffith$elm_ui$Internal$Style$classes.dl);
-var $elm$html$Html$li = _VirtualDom_node('li');
 var $mdgriffith$elm_ui$Internal$Model$Paragraph = {$: 9};
 var $mdgriffith$elm_ui$Element$paragraph = F2(
 	function (attrs, children) {
@@ -15438,7 +15435,6 @@ var $mdgriffith$elm_ui$Element$paragraph = F2(
 						attrs))),
 			$mdgriffith$elm_ui$Internal$Model$Unkeyed(children));
 	});
-var $elm$html$Html$ul = _VirtualDom_node('ul');
 var $author$project$Main$viewPoseText = function (p) {
 	return A2(
 		$mdgriffith$elm_ui$Element$column,
@@ -15478,22 +15474,18 @@ var $author$project$Main$viewPoseText = function (p) {
 						$mdgriffith$elm_ui$Element$Font$size(18)
 					]),
 				$mdgriffith$elm_ui$Element$text(p.a1)),
-				$mdgriffith$elm_ui$Element$html(
 				A2(
-					$elm$html$Html$ul,
-					_List_Nil,
-					A2(
-						$elm$core$List$map,
-						function (b) {
-							return A2(
-								$elm$html$Html$li,
-								_List_Nil,
-								_List_fromArray(
-									[
-										$elm$html$Html$text(b)
-									]));
-						},
-						p.bl)))
+				$mdgriffith$elm_ui$Element$column,
+				_List_Nil,
+				A2(
+					$elm$core$List$map,
+					function (b) {
+						return A2(
+							$mdgriffith$elm_ui$Element$el,
+							_List_Nil,
+							$mdgriffith$elm_ui$Element$text('• ' + b));
+					},
+					p.bl))
 			]));
 };
 var $author$project$Main$viewPose = F2(

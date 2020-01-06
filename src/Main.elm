@@ -16,7 +16,6 @@ import Element
         , el
         , fill
         , height
-        , html
         , htmlAttribute
         , image
         , inFront
@@ -39,7 +38,6 @@ import Element.Background as Background
 import Element.Border as Border
 import Element.Font as Font
 import Element.Input as Input
-import Html exposing (li, ul)
 import Html.Attributes as Attrs
 import Http
 import Json.Decode exposing (Decoder, field, list, map5, string)
@@ -915,10 +913,7 @@ viewPoseText p =
                 ]
             )
         , el [ Font.bold, Font.size 18 ] (text p.level)
-        , html
-            (ul []
-                (List.map (\b -> li [] [ Html.text b ]) p.benefits)
-            )
+        , column [] (List.map (\b -> el [] (text ("• " ++ b))) p.benefits)
         ]
 
 
