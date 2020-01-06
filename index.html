@@ -7490,6 +7490,9 @@ var $elm_community$easing_functions$Ease$inQuint = function (time) {
 };
 var $elm_community$easing_functions$Ease$outQuint = $elm_community$easing_functions$Ease$flip($elm_community$easing_functions$Ease$inQuint);
 var $linuss$smooth_scroll$SmoothScroll$defaultConfig = {aV: $elm_community$easing_functions$Ease$outQuint, dt: 12, dX: 200};
+var $author$project$Main$scrollConfig = _Utils_update(
+	$linuss$smooth_scroll$SmoothScroll$defaultConfig,
+	{dt: 150, dX: 100});
 var $elm$core$Basics$abs = function (n) {
 	return (n < 0) ? (-n) : n;
 };
@@ -7548,11 +7551,13 @@ var $author$project$Main$scrollToExercise = function (i) {
 		$elm$core$Basics$always($author$project$Main$NoOp),
 		A2(
 			$linuss$smooth_scroll$SmoothScroll$scrollToWithOptions,
-			_Utils_update(
-				$linuss$smooth_scroll$SmoothScroll$defaultConfig,
-				{dt: 150, dX: 100}),
+			$author$project$Main$scrollConfig,
 			'exercise' + $elm$core$String$fromInt(i)));
 };
+var $author$project$Main$scrollToTitle = A2(
+	$elm$core$Task$attempt,
+	$elm$core$Basics$always($author$project$Main$NoOp),
+	A2($linuss$smooth_scroll$SmoothScroll$scrollToWithOptions, $author$project$Main$scrollConfig, 'title'));
 var $elm$url$Url$addPort = F2(
 	function (maybePort, starter) {
 		if (maybePort.$ === 1) {
@@ -7867,13 +7872,13 @@ var $author$project$Main$update = F2(
 					_Utils_update(
 						model,
 						{A: false, ad: false, G: _List_Nil}),
-					$elm$core$Platform$Cmd$none);
+					$author$project$Main$scrollToTitle);
 			case 12:
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
 						{A: false, ad: false, G: _List_Nil}),
-					$elm$core$Platform$Cmd$none);
+					$author$project$Main$scrollToTitle);
 			case 13:
 				if (!model.A) {
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
@@ -13370,6 +13375,7 @@ var $mdgriffith$elm_ui$Element$el = F2(
 var $elm$html$Html$h2 = _VirtualDom_node('h2');
 var $mdgriffith$elm_ui$Internal$Model$unstyled = A2($elm$core$Basics$composeL, $mdgriffith$elm_ui$Internal$Model$Unstyled, $elm$core$Basics$always);
 var $mdgriffith$elm_ui$Element$html = $mdgriffith$elm_ui$Internal$Model$unstyled;
+var $elm$html$Html$Attributes$id = $elm$html$Html$Attributes$stringProperty('id');
 var $mdgriffith$elm_ui$Internal$Model$OnlyDynamic = F2(
 	function (a, b) {
 		return {$: 2, a: a, b: b};
@@ -15288,7 +15294,6 @@ var $author$project$Main$viewFilters = function (model) {
 };
 var $author$project$Main$sides = {ar: 0, a0: 0, a8: 0, bd: 0};
 var $mdgriffith$elm_ui$Element$htmlAttribute = $mdgriffith$elm_ui$Internal$Model$Attr;
-var $elm$html$Html$Attributes$id = $elm$html$Html$Attributes$stringProperty('id');
 var $elm$html$Html$Attributes$alt = $elm$html$Html$Attributes$stringProperty('alt');
 var $elm$html$Html$Attributes$src = function (url) {
 	return A2(
@@ -15741,7 +15746,10 @@ var $author$project$Main$view = function (model) {
 							$mdgriffith$elm_ui$Element$html(
 								A2(
 									$elm$html$Html$h2,
-									_List_Nil,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$id('title')
+										]),
 									_List_fromArray(
 										[
 											$elm$html$Html$text('Roga')

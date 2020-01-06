@@ -445,7 +445,7 @@ update msg model =
                 , workoutComplete = False
                 , workoutPoses = []
               }
-            , Cmd.none
+            , scrollToTitle
             )
 
         CompleteWorkout ->
@@ -454,7 +454,7 @@ update msg model =
                 , workoutComplete = False
                 , workoutPoses = []
               }
-            , Cmd.none
+            , scrollToTitle
             )
 
         Tick _ ->
@@ -532,16 +532,22 @@ update msg model =
             ( model, Cmd.none )
 
 
+scrollConfig : SmoothScroll.Config
+scrollConfig =
+    { defaultConfig | speed = 100, offset = 150 }
+
+
 scrollToExercise : Int -> Cmd Msg
 scrollToExercise i =
     Task.attempt (always NoOp)
-        (scrollToWithOptions
-            { defaultConfig
-                | speed = 100
-                , offset = 150
-            }
+        (scrollToWithOptions scrollConfig
             ("exercise" ++ String.fromInt i)
         )
+
+
+scrollToTitle : Cmd Msg
+scrollToTitle =
+    Task.attempt (always NoOp) (scrollToWithOptions scrollConfig "title")
 
 
 
@@ -565,7 +571,7 @@ view model =
             [ width shrink
             , centerX
             ]
-            (el [ centerX ] (html (h2 [] [ Html.text "Roga" ]))
+            (el [ centerX ] (html (h2 [ Attrs.id "title" ] [ Html.text "Roga" ]))
                 :: (if model.inWorkout then
                         [ viewWorkout model ]
 
