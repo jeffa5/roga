@@ -54,6 +54,15 @@ import Url.Parser exposing (Parser, int, parse, query)
 import Url.Parser.Query as Query
 
 
+boolToString : Bool -> String
+boolToString b =
+    if b then
+        "true"
+
+    else
+        "false"
+
+
 type alias QueryParam a =
     { name : String
     , default : a
@@ -64,16 +73,33 @@ type alias QueryParam a =
 
 timeParser : String -> Posix -> Query.Parser Posix
 timeParser n d =
-    Query.map seconds
-        (Query.map
-            (Maybe.withDefault (toSecond utc d))
-            (Query.int n)
-        )
+    Query.map seconds (intParser n (toSecond utc d))
 
 
 timeBuilder : String -> Posix -> URLBuilder.QueryParameter
 timeBuilder n v =
-    URLBuilder.int n (toSecond utc v)
+    intBuilder n (toSecond utc v)
+
+
+intParser : String -> Int -> Query.Parser Int
+intParser n d =
+    Query.map (Maybe.withDefault d) (Query.int n)
+
+
+intBuilder : String -> Int -> URLBuilder.QueryParameter
+intBuilder n v =
+    URLBuilder.int n v
+
+
+boolParser : String -> Bool -> Query.Parser Bool
+boolParser n d =
+    Query.map (Maybe.withDefault d)
+        (Query.enum n (Dict.fromList [ ( "true", True ), ( "false", False ) ]))
+
+
+boolBuilder : String -> Bool -> URLBuilder.QueryParameter
+boolBuilder n v =
+    URLBuilder.string n (boolToString v)
 
 
 breakDurationParam : QueryParam Posix
@@ -86,29 +112,24 @@ exerciseDurationParam =
     QueryParam "exerciseDuration" (seconds 30) timeParser timeBuilder
 
 
-numPosesParser : Query.Parser Int
-numPosesParser =
-    Query.map (Maybe.withDefault defaultQuery.numPoses) (Query.int "numPoses")
+numPosesParam : QueryParam Int
+numPosesParam =
+    QueryParam "numPoses" 10 intParser intBuilder
 
 
-boolParser : Bool -> String -> Query.Parser Bool
-boolParser default s =
-    Query.map (Maybe.withDefault default) (Query.enum s (Dict.fromList [ ( "true", True ), ( "false", False ) ]))
+beginnerParam : QueryParam Bool
+beginnerParam =
+    QueryParam "beginner" True boolParser boolBuilder
 
 
-beginnerParser : Query.Parser Bool
-beginnerParser =
-    boolParser defaultQuery.beginner "beginner"
+intermediateParam : QueryParam Bool
+intermediateParam =
+    QueryParam "intermediate" True boolParser boolBuilder
 
 
-intermediateParser : Query.Parser Bool
-intermediateParser =
-    boolParser defaultQuery.intermediate "intermediate"
-
-
-advancedParser : Query.Parser Bool
-advancedParser =
-    boolParser defaultQuery.advanced "advanced"
+advancedParam : QueryParam Bool
+advancedParam =
+    QueryParam "advanced" True boolParser boolBuilder
 
 
 type alias Query =
@@ -134,10 +155,10 @@ defaultQuery : Query
 defaultQuery =
     { breakDuration = breakDurationParam.default
     , exerciseDuration = exerciseDurationParam.default
-    , numPoses = 10
-    , beginner = True
-    , intermediate = True
-    , advanced = True
+    , numPoses = numPosesParam.default
+    , beginner = beginnerParam.default
+    , intermediate = intermediateParam.default
+    , advanced = advancedParam.default
     }
 
 
@@ -153,33 +174,24 @@ queryParser =
             Query
             (parser breakDurationParam)
             (parser exerciseDurationParam)
-            numPosesParser
-            beginnerParser
-            intermediateParser
-            advancedParser
+            (parser numPosesParam)
+            (parser beginnerParam)
+            (parser intermediateParam)
+            (parser advancedParam)
         )
 
 
-boolToString : Bool -> String
-boolToString b =
-    if b then
-        "true"
-
-    else
-        "false"
-
-
-builder : QueryParam a -> a -> URLBuilder.QueryParameter
-builder qp v =
+paramBuilder : QueryParam a -> a -> URLBuilder.QueryParameter
+paramBuilder qp v =
     qp.builder qp.name v
 
 
 queryBuilder : Query -> String
 queryBuilder q =
     relative []
-        [ builder breakDurationParam q.breakDuration
-        , builder exerciseDurationParam q.exerciseDuration
-        , URLBuilder.int "numPoses" q.numPoses
+        [ paramBuilder breakDurationParam q.breakDuration
+        , paramBuilder exerciseDurationParam q.exerciseDuration
+        , paramBuilder numPosesParam q.numPoses
         , URLBuilder.string "beginner" (boolToString q.beginner)
         , URLBuilder.string "intermediate" (boolToString q.intermediate)
         , URLBuilder.string "advanced" (boolToString q.advanced)
