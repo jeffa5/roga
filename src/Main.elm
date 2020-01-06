@@ -100,34 +100,22 @@ boolBuilder n v =
     URLBuilder.string n (boolToString v)
 
 
-breakDurationParam : QueryParam Posix
-breakDurationParam =
-    QueryParam "breakDuration" (seconds 5) timeParser timeBuilder
-
-
-exerciseDurationParam : QueryParam Posix
-exerciseDurationParam =
-    QueryParam "exerciseDuration" (seconds 30) timeParser timeBuilder
-
-
-numPosesParam : QueryParam Int
-numPosesParam =
-    QueryParam "numPoses" 10 intParser intBuilder
-
-
-beginnerParam : QueryParam Bool
-beginnerParam =
-    QueryParam "beginner" True boolParser boolBuilder
-
-
-intermediateParam : QueryParam Bool
-intermediateParam =
-    QueryParam "intermediate" True boolParser boolBuilder
-
-
-advancedParam : QueryParam Bool
-advancedParam =
-    QueryParam "advanced" True boolParser boolBuilder
+params :
+    { breakDuration : QueryParam Posix
+    , exerciseDuration : QueryParam Posix
+    , numPoses : QueryParam Int
+    , beginner : QueryParam Bool
+    , intermediate : QueryParam Bool
+    , advanced : QueryParam Bool
+    }
+params =
+    { breakDuration = QueryParam "breakDuration" (seconds 5) timeParser timeBuilder
+    , exerciseDuration = QueryParam "exerciseDuration" (seconds 30) timeParser timeBuilder
+    , numPoses = QueryParam "numPoses" 10 intParser intBuilder
+    , beginner = QueryParam "beginner" True boolParser boolBuilder
+    , intermediate = QueryParam "intermediate" True boolParser boolBuilder
+    , advanced = QueryParam "advanced" True boolParser boolBuilder
+    }
 
 
 type alias Query =
@@ -151,12 +139,12 @@ type QueryMsg
 
 defaultQuery : Query
 defaultQuery =
-    { breakDuration = breakDurationParam.default
-    , exerciseDuration = exerciseDurationParam.default
-    , numPoses = numPosesParam.default
-    , beginner = beginnerParam.default
-    , intermediate = intermediateParam.default
-    , advanced = advancedParam.default
+    { breakDuration = params.breakDuration.default
+    , exerciseDuration = params.exerciseDuration.default
+    , numPoses = params.numPoses.default
+    , beginner = params.beginner.default
+    , intermediate = params.intermediate.default
+    , advanced = params.advanced.default
     }
 
 
@@ -170,12 +158,12 @@ queryParser =
     query
         (Query.map6
             Query
-            (parser breakDurationParam)
-            (parser exerciseDurationParam)
-            (parser numPosesParam)
-            (parser beginnerParam)
-            (parser intermediateParam)
-            (parser advancedParam)
+            (parser params.breakDuration)
+            (parser params.exerciseDuration)
+            (parser params.numPoses)
+            (parser params.beginner)
+            (parser params.intermediate)
+            (parser params.advanced)
         )
 
 
@@ -192,12 +180,12 @@ queryBuilder : Query -> String
 queryBuilder q =
     relative []
         (List.filterMap (\i -> i)
-            [ paramBuilder breakDurationParam q.breakDuration
-            , paramBuilder exerciseDurationParam q.exerciseDuration
-            , paramBuilder numPosesParam q.numPoses
-            , paramBuilder beginnerParam q.beginner
-            , paramBuilder intermediateParam q.intermediate
-            , paramBuilder advancedParam q.advanced
+            [ paramBuilder params.breakDuration q.breakDuration
+            , paramBuilder params.exerciseDuration q.exerciseDuration
+            , paramBuilder params.numPoses q.numPoses
+            , paramBuilder params.beginner q.beginner
+            , paramBuilder params.intermediate q.intermediate
+            , paramBuilder params.advanced q.advanced
             ]
         )
 
