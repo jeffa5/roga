@@ -39,7 +39,7 @@ import Element.Background as Background
 import Element.Border as Border
 import Element.Font as Font
 import Element.Input as Input
-import Html exposing (h2, li, ul)
+import Html exposing (li, ul)
 import Html.Attributes as Attrs
 import Http
 import Json.Decode exposing (Decoder, field, list, map5, string)
@@ -589,7 +589,14 @@ view model =
             [ width shrink
             , centerX
             ]
-            (el [ centerX ] (html (h2 [ Attrs.id "title" ] [ Html.text "Roga" ]))
+            (el
+                [ centerX
+                , htmlAttribute (Attrs.id "title")
+                , padding 20
+                , Font.bold
+                , Font.size 36
+                ]
+                (text "Roga")
                 :: (if model.inWorkout then
                         [ viewWorkout model ]
 
