@@ -840,8 +840,8 @@ viewPoses model =
         Success _ ->
             case model.poses of
                 Finished poses ->
-                    case List.length poses of
-                        0 ->
+                    case poses of
+                        [] ->
                             el [ Font.center ] (text "No poses to show")
 
                         _ ->
