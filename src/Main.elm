@@ -54,22 +54,36 @@ import Url.Parser exposing (Parser, int, parse, query)
 import Url.Parser.Query as Query
 
 
-breakDurationParser : Query.Parser Posix
-breakDurationParser =
+type alias QueryParam a =
+    { name : String
+    , default : a
+    , parser : String -> a -> Query.Parser a
+    , builder : String -> a -> URLBuilder.QueryParameter
+    }
+
+
+timeParser : String -> Posix -> Query.Parser Posix
+timeParser n d =
     Query.map seconds
         (Query.map
-            (Maybe.withDefault (toSecond utc defaultQuery.breakDuration))
-            (Query.int "breakDuration")
+            (Maybe.withDefault (toSecond utc d))
+            (Query.int n)
         )
 
 
-exerciseDurationParser : Query.Parser Posix
-exerciseDurationParser =
-    Query.map seconds
-        (Query.map
-            (Maybe.withDefault (toSecond utc defaultQuery.breakDuration))
-            (Query.int "exerciseDuration")
-        )
+timeBuilder : String -> Posix -> URLBuilder.QueryParameter
+timeBuilder n v =
+    URLBuilder.int n (toSecond utc v)
+
+
+breakDurationParam : QueryParam Posix
+breakDurationParam =
+    QueryParam "breakDuration" (seconds 5) timeParser timeBuilder
+
+
+exerciseDurationParam : QueryParam Posix
+exerciseDurationParam =
+    QueryParam "exerciseDuration" (seconds 30) timeParser timeBuilder
 
 
 numPosesParser : Query.Parser Int
@@ -118,8 +132,8 @@ type QueryMsg
 
 defaultQuery : Query
 defaultQuery =
-    { breakDuration = seconds 5
-    , exerciseDuration = seconds 30
+    { breakDuration = breakDurationParam.default
+    , exerciseDuration = exerciseDurationParam.default
     , numPoses = 10
     , beginner = True
     , intermediate = True
@@ -127,13 +141,18 @@ defaultQuery =
     }
 
 
+parser : QueryParam a -> Query.Parser a
+parser qp =
+    qp.parser qp.name qp.default
+
+
 queryParser : Parser (Query -> a) a
 queryParser =
     query
         (Query.map6
             Query
-            breakDurationParser
-            exerciseDurationParser
+            (parser breakDurationParam)
+            (parser exerciseDurationParam)
             numPosesParser
             beginnerParser
             intermediateParser
@@ -150,11 +169,16 @@ boolToString b =
         "false"
 
 
+builder : QueryParam a -> a -> URLBuilder.QueryParameter
+builder qp v =
+    qp.builder qp.name v
+
+
 queryBuilder : Query -> String
 queryBuilder q =
     relative []
-        [ URLBuilder.int "breakDuration" (toSecond utc q.breakDuration)
-        , URLBuilder.int "exerciseDuration" (toSecond utc q.exerciseDuration)
+        [ builder breakDurationParam q.breakDuration
+        , builder exerciseDurationParam q.exerciseDuration
         , URLBuilder.int "numPoses" q.numPoses
         , URLBuilder.string "beginner" (boolToString q.beginner)
         , URLBuilder.string "intermediate" (boolToString q.intermediate)
@@ -542,10 +566,6 @@ subscriptions _ =
 
 view : Model -> Document Msg
 view model =
-    let
-        numPoses =
-            List.length (originalDefault model.original)
-    in
     { title = "Roga"
     , body =
         [ column
@@ -557,22 +577,12 @@ view model =
                         [ viewWorkout model ]
 
                     else
-                        [ viewFilters model numPoses, viewPoses model ]
+                        [ viewFilters model, viewPoses model ]
                    )
             )
             |> layout []
         ]
     }
-
-
-originalDefault : GettingPoses -> List Pose
-originalDefault g =
-    case g of
-        Success p ->
-            p
-
-        _ ->
-            []
 
 
 viewExercise : Model -> ( Int, Exercise ) -> Element Msg
@@ -729,8 +739,8 @@ viewTime t =
         |> String.join " "
 
 
-viewFilters : Model -> Int -> Element Msg
-viewFilters model numPoses =
+viewFilters : Model -> Element Msg
+viewFilters model =
     let
         breakDuration =
             Time.posixToMillis model.query.breakDuration // 1000
@@ -753,7 +763,7 @@ viewFilters model numPoses =
                     [ spacing 10
                     , centerX
                     ]
-                    [ viewNumberInput ("Number of Poses: " ++ String.fromInt model.query.numPoses) 1 numPoses model.query.numPoses FilterNum
+                    [ viewNumberInput ("Number of Poses: " ++ String.fromInt model.query.numPoses) 1 50 model.query.numPoses FilterNum
                     , viewNumberInput ("Break duration: " ++ viewTime model.query.breakDuration) 0 30 breakDuration SetBreakDuration
                     , viewNumberInput ("Exercise duration: " ++ viewTime model.query.exerciseDuration) 10 60 exerciseDuration SetExerciseDuration
                     ]
