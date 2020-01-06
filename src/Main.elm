@@ -2,7 +2,7 @@ module Main exposing (main)
 
 import Browser exposing (Document)
 import Browser.Navigation as Nav
-import Dict
+import Dict exposing (Dict)
 import Element
     exposing
         ( Color
@@ -94,10 +94,15 @@ intBuilder n v =
     URLBuilder.int n v
 
 
+boolDict : Dict String Bool
+boolDict =
+    Dict.fromList [ ( "true", True ), ( "false", False ) ]
+
+
 boolParser : String -> Bool -> Query.Parser Bool
 boolParser n d =
     Query.map (Maybe.withDefault d)
-        (Query.enum n (Dict.fromList [ ( "true", True ), ( "false", False ) ]))
+        (Query.enum n boolDict)
 
 
 boolBuilder : String -> Bool -> URLBuilder.QueryParameter
