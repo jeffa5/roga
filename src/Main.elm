@@ -181,21 +181,27 @@ queryParser =
         )
 
 
-paramBuilder : QueryParam a -> a -> URLBuilder.QueryParameter
+paramBuilder : QueryParam a -> a -> Maybe URLBuilder.QueryParameter
 paramBuilder qp v =
-    qp.builder qp.name v
+    if qp.default /= v then
+        Just (qp.builder qp.name v)
+
+    else
+        Nothing
 
 
 queryBuilder : Query -> String
 queryBuilder q =
     relative []
-        [ paramBuilder breakDurationParam q.breakDuration
-        , paramBuilder exerciseDurationParam q.exerciseDuration
-        , paramBuilder numPosesParam q.numPoses
-        , paramBuilder beginnerParam q.beginner
-        , paramBuilder intermediateParam q.intermediate
-        , paramBuilder advancedParam q.advanced
-        ]
+        (List.filterMap (\i -> i)
+            [ paramBuilder breakDurationParam q.breakDuration
+            , paramBuilder exerciseDurationParam q.exerciseDuration
+            , paramBuilder numPosesParam q.numPoses
+            , paramBuilder beginnerParam q.beginner
+            , paramBuilder intermediateParam q.intermediate
+            , paramBuilder advancedParam q.advanced
+            ]
+        )
 
 
 updateQuery : QueryMsg -> Nav.Key -> Query -> ( Query, Cmd Msg )
