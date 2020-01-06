@@ -7660,18 +7660,9 @@ var $author$project$Main$queryBuilder = function (q) {
 				A2($author$project$Main$paramBuilder, $author$project$Main$breakDurationParam, q.t),
 				A2($author$project$Main$paramBuilder, $author$project$Main$exerciseDurationParam, q.K),
 				A2($author$project$Main$paramBuilder, $author$project$Main$numPosesParam, q.M),
-				A2(
-				$elm$url$Url$Builder$string,
-				'beginner',
-				$author$project$Main$boolToString(q.ad)),
-				A2(
-				$elm$url$Url$Builder$string,
-				'intermediate',
-				$author$project$Main$boolToString(q.aj)),
-				A2(
-				$elm$url$Url$Builder$string,
-				'advanced',
-				$author$project$Main$boolToString(q.ac))
+				A2($author$project$Main$paramBuilder, $author$project$Main$beginnerParam, q.ad),
+				A2($author$project$Main$paramBuilder, $author$project$Main$intermediateParam, q.aj),
+				A2($author$project$Main$paramBuilder, $author$project$Main$advancedParam, q.ac)
 			]));
 };
 var $author$project$Main$updateQuery = F3(

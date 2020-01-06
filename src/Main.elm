@@ -192,9 +192,9 @@ queryBuilder q =
         [ paramBuilder breakDurationParam q.breakDuration
         , paramBuilder exerciseDurationParam q.exerciseDuration
         , paramBuilder numPosesParam q.numPoses
-        , URLBuilder.string "beginner" (boolToString q.beginner)
-        , URLBuilder.string "intermediate" (boolToString q.intermediate)
-        , URLBuilder.string "advanced" (boolToString q.advanced)
+        , paramBuilder beginnerParam q.beginner
+        , paramBuilder intermediateParam q.intermediate
+        , paramBuilder advancedParam q.advanced
         ]
 
 
