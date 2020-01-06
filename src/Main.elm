@@ -326,7 +326,6 @@ init _ url key =
 
 type Msg
     = NoOp
-    | LoadPoses
     | GotPoses (Result Http.Error (List Pose))
     | FilterNum Int
     | FilterBeginner Bool
@@ -350,17 +349,11 @@ update msg model =
         NoOp ->
             ( model, Cmd.none )
 
-        LoadPoses ->
-            ( { model | original = Loading }, getPoses )
-
         GotPoses result ->
             case result of
                 Ok poses ->
-                    ( { model
-                        | original = Success poses
-                        , poses = Finished poses
-                      }
-                    , Cmd.none
+                    ( { model | original = Success poses }
+                    , filterPoses model poses
                     )
 
                 Err err ->
