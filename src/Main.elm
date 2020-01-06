@@ -1,4 +1,4 @@
-module Main exposing (Model, Msg(..), getPoses, init, main, subscriptions, update, view)
+module Main exposing (main)
 
 import Browser exposing (Document)
 import Browser.Navigation as Nav
