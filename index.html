@@ -5708,36 +5708,19 @@ var $elm$time$Time$millisToPosix = $elm$core$Basics$identity;
 var $author$project$Main$seconds = function (s) {
 	return $elm$time$Time$millisToPosix(s * 1000);
 };
-var $elm$time$Time$flooredDiv = F2(
-	function (numerator, denominator) {
-		return $elm$core$Basics$floor(numerator / denominator);
-	});
-var $elm$core$Basics$modBy = _Basics_modBy;
 var $elm$time$Time$posixToMillis = function (_v0) {
 	var millis = _v0;
 	return millis;
 };
-var $elm$time$Time$toSecond = F2(
-	function (_v0, time) {
-		return A2(
-			$elm$core$Basics$modBy,
-			60,
-			A2(
-				$elm$time$Time$flooredDiv,
-				$elm$time$Time$posixToMillis(time),
-				1000));
-	});
-var $elm$time$Time$Zone = F2(
-	function (a, b) {
-		return {$: 0, a: a, b: b};
-	});
-var $elm$time$Time$utc = A2($elm$time$Time$Zone, 0, _List_Nil);
+var $author$project$Main$toSeconds = function (t) {
+	return ($elm$time$Time$posixToMillis(t) / 1000) | 0;
+};
 var $author$project$Main$timeBuilder = F2(
 	function (n, v) {
 		return A2(
 			$author$project$Main$intBuilder,
 			n,
-			A2($elm$time$Time$toSecond, $elm$time$Time$utc, v));
+			$author$project$Main$toSeconds(v));
 	});
 var $author$project$Main$timeParser = F2(
 	function (n, d) {
@@ -5747,7 +5730,7 @@ var $author$project$Main$timeParser = F2(
 			A2(
 				$author$project$Main$intParser,
 				n,
-				A2($elm$time$Time$toSecond, $elm$time$Time$utc, d)));
+				$author$project$Main$toSeconds(d)));
 	});
 var $author$project$Main$params = {
 	v: A4($author$project$Main$QueryParam, 'advanced', true, $author$project$Main$boolParser, $author$project$Main$boolBuilder),
@@ -6760,6 +6743,10 @@ var $elm$time$Time$Name = function (a) {
 var $elm$time$Time$Offset = function (a) {
 	return {$: 1, a: a};
 };
+var $elm$time$Time$Zone = F2(
+	function (a, b) {
+		return {$: 0, a: a, b: b};
+	});
 var $elm$time$Time$customZone = $elm$time$Time$Zone;
 var $elm$time$Time$setInterval = _Time_setInterval;
 var $elm$time$Time$spawnHelp = F3(
@@ -7227,6 +7214,7 @@ var $elm$core$Array$isEmpty = function (_v0) {
 	var len = _v0.a;
 	return !len;
 };
+var $elm$core$Basics$modBy = _Basics_modBy;
 var $owanturist$elm_union_find$UnionFind$QuickUnionPathCompression = F2(
 	function (a, b) {
 		return {$: 0, a: a, b: b};
@@ -14904,6 +14892,10 @@ var $author$project$Main$viewNumberInput = F5(
 				et: val
 			});
 	});
+var $elm$time$Time$flooredDiv = F2(
+	function (numerator, denominator) {
+		return $elm$core$Basics$floor(numerator / denominator);
+	});
 var $elm$time$Time$toAdjustedMinutesHelp = F3(
 	function (defaultOffset, posixMinutes, eras) {
 		toAdjustedMinutesHelp:
@@ -14957,6 +14949,17 @@ var $elm$time$Time$toMinute = F2(
 			60,
 			A2($elm$time$Time$toAdjustedMinutes, zone, time));
 	});
+var $elm$time$Time$toSecond = F2(
+	function (_v0, time) {
+		return A2(
+			$elm$core$Basics$modBy,
+			60,
+			A2(
+				$elm$time$Time$flooredDiv,
+				$elm$time$Time$posixToMillis(time),
+				1000));
+	});
+var $elm$time$Time$utc = A2($elm$time$Time$Zone, 0, _List_Nil);
 var $author$project$Main$viewTime = function (t) {
 	var sec = A2($elm$time$Time$toSecond, $elm$time$Time$utc, t);
 	var min = A2($elm$time$Time$toMinute, $elm$time$Time$utc, t);

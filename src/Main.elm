@@ -69,14 +69,19 @@ type alias QueryParam a =
     }
 
 
+toSeconds : Posix -> Int
+toSeconds t =
+    Time.posixToMillis t // 1000
+
+
 timeParser : String -> Posix -> Query.Parser Posix
 timeParser n d =
-    Query.map seconds (intParser n (toSecond utc d))
+    Query.map seconds (intParser n (toSeconds d))
 
 
 timeBuilder : String -> Posix -> URLBuilder.QueryParameter
 timeBuilder n v =
-    intBuilder n (toSecond utc v)
+    intBuilder n (toSeconds v)
 
 
 intParser : String -> Int -> Query.Parser Int
