@@ -52,23 +52,6 @@ import Url.Parser exposing (Parser, int, parse, query)
 import Url.Parser.Query as Query
 
 
-boolToString : Bool -> String
-boolToString b =
-    if b then
-        "true"
-
-    else
-        "false"
-
-
-type alias QueryParam a =
-    { name : String
-    , default : a
-    , parser : String -> a -> Query.Parser a
-    , builder : String -> a -> URLBuilder.QueryParameter
-    }
-
-
 toSeconds : Posix -> Int
 toSeconds t =
     Time.posixToMillis t // 1000
@@ -99,15 +82,31 @@ boolDict =
     Dict.fromList [ ( "true", True ), ( "false", False ) ]
 
 
+boolToString : Bool -> String
+boolToString b =
+    if b then
+        "true"
+
+    else
+        "false"
+
+
 boolParser : String -> Bool -> Query.Parser Bool
 boolParser n d =
-    Query.map (Maybe.withDefault d)
-        (Query.enum n boolDict)
+    Query.map (Maybe.withDefault d) (Query.enum n boolDict)
 
 
 boolBuilder : String -> Bool -> URLBuilder.QueryParameter
 boolBuilder n v =
     URLBuilder.string n (boolToString v)
+
+
+type alias QueryParam a =
+    { name : String
+    , default : a
+    , parser : String -> a -> Query.Parser a
+    , builder : String -> a -> URLBuilder.QueryParameter
+    }
 
 
 params :
@@ -138,15 +137,6 @@ type alias Query =
     }
 
 
-type QueryMsg
-    = BreakDuration Int
-    | ExerciseDuration Int
-    | NumPoses Int
-    | Beginner Bool
-    | Intermediate Bool
-    | Advanced Bool
-
-
 defaultQuery : Query
 defaultQuery =
     { breakDuration = params.breakDuration.default
@@ -156,6 +146,10 @@ defaultQuery =
     , intermediate = params.intermediate.default
     , advanced = params.advanced.default
     }
+
+
+
+-- Parse query
 
 
 parser : QueryParam a -> Query.Parser a
@@ -175,6 +169,10 @@ queryParser =
             (parser params.intermediate)
             (parser params.advanced)
         )
+
+
+
+-- Build query
 
 
 paramBuilder : QueryParam a -> a -> Maybe URLBuilder.QueryParameter
@@ -198,6 +196,19 @@ queryBuilder q =
             , paramBuilder params.advanced q.advanced
             ]
         )
+
+
+
+-- Update query
+
+
+type QueryMsg
+    = BreakDuration Int
+    | ExerciseDuration Int
+    | NumPoses Int
+    | Beginner Bool
+    | Intermediate Bool
+    | Advanced Bool
 
 
 updateQuery : QueryMsg -> Nav.Key -> Query -> ( Query, Cmd Msg )
