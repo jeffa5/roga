@@ -408,9 +408,13 @@ update msg model =
         GotPoses result ->
             case result of
                 Ok poses ->
-                    ( { model | original = Success poses }
-                    , filterPoses model poses
-                    )
+                    if List.length model.query.selectedPoses == 0 then
+                        ( { model | original = Success poses }
+                        , filterPoses model poses
+                        )
+
+                    else
+                        ( { model | original = Success poses }, Cmd.none )
 
                 Err err ->
                     ( { model | original = Failure err }, Cmd.none )
