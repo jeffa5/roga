@@ -101,6 +101,27 @@ boolBuilder n v =
     URLBuilder.string n (boolToString v)
 
 
+intListParser : String -> List Int -> Query.Parser (List Int)
+intListParser n _ =
+    Query.map
+        (\s ->
+            Maybe.withDefault "" s
+                |> String.split ","
+                |> List.filterMap String.toInt
+        )
+        (Query.string n)
+
+
+intListToString : List Int -> String
+intListToString l =
+    List.map String.fromInt l |> String.join ","
+
+
+intListBuilder : String -> List Int -> URLBuilder.QueryParameter
+intListBuilder n v =
+    URLBuilder.string n (intListToString v)
+
+
 type alias QueryParam a =
     { name : String
     , default : a
@@ -116,6 +137,7 @@ params :
     , beginner : QueryParam Bool
     , intermediate : QueryParam Bool
     , advanced : QueryParam Bool
+    , selectedPoses : QueryParam (List Int)
     }
 params =
     { breakDuration = QueryParam "breakDuration" (seconds 5) timeParser timeBuilder
@@ -124,6 +146,7 @@ params =
     , beginner = QueryParam "beginner" True boolParser boolBuilder
     , intermediate = QueryParam "intermediate" True boolParser boolBuilder
     , advanced = QueryParam "advanced" True boolParser boolBuilder
+    , selectedPoses = QueryParam "selectedPoses" [] intListParser intListBuilder
     }
 
 
@@ -134,6 +157,7 @@ type alias Query =
     , beginner : Bool
     , intermediate : Bool
     , advanced : Bool
+    , selectedPoses : List Int
     }
 
 
@@ -145,6 +169,7 @@ defaultQuery =
     , beginner = params.beginner.default
     , intermediate = params.intermediate.default
     , advanced = params.advanced.default
+    , selectedPoses = params.selectedPoses.default
     }
 
 
@@ -160,7 +185,7 @@ parser qp =
 queryParser : Parser (Query -> a) a
 queryParser =
     query
-        (Query.map6
+        (Query.map7
             Query
             (parser params.breakDuration)
             (parser params.exerciseDuration)
@@ -168,6 +193,7 @@ queryParser =
             (parser params.beginner)
             (parser params.intermediate)
             (parser params.advanced)
+            (parser params.selectedPoses)
         )
 
 
@@ -194,6 +220,7 @@ queryBuilder q =
             , paramBuilder params.beginner q.beginner
             , paramBuilder params.intermediate q.intermediate
             , paramBuilder params.advanced q.advanced
+            , paramBuilder params.selectedPoses q.selectedPoses
             ]
         )
 
@@ -209,6 +236,7 @@ type QueryMsg
     | Beginner Bool
     | Intermediate Bool
     | Advanced Bool
+    | SelectedPoses (List Int)
 
 
 updateQuery : QueryMsg -> Nav.Key -> Query -> ( Query, Cmd Msg )
@@ -233,6 +261,9 @@ updateQuery msg key query =
 
                 Advanced b ->
                     { query | advanced = b }
+
+                SelectedPoses l ->
+                    { query | selectedPoses = l }
     in
     ( newQuery
     , Nav.pushUrl key (queryBuilder newQuery)
