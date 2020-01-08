@@ -137,7 +137,7 @@ params :
     , beginner : QueryParam Bool
     , intermediate : QueryParam Bool
     , advanced : QueryParam Bool
-    , selectedPoses : QueryParam (List Int)
+    , poseIDs : QueryParam (List Int)
     }
 params =
     { breakDuration = QueryParam "breakDuration" (seconds 5) timeParser timeBuilder
@@ -146,7 +146,7 @@ params =
     , beginner = QueryParam "beginner" True boolParser boolBuilder
     , intermediate = QueryParam "intermediate" True boolParser boolBuilder
     , advanced = QueryParam "advanced" True boolParser boolBuilder
-    , selectedPoses = QueryParam "selectedPoses" [] intListParser intListBuilder
+    , poseIDs = QueryParam "poseIDs" [] intListParser intListBuilder
     }
 
 
@@ -157,7 +157,7 @@ type alias Query =
     , beginner : Bool
     , intermediate : Bool
     , advanced : Bool
-    , selectedPoses : List Int
+    , poseIDs : List Int
     }
 
 
@@ -169,7 +169,7 @@ defaultQuery =
     , beginner = params.beginner.default
     , intermediate = params.intermediate.default
     , advanced = params.advanced.default
-    , selectedPoses = params.selectedPoses.default
+    , poseIDs = params.poseIDs.default
     }
 
 
@@ -193,7 +193,7 @@ queryParser =
             (parser params.beginner)
             (parser params.intermediate)
             (parser params.advanced)
-            (parser params.selectedPoses)
+            (parser params.poseIDs)
         )
 
 
@@ -220,7 +220,7 @@ queryBuilder q =
             , paramBuilder params.beginner q.beginner
             , paramBuilder params.intermediate q.intermediate
             , paramBuilder params.advanced q.advanced
-            , paramBuilder params.selectedPoses q.selectedPoses
+            , paramBuilder params.poseIDs q.poseIDs
             ]
         )
 
@@ -263,7 +263,7 @@ updateQuery msg key query =
                     { query | advanced = b }
 
                 SelectedPoses l ->
-                    { query | selectedPoses = l }
+                    { query | poseIDs = l }
     in
     ( newQuery
     , Nav.pushUrl key (queryBuilder newQuery)
@@ -411,7 +411,7 @@ update msg model =
                         newModel =
                             { model | poses = Success posesDict }
                     in
-                    if List.length model.query.selectedPoses == 0 then
+                    if List.length model.query.poseIDs == 0 then
                         ( { newModel | filtering = True }, filterPoses model poses )
 
                     else
@@ -480,10 +480,10 @@ update msg model =
         StartWorkout ->
             case model.poses of
                 Success poses ->
-                    if not model.filtering && List.length model.query.selectedPoses /= 0 then
+                    if not model.filtering && List.length model.query.poseIDs /= 0 then
                         let
                             positions =
-                                List.map (\p -> Position ( p, model.query.exerciseDuration )) (getSelectedPoses poses model.query.selectedPoses)
+                                List.map (\p -> Position ( p, model.query.exerciseDuration )) (getSelectedPoses poses model.query.poseIDs)
 
                             workout =
                                 if Time.posixToMillis model.query.breakDuration /= 0 then
@@ -921,7 +921,7 @@ viewPoses model =
     case model.poses of
         Success poses ->
             if not model.filtering then
-                case model.query.selectedPoses of
+                case model.query.poseIDs of
                     [] ->
                         el [ width fill ] (el [ centerX ] (text "No poses to show"))
 
@@ -941,7 +941,7 @@ viewPoses model =
                                         ]
                                         (viewPose "" pose)
                                 )
-                                (getSelectedPoses poses model.query.selectedPoses)
+                                (getSelectedPoses poses model.query.poseIDs)
                             )
 
             else

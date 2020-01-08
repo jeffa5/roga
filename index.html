@@ -5805,7 +5805,7 @@ var $author$project$Main$params = {
 		$author$project$Main$timeBuilder),
 	A: A4($author$project$Main$QueryParam, 'intermediate', true, $author$project$Main$boolParser, $author$project$Main$boolBuilder),
 	s: A4($author$project$Main$QueryParam, 'numPoses', 10, $author$project$Main$intParser, $author$project$Main$intBuilder),
-	n: A4($author$project$Main$QueryParam, 'selectedPoses', _List_Nil, $author$project$Main$intListParser, $author$project$Main$intListBuilder)
+	n: A4($author$project$Main$QueryParam, 'poseIDs', _List_Nil, $author$project$Main$intListParser, $author$project$Main$intListBuilder)
 };
 var $author$project$Main$defaultQuery = {w: $author$project$Main$params.w.z, y: $author$project$Main$params.y.z, j: $author$project$Main$params.j.z, p: $author$project$Main$params.p.z, A: $author$project$Main$params.A.z, s: $author$project$Main$params.s.z, n: $author$project$Main$params.n.z};
 var $author$project$Main$GotPoses = function (a) {
@@ -6586,8 +6586,8 @@ var $elm$url$Url$Parser$parse = F2(
 					$elm$core$Basics$identity)));
 	});
 var $author$project$Main$Query = F7(
-	function (breakDuration, exerciseDuration, numPoses, beginner, intermediate, advanced, selectedPoses) {
-		return {w: advanced, y: beginner, j: breakDuration, p: exerciseDuration, A: intermediate, s: numPoses, n: selectedPoses};
+	function (breakDuration, exerciseDuration, numPoses, beginner, intermediate, advanced, poseIDs) {
+		return {w: advanced, y: beginner, j: breakDuration, p: exerciseDuration, A: intermediate, s: numPoses, n: poseIDs};
 	});
 var $elm$url$Url$Parser$Query$map7 = F8(
 	function (func, _v0, _v1, _v2, _v3, _v4, _v5, _v6) {
