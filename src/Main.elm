@@ -324,7 +324,7 @@ type Exercise
 
 type alias Model =
     { original : GettingPoses
-    , poses : FilteringPoses
+    , filtering : Bool
     , inWorkout : Bool
     , workoutComplete : Bool
     , workoutPoses : List Exercise
@@ -337,12 +337,7 @@ type alias Model =
 type GettingPoses
     = Failure Http.Error
     | Loading
-    | Success (List Pose)
-
-
-type FilteringPoses
-    = Filtering
-    | Finished (List Pose)
+    | Success (Dict Int Pose)
 
 
 seconds : Int -> Posix
@@ -364,7 +359,7 @@ init _ url key =
                     defaultQuery
     in
     ( { original = Loading
-      , poses = Filtering
+      , filtering = False
       , inWorkout = False
       , workoutComplete = False
       , workoutPoses = []
@@ -408,13 +403,19 @@ update msg model =
         GotPoses result ->
             case result of
                 Ok poses ->
+                    let
+                        posesDict =
+                            List.map (\p -> ( p.id, p )) poses
+                                |> Dict.fromList
+
+                        newModel =
+                            { model | original = Success posesDict }
+                    in
                     if List.length model.query.selectedPoses == 0 then
-                        ( { model | original = Success poses }
-                        , filterPoses model poses
-                        )
+                        ( { newModel | filtering = True }, filterPoses model poses )
 
                     else
-                        ( { model | original = Success poses }, Cmd.none )
+                        ( newModel, Cmd.none )
 
                 Err err ->
                     ( { model | original = Failure err }, Cmd.none )
@@ -450,7 +451,7 @@ update msg model =
         Filter ->
             case model.original of
                 Success p ->
-                    ( { model | poses = Filtering }, filterPoses model p )
+                    ( { model | filtering = True }, filterPoses model (Dict.values p) )
 
                 _ ->
                     ( model, Cmd.none )
@@ -463,7 +464,7 @@ update msg model =
                 ( query, cmd ) =
                     updateQuery (SelectedPoses poseIndices) model.key model.query
             in
-            ( { model | poses = Finished poses, query = query }, cmd )
+            ( { model | filtering = False, query = query }, cmd )
 
         SetBreakDuration t ->
             let
@@ -480,30 +481,34 @@ update msg model =
             ( { model | query = query }, cmd )
 
         StartWorkout ->
-            case model.poses of
-                Finished p ->
-                    let
-                        positions =
-                            List.map (\i -> Position ( i, model.query.exerciseDuration )) p
+            case model.original of
+                Success poses ->
+                    if not model.filtering then
+                        let
+                            positions =
+                                List.map (\p -> Position ( p, model.query.exerciseDuration )) (getSelectedPoses poses model.query.selectedPoses)
 
-                        workout =
-                            if Time.posixToMillis model.query.breakDuration /= 0 then
-                                List.intersperse (Break model.query.breakDuration) positions
-                                    |> (\i -> Break model.query.breakDuration :: i)
+                            workout =
+                                if Time.posixToMillis model.query.breakDuration /= 0 then
+                                    List.intersperse (Break model.query.breakDuration) positions
+                                        |> (\i -> Break model.query.breakDuration :: i)
 
-                            else
-                                positions
-                    in
-                    ( { model
-                        | inWorkout = True
-                        , workoutComplete = False
-                        , workoutIndex = 0
-                        , workoutPoses = workout
-                      }
-                    , scrollToExercise 0
-                    )
+                                else
+                                    positions
+                        in
+                        ( { model
+                            | inWorkout = True
+                            , workoutComplete = False
+                            , workoutIndex = 0
+                            , workoutPoses = workout
+                          }
+                        , scrollToExercise 0
+                        )
 
-                Filtering ->
+                    else
+                        ( model, Cmd.none )
+
+                _ ->
                     ( model, Cmd.none )
 
         CancelWorkout ->
@@ -907,37 +912,42 @@ viewCheckbox l c oc =
         }
 
 
+getSelectedPoses : Dict Int Pose -> List Int -> List Pose
+getSelectedPoses poses ids =
+    Dict.filter (\id _ -> List.any (\i -> i == id) ids) poses
+        |> Dict.values
+
+
 viewPoses : Model -> Element Msg
 viewPoses model =
     case model.original of
-        Success _ ->
-            case model.poses of
-                Finished poses ->
-                    case poses of
-                        [] ->
-                            el [ Font.center ] (text "No poses to show")
+        Success poses ->
+            if not model.filtering then
+                case model.query.selectedPoses of
+                    [] ->
+                        el [ Font.center ] (text "No poses to show")
 
-                        _ ->
-                            column [ width fill ]
-                                (List.indexedMap
-                                    (\i pose ->
-                                        el
-                                            [ if i == 0 then
-                                                Border.widthEach { sides | top = 1, bottom = 1 }
+                    _ ->
+                        column [ width fill ]
+                            (List.indexedMap
+                                (\i pose ->
+                                    el
+                                        [ if i == 0 then
+                                            Border.widthEach { sides | top = 1, bottom = 1 }
 
-                                              else
-                                                Border.widthEach { sides | bottom = 1 }
-                                            , Border.color grey
-                                            , width fill
-                                            , height fill
-                                            ]
-                                            (viewPose "" pose)
-                                    )
-                                    poses
+                                          else
+                                            Border.widthEach { sides | bottom = 1 }
+                                        , Border.color grey
+                                        , width fill
+                                        , height fill
+                                        ]
+                                        (viewPose "" pose)
                                 )
+                                (getSelectedPoses poses model.query.selectedPoses)
+                            )
 
-                Filtering ->
-                    el [ Font.center ] (text "Filtering...")
+            else
+                el [ Font.center ] (text "Filtering...")
 
         Loading ->
             el [ Font.center ] (text "Loading...")
