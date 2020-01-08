@@ -323,7 +323,7 @@ type Exercise
 
 
 type alias Model =
-    { original : GettingPoses
+    { poses : GettingPoses
     , filtering : Bool
     , inWorkout : Bool
     , workoutComplete : Bool
@@ -358,7 +358,7 @@ init _ url key =
                 Nothing ->
                     defaultQuery
     in
-    ( { original = Loading
+    ( { poses = Loading
       , filtering = False
       , inWorkout = False
       , workoutComplete = False
@@ -409,7 +409,7 @@ update msg model =
                                 |> Dict.fromList
 
                         newModel =
-                            { model | original = Success posesDict }
+                            { model | poses = Success posesDict }
                     in
                     if List.length model.query.selectedPoses == 0 then
                         ( { newModel | filtering = True }, filterPoses model poses )
@@ -418,7 +418,7 @@ update msg model =
                         ( newModel, Cmd.none )
 
                 Err err ->
-                    ( { model | original = Failure err }, Cmd.none )
+                    ( { model | poses = Failure err }, Cmd.none )
 
         FilterNum n ->
             let
@@ -449,7 +449,7 @@ update msg model =
             ( { model | query = query }, cmd )
 
         Filter ->
-            case model.original of
+            case model.poses of
                 Success p ->
                     ( { model | filtering = True }, filterPoses model (Dict.values p) )
 
@@ -478,7 +478,7 @@ update msg model =
             ( { model | query = query }, cmd )
 
         StartWorkout ->
-            case model.original of
+            case model.poses of
                 Success poses ->
                     if not model.filtering then
                         let
@@ -917,7 +917,7 @@ getSelectedPoses poses ids =
 
 viewPoses : Model -> Element Msg
 viewPoses model =
-    case model.original of
+    case model.poses of
         Success poses ->
             if not model.filtering then
                 case model.query.selectedPoses of
