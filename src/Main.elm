@@ -40,7 +40,7 @@ import Element.Font as Font
 import Element.Input as Input
 import Html.Attributes as Attrs
 import Http
-import Json.Decode exposing (Decoder, field, list, map5, string)
+import Json.Decode exposing (Decoder, field, list, map6, string)
 import Random
 import Random.List
 import SmoothScroll exposing (defaultConfig, scrollToWithOptions)
@@ -964,6 +964,7 @@ type alias Pose =
     , asana : String
     , level : String
     , image : String
+    , id : Int
     }
 
 
@@ -992,14 +993,20 @@ imageDecoder =
     field "image" string
 
 
+idDecoder : Decoder Int
+idDecoder =
+    field "id" Json.Decode.int
+
+
 poseDecoder : Decoder Pose
 poseDecoder =
-    map5 Pose
+    map6 Pose
         benefitsDecoder
         posenameDecoder
         asanaDecoder
         levelDecoder
         imageDecoder
+        idDecoder
 
 
 getPoses : Cmd Msg
