@@ -832,6 +832,7 @@ viewFilters model =
         [ width fill ]
         [ wrappedRow
             [ width fill
+            , spacingXY 20 0
             ]
             [ el [ width fill ]
                 (column
@@ -922,7 +923,7 @@ viewPoses model =
             if not model.filtering then
                 case model.query.selectedPoses of
                     [] ->
-                        el [ Font.center ] (text "No poses to show")
+                        el [ width fill ] (el [ centerX ] (text "No poses to show"))
 
                     _ ->
                         column [ width fill ]
@@ -944,13 +945,13 @@ viewPoses model =
                             )
 
             else
-                el [ Font.center ] (text "Filtering...")
+                el [ width fill ] (el [ centerX ] (text "Filtering..."))
 
         Loading ->
-            el [ Font.center ] (text "Loading...")
+            el [ width fill ] (el [ centerX ] (text "Loading..."))
 
         Failure _ ->
-            el [ Font.center ] (text "Failed to load")
+            el [ width fill ] (el [ centerX ] (text "Failed to load"))
 
 
 viewPoseText : Pose -> Element Msg
