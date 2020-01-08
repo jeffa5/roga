@@ -452,7 +452,14 @@ update msg model =
                     ( model, Cmd.none )
 
         Filtered poses ->
-            ( { model | poses = Finished poses }, Cmd.none )
+            let
+                poseIndices =
+                    List.map (\p -> p.id) poses
+
+                ( query, cmd ) =
+                    updateQuery (SelectedPoses poseIndices) model.key model.query
+            in
+            ( { model | poses = Finished poses, query = query }, cmd )
 
         SetBreakDuration t ->
             let
