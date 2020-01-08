@@ -480,7 +480,7 @@ update msg model =
         StartWorkout ->
             case model.poses of
                 Success poses ->
-                    if not model.filtering then
+                    if not model.filtering && List.length model.query.selectedPoses /= 0 then
                         let
                             positions =
                                 List.map (\p -> Position ( p, model.query.exerciseDuration )) (getSelectedPoses poses model.query.selectedPoses)
