@@ -383,7 +383,7 @@ type Msg
     | FilterIntermediate Bool
     | FilterAdvanced Bool
     | Filter
-    | Filtered (List Pose)
+    | Filtered (List Int)
     | SetBreakDuration Int
     | SetExerciseDuration Int
     | StartWorkout
@@ -456,13 +456,10 @@ update msg model =
                 _ ->
                     ( model, Cmd.none )
 
-        Filtered poses ->
+        Filtered poseIDs ->
             let
-                poseIndices =
-                    List.map (\p -> p.id) poses
-
                 ( query, cmd ) =
-                    updateQuery (SelectedPoses poseIndices) model.key model.query
+                    updateQuery (SelectedPoses poseIDs) model.key model.query
             in
             ( { model | filtering = False, query = query }, cmd )
 
@@ -1092,7 +1089,7 @@ filterPoses model poses =
         )
 
 
-preFilter : Bool -> Bool -> Bool -> List Pose -> List Pose
+preFilter : Bool -> Bool -> Bool -> List Pose -> List Int
 preFilter b i a poses =
     poses
         |> List.filter
@@ -1110,9 +1107,10 @@ preFilter b i a poses =
                     _ ->
                         True
             )
+        |> List.map (\p -> p.id)
 
 
-randomPoses : List Pose -> Int -> Random.Generator (List Pose)
-randomPoses poses n =
-    Random.List.shuffle poses
+randomPoses : List Int -> Int -> Random.Generator (List Int)
+randomPoses poseIDs n =
+    Random.List.shuffle poseIDs
         |> Random.map (List.take n)

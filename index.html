@@ -7063,21 +7063,26 @@ var $elm$core$List$filter = F2(
 var $author$project$Main$preFilter = F4(
 	function (b, i, a, poses) {
 		return A2(
-			$elm$core$List$filter,
+			$elm$core$List$map,
 			function (p) {
-				var _v0 = p.a3;
-				switch (_v0) {
-					case 'Beginner':
-						return b;
-					case 'Intermediate':
-						return i;
-					case 'Advanced':
-						return a;
-					default:
-						return true;
-				}
+				return p.a0;
 			},
-			poses);
+			A2(
+				$elm$core$List$filter,
+				function (p) {
+					var _v0 = p.a3;
+					switch (_v0) {
+						case 'Beginner':
+							return b;
+						case 'Intermediate':
+							return i;
+						case 'Advanced':
+							return a;
+						default:
+							return true;
+					}
+				},
+				poses));
 	});
 var $elm$core$Array$fromListHelp = F3(
 	function (list, nodeList, nodeListSize) {
@@ -7471,11 +7476,11 @@ var $elm$core$List$take = F2(
 		return A3($elm$core$List$takeFast, 0, n, list);
 	});
 var $author$project$Main$randomPoses = F2(
-	function (poses, n) {
+	function (poseIDs, n) {
 		return A2(
 			$elm$random$Random$map,
 			$elm$core$List$take(n),
-			$elm_community$random_extra$Random$List$shuffle(poses));
+			$elm_community$random_extra$Random$List$shuffle(poseIDs));
 	});
 var $author$project$Main$filterPoses = F2(
 	function (model, poses) {
@@ -7924,16 +7929,10 @@ var $author$project$Main$update = F2(
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 			case 7:
-				var poses = msg.a;
-				var poseIndices = A2(
-					$elm$core$List$map,
-					function (p) {
-						return p.a0;
-					},
-					poses);
+				var poseIDs = msg.a;
 				var _v7 = A3(
 					$author$project$Main$updateQuery,
-					$author$project$Main$SelectedPoses(poseIndices),
+					$author$project$Main$SelectedPoses(poseIDs),
 					model.B,
 					model.a);
 				var query = _v7.a;
