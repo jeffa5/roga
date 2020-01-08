@@ -6,10 +6,13 @@ from pprint import pprint
 class MyHTMLParser(HTMLParser):
     poses = []
     current = {}
+    index = 0
 
     def handle_starttag(self, tag, attrs):
         if tag == "tr":
             self.current = {}
+            self.current["id"] = self.index
+            self.index += 1
         elif tag == "td":
             if "benefits" not in self.current:
                 self.current["benefits"] = []
