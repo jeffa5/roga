@@ -1,4 +1,4 @@
-module Main exposing (main)
+port module Main exposing (main)
 
 import Browser exposing (Document)
 import Browser.Navigation as Nav
@@ -16,6 +16,7 @@ import Element
         , el
         , fill
         , height
+        , html
         , htmlAttribute
         , image
         , inFront
@@ -38,6 +39,7 @@ import Element.Background as Background
 import Element.Border as Border
 import Element.Font as Font
 import Element.Input as Input
+import Html exposing (audio)
 import Html.Attributes as Attrs
 import Http
 import Json.Decode exposing (Decoder, field, list, map6, string)
@@ -50,6 +52,9 @@ import Url
 import Url.Builder as URLBuilder exposing (relative)
 import Url.Parser exposing (Parser, int, parse, query)
 import Url.Parser.Query as Query
+
+
+port beep : () -> Cmd msg
 
 
 toSeconds : Posix -> Int
@@ -582,7 +587,10 @@ update msg model =
 
                     cmd =
                         if model.inWorkout && model.workoutIndex /= j then
-                            scrollToExercise newModel.workoutIndex
+                            Cmd.batch
+                                [ scrollToExercise newModel.workoutIndex
+                                , beep ()
+                                ]
 
                         else
                             Cmd.none
@@ -649,7 +657,16 @@ view model =
                 ]
                 (text "Roga")
                 :: (if model.inWorkout then
-                        [ viewWorkout model ]
+                        [ html
+                            (audio
+                                [ Attrs.src "beep.wav"
+                                , Attrs.id "beep"
+                                , Attrs.type_ "audio/wav"
+                                ]
+                                []
+                            )
+                        , viewWorkout model
+                        ]
 
                     else
                         [ viewFilters model, viewPoses model ]
