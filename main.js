@@ -4631,10 +4631,10 @@ var _Bitwise_shiftRightZfBy = F2(function(offset, a)
 	return a >>> offset;
 });
 var $author$project$Main$LinkClicked = function (a) {
-	return {$: 14, a: a};
+	return {$: 15, a: a};
 };
 var $author$project$Main$UrlChanged = function (a) {
-	return {$: 15, a: a};
+	return {$: 16, a: a};
 };
 var $elm$core$Basics$EQ = 1;
 var $elm$core$Basics$GT = 2;
@@ -5422,7 +5422,7 @@ var $elm$browser$Browser$application = _Browser_application;
 var $author$project$Main$Loading = {$: 1};
 var $author$project$Main$QueryParam = F4(
 	function (name, _default, parser, builder) {
-		return {bo: builder, z: _default, a5: name, bQ: parser};
+		return {bo: builder, A: _default, a5: name, bQ: parser};
 	});
 var $author$project$Main$boolToString = function (b) {
 	return b ? 'true' : 'false';
@@ -5775,9 +5775,9 @@ var $author$project$Main$timeParser = F2(
 				$author$project$Main$toSeconds(d)));
 	});
 var $author$project$Main$params = {
-	w: A4($author$project$Main$QueryParam, 'advanced', true, $author$project$Main$boolParser, $author$project$Main$boolBuilder),
-	y: A4($author$project$Main$QueryParam, 'beginner', true, $author$project$Main$boolParser, $author$project$Main$boolBuilder),
-	j: A4(
+	x: A4($author$project$Main$QueryParam, 'advanced', true, $author$project$Main$boolParser, $author$project$Main$boolBuilder),
+	z: A4($author$project$Main$QueryParam, 'beginner', true, $author$project$Main$boolParser, $author$project$Main$boolBuilder),
+	k: A4(
 		$author$project$Main$QueryParam,
 		'breakDuration',
 		$author$project$Main$seconds(5),
@@ -5789,11 +5789,11 @@ var $author$project$Main$params = {
 		$author$project$Main$seconds(30),
 		$author$project$Main$timeParser,
 		$author$project$Main$timeBuilder),
-	A: A4($author$project$Main$QueryParam, 'intermediate', true, $author$project$Main$boolParser, $author$project$Main$boolBuilder),
+	B: A4($author$project$Main$QueryParam, 'intermediate', true, $author$project$Main$boolParser, $author$project$Main$boolBuilder),
 	s: A4($author$project$Main$QueryParam, 'numPoses', 10, $author$project$Main$intParser, $author$project$Main$intBuilder),
-	n: A4($author$project$Main$QueryParam, 'poseIDs', _List_Nil, $author$project$Main$intListParser, $author$project$Main$intListBuilder)
+	j: A4($author$project$Main$QueryParam, 'poseIDs', _List_Nil, $author$project$Main$intListParser, $author$project$Main$intListBuilder)
 };
-var $author$project$Main$defaultQuery = {w: $author$project$Main$params.w.z, y: $author$project$Main$params.y.z, j: $author$project$Main$params.j.z, p: $author$project$Main$params.p.z, A: $author$project$Main$params.A.z, s: $author$project$Main$params.s.z, n: $author$project$Main$params.n.z};
+var $author$project$Main$defaultQuery = {x: $author$project$Main$params.x.A, z: $author$project$Main$params.z.A, k: $author$project$Main$params.k.A, p: $author$project$Main$params.p.A, B: $author$project$Main$params.B.A, s: $author$project$Main$params.s.A, j: $author$project$Main$params.j.A};
 var $author$project$Main$GotPoses = function (a) {
 	return {$: 1, a: a};
 };
@@ -6578,7 +6578,7 @@ var $elm$url$Url$Parser$parse = F2(
 	});
 var $author$project$Main$Query = F7(
 	function (breakDuration, exerciseDuration, numPoses, beginner, intermediate, advanced, poseIDs) {
-		return {w: advanced, y: beginner, j: breakDuration, p: exerciseDuration, A: intermediate, s: numPoses, n: poseIDs};
+		return {x: advanced, z: beginner, k: breakDuration, p: exerciseDuration, B: intermediate, s: numPoses, j: poseIDs};
 	});
 var $elm$url$Url$Parser$Query$map7 = F8(
 	function (func, _v0, _v1, _v2, _v3, _v4, _v5, _v6) {
@@ -6602,7 +6602,7 @@ var $elm$url$Url$Parser$Query$map7 = F8(
 		};
 	});
 var $author$project$Main$parser = function (qp) {
-	return A2(qp.bQ, qp.a5, qp.z);
+	return A2(qp.bQ, qp.a5, qp.A);
 };
 var $elm$url$Url$Parser$Parser = $elm$core$Basics$identity;
 var $elm$url$Url$Parser$query = function (_v0) {
@@ -6630,13 +6630,13 @@ var $author$project$Main$queryParser = $elm$url$Url$Parser$query(
 	A8(
 		$elm$url$Url$Parser$Query$map7,
 		$author$project$Main$Query,
-		$author$project$Main$parser($author$project$Main$params.j),
+		$author$project$Main$parser($author$project$Main$params.k),
 		$author$project$Main$parser($author$project$Main$params.p),
 		$author$project$Main$parser($author$project$Main$params.s),
-		$author$project$Main$parser($author$project$Main$params.y),
-		$author$project$Main$parser($author$project$Main$params.A),
-		$author$project$Main$parser($author$project$Main$params.w),
-		$author$project$Main$parser($author$project$Main$params.n)));
+		$author$project$Main$parser($author$project$Main$params.z),
+		$author$project$Main$parser($author$project$Main$params.B),
+		$author$project$Main$parser($author$project$Main$params.x),
+		$author$project$Main$parser($author$project$Main$params.j)));
 var $author$project$Main$init = F3(
 	function (_v0, url, key) {
 		var query = function () {
@@ -6652,11 +6652,11 @@ var $author$project$Main$init = F3(
 			}
 		}();
 		return _Utils_Tuple2(
-			{X: false, I: false, B: key, ac: $author$project$Main$Loading, a: query, ah: false, u: 0, M: _List_Nil},
+			{X: false, I: false, w: key, ac: $author$project$Main$Loading, a: query, ah: false, u: 0, M: _List_Nil},
 			$author$project$Main$getPoses);
 	});
 var $author$project$Main$Tick = function (a) {
-	return {$: 13, a: a};
+	return {$: 14, a: a};
 };
 var $elm$time$Time$Every = F2(
 	function (a, b) {
@@ -6954,6 +6954,7 @@ var $author$project$Main$NumPoses = function (a) {
 var $author$project$Main$Position = function (a) {
 	return {$: 0, a: a};
 };
+var $author$project$Main$ResetFilters = {$: 7};
 var $author$project$Main$SelectedPoses = function (a) {
 	return {$: 6, a: a};
 };
@@ -7490,7 +7491,7 @@ var $author$project$Main$filterPoses = F2(
 			$author$project$Main$Filtered,
 			A2(
 				$author$project$Main$randomPoses,
-				A4($author$project$Main$preFilter, model.a.y, model.a.A, model.a.w, poses),
+				A4($author$project$Main$preFilter, model.a.z, model.a.B, model.a.x, poses),
 				model.a.s));
 	});
 var $elm$core$List$any = F2(
@@ -7725,7 +7726,7 @@ var $elm$url$Url$toString = function (url) {
 };
 var $author$project$Main$paramBuilder = F2(
 	function (qp, v) {
-		return (!_Utils_eq(qp.z, v)) ? $elm$core$Maybe$Just(
+		return (!_Utils_eq(qp.A, v)) ? $elm$core$Maybe$Just(
 			A2(qp.bo, qp.a5, v)) : $elm$core$Maybe$Nothing;
 	});
 var $elm$url$Url$Builder$toQueryPair = function (_v0) {
@@ -7760,13 +7761,13 @@ var $author$project$Main$queryBuilder = function (q) {
 			},
 			_List_fromArray(
 				[
-					A2($author$project$Main$paramBuilder, $author$project$Main$params.j, q.j),
+					A2($author$project$Main$paramBuilder, $author$project$Main$params.k, q.k),
 					A2($author$project$Main$paramBuilder, $author$project$Main$params.p, q.p),
 					A2($author$project$Main$paramBuilder, $author$project$Main$params.s, q.s),
-					A2($author$project$Main$paramBuilder, $author$project$Main$params.y, q.y),
-					A2($author$project$Main$paramBuilder, $author$project$Main$params.A, q.A),
-					A2($author$project$Main$paramBuilder, $author$project$Main$params.w, q.w),
-					A2($author$project$Main$paramBuilder, $author$project$Main$params.n, q.n)
+					A2($author$project$Main$paramBuilder, $author$project$Main$params.z, q.z),
+					A2($author$project$Main$paramBuilder, $author$project$Main$params.B, q.B),
+					A2($author$project$Main$paramBuilder, $author$project$Main$params.x, q.x),
+					A2($author$project$Main$paramBuilder, $author$project$Main$params.j, q.j)
 				])));
 };
 var $author$project$Main$updateQuery = F3(
@@ -7778,7 +7779,7 @@ var $author$project$Main$updateQuery = F3(
 					return _Utils_update(
 						query,
 						{
-							j: $author$project$Main$seconds(t)
+							k: $author$project$Main$seconds(t)
 						});
 				case 1:
 					var t = msg.a;
@@ -7796,22 +7797,26 @@ var $author$project$Main$updateQuery = F3(
 					var b = msg.a;
 					return _Utils_update(
 						query,
-						{y: b});
+						{z: b});
 				case 4:
 					var b = msg.a;
 					return _Utils_update(
 						query,
-						{A: b});
+						{B: b});
 				case 5:
 					var b = msg.a;
 					return _Utils_update(
 						query,
-						{w: b});
+						{x: b});
+				case 7:
+					return _Utils_update(
+						$author$project$Main$defaultQuery,
+						{j: query.j});
 				default:
 					var l = msg.a;
 					return _Utils_update(
 						query,
-						{n: l});
+						{j: l});
 			}
 		}();
 		return _Utils_Tuple2(
@@ -7842,7 +7847,7 @@ var $author$project$Main$update = F2(
 						{
 							ac: $author$project$Main$Success(posesDict)
 						});
-					return (!$elm$core$List$length(model.a.n)) ? _Utils_Tuple2(
+					return (!$elm$core$List$length(model.a.j)) ? _Utils_Tuple2(
 						_Utils_update(
 							newModel,
 							{X: true}),
@@ -7862,7 +7867,7 @@ var $author$project$Main$update = F2(
 				var _v2 = A3(
 					$author$project$Main$updateQuery,
 					$author$project$Main$NumPoses(n),
-					model.B,
+					model.w,
 					model.a);
 				var query = _v2.a;
 				var cmd = _v2.b;
@@ -7876,7 +7881,7 @@ var $author$project$Main$update = F2(
 				var _v3 = A3(
 					$author$project$Main$updateQuery,
 					$author$project$Main$Beginner(b),
-					model.B,
+					model.w,
 					model.a);
 				var query = _v3.a;
 				var cmd = _v3.b;
@@ -7890,7 +7895,7 @@ var $author$project$Main$update = F2(
 				var _v4 = A3(
 					$author$project$Main$updateQuery,
 					$author$project$Main$Intermediate(b),
-					model.B,
+					model.w,
 					model.a);
 				var query = _v4.a;
 				var cmd = _v4.b;
@@ -7904,7 +7909,7 @@ var $author$project$Main$update = F2(
 				var _v5 = A3(
 					$author$project$Main$updateQuery,
 					$author$project$Main$Advanced(b),
-					model.B,
+					model.w,
 					model.a);
 				var query = _v5.a;
 				var cmd = _v5.b;
@@ -7933,7 +7938,7 @@ var $author$project$Main$update = F2(
 				var _v7 = A3(
 					$author$project$Main$updateQuery,
 					$author$project$Main$SelectedPoses(poseIDs),
-					model.B,
+					model.w,
 					model.a);
 				var query = _v7.a;
 				var cmd = _v7.b;
@@ -7943,12 +7948,7 @@ var $author$project$Main$update = F2(
 						{X: false, a: query}),
 					cmd);
 			case 8:
-				var t = msg.a;
-				var _v8 = A3(
-					$author$project$Main$updateQuery,
-					$author$project$Main$BreakDuration(t),
-					model.B,
-					model.a);
+				var _v8 = A3($author$project$Main$updateQuery, $author$project$Main$ResetFilters, model.w, model.a);
 				var query = _v8.a;
 				var cmd = _v8.b;
 				return _Utils_Tuple2(
@@ -7960,8 +7960,8 @@ var $author$project$Main$update = F2(
 				var t = msg.a;
 				var _v9 = A3(
 					$author$project$Main$updateQuery,
-					$author$project$Main$ExerciseDuration(t),
-					model.B,
+					$author$project$Main$BreakDuration(t),
+					model.w,
 					model.a);
 				var query = _v9.a;
 				var cmd = _v9.b;
@@ -7971,26 +7971,40 @@ var $author$project$Main$update = F2(
 						{a: query}),
 					cmd);
 			case 10:
-				var _v10 = model.ac;
-				if (_v10.$ === 2) {
-					var poses = _v10.a;
-					if ((!model.X) && (!(!$elm$core$List$length(model.a.n)))) {
+				var t = msg.a;
+				var _v10 = A3(
+					$author$project$Main$updateQuery,
+					$author$project$Main$ExerciseDuration(t),
+					model.w,
+					model.a);
+				var query = _v10.a;
+				var cmd = _v10.b;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{a: query}),
+					cmd);
+			case 11:
+				var _v11 = model.ac;
+				if (_v11.$ === 2) {
+					var poses = _v11.a;
+					if ((!model.X) && (!(!$elm$core$List$length(model.a.j)))) {
 						var positions = A2(
 							$elm$core$List$map,
 							function (p) {
 								return $author$project$Main$Position(
 									_Utils_Tuple2(p, model.a.p));
 							},
-							A2($author$project$Main$getSelectedPoses, poses, model.a.n));
-						var workout = (!(!$elm$time$Time$posixToMillis(model.a.j))) ? function (i) {
+							A2($author$project$Main$getSelectedPoses, poses, model.a.j));
+						var workout = (!(!$elm$time$Time$posixToMillis(model.a.k))) ? function (i) {
 							return A2(
 								$elm$core$List$cons,
-								$author$project$Main$Break(model.a.j),
+								$author$project$Main$Break(model.a.k),
 								i);
 						}(
 							A2(
 								$elm$core$List$intersperse,
-								$author$project$Main$Break(model.a.j),
+								$author$project$Main$Break(model.a.k),
 								positions)) : positions;
 						return _Utils_Tuple2(
 							_Utils_update(
@@ -8003,12 +8017,6 @@ var $author$project$Main$update = F2(
 				} else {
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
-			case 11:
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{I: false, ah: false, M: _List_Nil}),
-					$author$project$Main$scrollToTitle);
 			case 12:
 				return _Utils_Tuple2(
 					_Utils_update(
@@ -8016,23 +8024,29 @@ var $author$project$Main$update = F2(
 						{I: false, ah: false, M: _List_Nil}),
 					$author$project$Main$scrollToTitle);
 			case 13:
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{I: false, ah: false, M: _List_Nil}),
+					$author$project$Main$scrollToTitle);
+			case 14:
 				if (!model.I) {
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				} else {
 					if (model.ah) {
 						return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 					} else {
-						var _v11 = function () {
+						var _v12 = function () {
 							var f = F2(
-								function (_v16, _v17) {
-									var i = _v16.a;
-									var exercise = _v16.b;
-									var newI = _v17.a;
-									var es = _v17.b;
+								function (_v17, _v18) {
+									var i = _v17.a;
+									var exercise = _v17.b;
+									var newI = _v18.a;
+									var es = _v18.b;
 									var time = function () {
 										if (!exercise.$) {
-											var _v15 = exercise.a;
-											var t = _v15.b;
+											var _v16 = exercise.a;
+											var t = _v16.b;
 											return t;
 										} else {
 											var t = exercise.a;
@@ -8042,8 +8056,8 @@ var $author$project$Main$update = F2(
 									var set = F2(
 										function (e, t) {
 											if (!e.$) {
-												var _v13 = e.a;
-												var p = _v13.a;
+												var _v14 = e.a;
+												var p = _v14.a;
 												return $author$project$Main$Position(
 													_Utils_Tuple2(p, t));
 											} else {
@@ -8081,8 +8095,8 @@ var $author$project$Main$update = F2(
 								_Utils_Tuple2(model.u, _List_Nil),
 								A2($elm$core$List$indexedMap, $elm$core$Tuple$pair, model.M));
 						}();
-						var j = _v11.a;
-						var poses = _v11.b;
+						var j = _v12.a;
+						var poses = _v12.b;
 						var newModel = _Utils_eq(
 							j,
 							$elm$core$List$length(poses)) ? _Utils_update(
@@ -8103,7 +8117,7 @@ var $author$project$Main$update = F2(
 							cmd);
 					}
 				}
-			case 14:
+			case 15:
 				var urlRequest = msg.a;
 				if (!urlRequest.$) {
 					var url = urlRequest.a;
@@ -8111,7 +8125,7 @@ var $author$project$Main$update = F2(
 						model,
 						A2(
 							$elm$browser$Browser$Navigation$pushUrl,
-							model.B,
+							model.w,
 							$elm$url$Url$toString(url)));
 				} else {
 					var href = urlRequest.a;
@@ -10433,7 +10447,7 @@ var $elm$core$String$concat = function (strings) {
 var $mdgriffith$elm_ui$Internal$Style$Intermediate = $elm$core$Basics$identity;
 var $mdgriffith$elm_ui$Internal$Style$emptyIntermediate = F2(
 	function (selector, closing) {
-		return {aD: closing, k: _List_Nil, S: _List_Nil, L: selector};
+		return {aD: closing, l: _List_Nil, S: _List_Nil, L: selector};
 	});
 var $mdgriffith$elm_ui$Internal$Style$renderRules = F2(
 	function (_v0, rulesToRender) {
@@ -10460,10 +10474,10 @@ var $mdgriffith$elm_ui$Internal$Style$renderRules = F2(
 						return _Utils_update(
 							rendered,
 							{
-								k: A2(
+								l: A2(
 									$elm$core$List$cons,
-									{aD: '\n}', k: _List_Nil, S: props, L: '@supports (' + (prop + (':' + (value + (') {' + parent.L))))},
-									rendered.k)
+									{aD: '\n}', l: _List_Nil, S: props, L: '@supports (' + (prop + (':' + (value + (') {' + parent.L))))},
+									rendered.l)
 							});
 					case 4:
 						var selector = rule.a;
@@ -10471,13 +10485,13 @@ var $mdgriffith$elm_ui$Internal$Style$renderRules = F2(
 						return _Utils_update(
 							rendered,
 							{
-								k: A2(
+								l: A2(
 									$elm$core$List$cons,
 									A2(
 										$mdgriffith$elm_ui$Internal$Style$renderRules,
 										A2($mdgriffith$elm_ui$Internal$Style$emptyIntermediate, parent.L + (' + ' + selector), ''),
 										adjRules),
-									rendered.k)
+									rendered.l)
 							});
 					case 1:
 						var child = rule.a;
@@ -10485,13 +10499,13 @@ var $mdgriffith$elm_ui$Internal$Style$renderRules = F2(
 						return _Utils_update(
 							rendered,
 							{
-								k: A2(
+								l: A2(
 									$elm$core$List$cons,
 									A2(
 										$mdgriffith$elm_ui$Internal$Style$renderRules,
 										A2($mdgriffith$elm_ui$Internal$Style$emptyIntermediate, parent.L + (' > ' + child), ''),
 										childRules),
-									rendered.k)
+									rendered.l)
 							});
 					case 3:
 						var descriptor = rule.a;
@@ -10499,7 +10513,7 @@ var $mdgriffith$elm_ui$Internal$Style$renderRules = F2(
 						return _Utils_update(
 							rendered,
 							{
-								k: A2(
+								l: A2(
 									$elm$core$List$cons,
 									A2(
 										$mdgriffith$elm_ui$Internal$Style$renderRules,
@@ -10508,20 +10522,20 @@ var $mdgriffith$elm_ui$Internal$Style$renderRules = F2(
 											_Utils_ap(parent.L, descriptor),
 											''),
 										descriptorRules),
-									rendered.k)
+									rendered.l)
 							});
 					default:
 						var batched = rule.a;
 						return _Utils_update(
 							rendered,
 							{
-								k: A2(
+								l: A2(
 									$elm$core$List$cons,
 									A2(
 										$mdgriffith$elm_ui$Internal$Style$renderRules,
 										A2($mdgriffith$elm_ui$Internal$Style$emptyIntermediate, parent.L, ''),
 										batched),
-									rendered.k)
+									rendered.l)
 							});
 				}
 			});
@@ -10552,7 +10566,7 @@ var $mdgriffith$elm_ui$Internal$Style$renderCompact = function (styleClasses) {
 		return _Utils_ap(
 			renderClass(rule),
 			$elm$core$String$concat(
-				A2($elm$core$List$map, renderIntermediate, rule.k)));
+				A2($elm$core$List$map, renderIntermediate, rule.l)));
 	};
 	return $elm$core$String$concat(
 		A2(
@@ -13829,13 +13843,14 @@ var $author$project$Main$FilterIntermediate = function (a) {
 var $author$project$Main$FilterNum = function (a) {
 	return {$: 2, a: a};
 };
+var $author$project$Main$Reset = {$: 8};
 var $author$project$Main$SetBreakDuration = function (a) {
-	return {$: 8, a: a};
-};
-var $author$project$Main$SetExerciseDuration = function (a) {
 	return {$: 9, a: a};
 };
-var $author$project$Main$StartWorkout = {$: 10};
+var $author$project$Main$SetExerciseDuration = function (a) {
+	return {$: 10, a: a};
+};
+var $author$project$Main$StartWorkout = {$: 11};
 var $mdgriffith$elm_ui$Internal$Model$Fill = function (a) {
 	return {$: 2, a: a};
 };
@@ -15314,9 +15329,9 @@ var $mdgriffith$elm_ui$Element$wrappedRow = F2(
 	});
 var $author$project$Main$viewFilters = function (model) {
 	var workoutDuration = $elm$time$Time$millisToPosix(
-		model.a.s * ($elm$time$Time$posixToMillis(model.a.j) + $elm$time$Time$posixToMillis(model.a.p)));
+		model.a.s * ($elm$time$Time$posixToMillis(model.a.k) + $elm$time$Time$posixToMillis(model.a.p)));
 	var exerciseDuration = ($elm$time$Time$posixToMillis(model.a.p) / 1000) | 0;
-	var breakDuration = ($elm$time$Time$posixToMillis(model.a.j) / 1000) | 0;
+	var breakDuration = ($elm$time$Time$posixToMillis(model.a.k) / 1000) | 0;
 	return A2(
 		$mdgriffith$elm_ui$Element$column,
 		_List_fromArray(
@@ -15358,7 +15373,7 @@ var $author$project$Main$viewFilters = function (model) {
 									$author$project$Main$FilterNum),
 									A5(
 									$author$project$Main$viewNumberInput,
-									'Break duration: ' + $author$project$Main$viewTime(model.a.j),
+									'Break duration: ' + $author$project$Main$viewTime(model.a.k),
 									0,
 									30,
 									breakDuration,
@@ -15386,9 +15401,9 @@ var $author$project$Main$viewFilters = function (model) {
 								]),
 							_List_fromArray(
 								[
-									A3($author$project$Main$viewCheckbox, 'Beginner', model.a.y, $author$project$Main$FilterBeginner),
-									A3($author$project$Main$viewCheckbox, 'Intermediate', model.a.A, $author$project$Main$FilterIntermediate),
-									A3($author$project$Main$viewCheckbox, 'Advanced', model.a.w, $author$project$Main$FilterAdvanced)
+									A3($author$project$Main$viewCheckbox, 'Beginner', model.a.z, $author$project$Main$FilterBeginner),
+									A3($author$project$Main$viewCheckbox, 'Intermediate', model.a.B, $author$project$Main$FilterIntermediate),
+									A3($author$project$Main$viewCheckbox, 'Advanced', model.a.x, $author$project$Main$FilterAdvanced)
 								])))
 					])),
 				A2(
@@ -15411,6 +15426,17 @@ var $author$project$Main$viewFilters = function (model) {
 							_List_fromArray(
 								[$mdgriffith$elm_ui$Element$centerX]),
 							A2($author$project$Main$viewButton, $author$project$Main$Filter, 'Filter'))),
+						A2(
+						$mdgriffith$elm_ui$Element$el,
+						_List_fromArray(
+							[
+								$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
+							]),
+						A2(
+							$mdgriffith$elm_ui$Element$el,
+							_List_fromArray(
+								[$mdgriffith$elm_ui$Element$centerX]),
+							A2($author$project$Main$viewButton, $author$project$Main$Reset, 'Reset'))),
 						A2(
 						$mdgriffith$elm_ui$Element$el,
 						_List_fromArray(
@@ -15640,7 +15666,7 @@ var $author$project$Main$viewPoses = function (model) {
 		case 2:
 			var poses = _v0.a;
 			if (!model.X) {
-				var _v1 = model.a.n;
+				var _v1 = model.a.j;
 				if (!_v1.b) {
 					return A2(
 						$mdgriffith$elm_ui$Element$el,
@@ -15681,7 +15707,7 @@ var $author$project$Main$viewPoses = function (model) {
 											]),
 										A2($author$project$Main$viewPose, '', pose));
 								}),
-							A2($author$project$Main$getSelectedPoses, poses, model.a.n)));
+							A2($author$project$Main$getSelectedPoses, poses, model.a.j)));
 				}
 			} else {
 				return A2(
@@ -15722,9 +15748,9 @@ var $author$project$Main$viewPoses = function (model) {
 					$mdgriffith$elm_ui$Element$text('Failed to load')));
 	}
 };
-var $author$project$Main$CompleteWorkout = {$: 12};
+var $author$project$Main$CompleteWorkout = {$: 13};
 var $author$project$Main$highlight = A3($mdgriffith$elm_ui$Element$rgb255, 245, 245, 245);
-var $author$project$Main$CancelWorkout = {$: 11};
+var $author$project$Main$CancelWorkout = {$: 12};
 var $mdgriffith$elm_ui$Internal$Model$Right = 2;
 var $mdgriffith$elm_ui$Element$alignRight = $mdgriffith$elm_ui$Internal$Model$AlignX(2);
 var $mdgriffith$elm_ui$Internal$Flag$borderStyle = $mdgriffith$elm_ui$Internal$Flag$flag(11);

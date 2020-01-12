@@ -242,6 +242,7 @@ type QueryMsg
     | Intermediate Bool
     | Advanced Bool
     | SelectedPoses (List Int)
+    | ResetFilters
 
 
 updateQuery : QueryMsg -> Nav.Key -> Query -> ( Query, Cmd Msg )
@@ -266,6 +267,9 @@ updateQuery msg key query =
 
                 Advanced b ->
                     { query | advanced = b }
+
+                ResetFilters ->
+                    { defaultQuery | poseIDs = query.poseIDs }
 
                 SelectedPoses l ->
                     { query | poseIDs = l }
@@ -394,6 +398,7 @@ type Msg
     | FilterAdvanced Bool
     | Filter
     | Filtered (List Int)
+    | Reset
     | SetBreakDuration Int
     | SetExerciseDuration Int
     | StartWorkout
@@ -472,6 +477,13 @@ update msg model =
                     updateQuery (SelectedPoses poseIDs) model.key model.query
             in
             ( { model | filtering = False, query = query }, cmd )
+
+        Reset ->
+            let
+                ( query, cmd ) =
+                    updateQuery ResetFilters model.key model.query
+            in
+            ( { model | query = query }, cmd )
 
         SetBreakDuration t ->
             let
@@ -879,6 +891,7 @@ viewFilters model =
             ]
         , wrappedRow [ width fill, paddingXY 0 10 ]
             [ el [ width fill ] (el [ centerX ] (viewButton Filter "Filter"))
+            , el [ width fill ] (el [ centerX ] (viewButton Reset "Reset"))
             , el [ width fill ] (el [ centerX ] (text <| viewTime workoutDuration))
             , el [ width fill ] (el [ centerX ] (viewButton StartWorkout "Start Workout"))
             ]
