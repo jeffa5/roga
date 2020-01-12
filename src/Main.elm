@@ -350,12 +350,17 @@ seconds s =
     Time.millisToPosix (s * 1000)
 
 
+normalizedUrl : Url.Url -> Url.Url
+normalizedUrl url =
+    { url | path = "" }
+
+
 init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
 init _ url key =
     let
         query =
             case
-                parse queryParser url
+                parse queryParser (normalizedUrl url)
             of
                 Just q ->
                     q
