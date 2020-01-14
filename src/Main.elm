@@ -28,6 +28,7 @@ import Element
         , paragraph
         , px
         , rgb255
+        , row
         , shrink
         , spacing
         , spacingXY
@@ -286,6 +287,11 @@ updateQuery msg key query =
 grey : Color
 grey =
     rgb255 221 221 221
+
+
+blue : Color
+blue =
+    rgb255 50 50 200
 
 
 highlight : Color
@@ -661,11 +667,8 @@ view : Model -> Document Msg
 view model =
     { title = "Roga"
     , body =
-        [ column
-            [ width shrink
-            , centerX
-            ]
-            (el
+        [ column [ height fill, centerX ]
+            [ el
                 [ centerX
                 , htmlAttribute (Attrs.id "title")
                 , padding 20
@@ -673,22 +676,47 @@ view model =
                 , Font.size 36
                 ]
                 (text "Roga")
-                :: (if model.inWorkout then
-                        [ html
-                            (audio
-                                [ Attrs.src "beep.wav"
-                                , Attrs.id "beep"
-                                , Attrs.type_ "audio/wav"
-                                ]
-                                []
-                            )
-                        , viewWorkout model
-                        ]
+            , column
+                [ width shrink
+                , height fill
+                , centerX
+                ]
+                (if model.inWorkout then
+                    [ html
+                        (audio
+                            [ Attrs.src "beep.wav"
+                            , Attrs.id "beep"
+                            , Attrs.type_ "audio/wav"
+                            ]
+                            []
+                        )
+                    , viewWorkout model
+                    ]
 
-                    else
-                        [ viewFilters model, viewPoses model ]
-                   )
-            )
+                 else
+                    [ viewFilters model, viewPoses model ]
+                )
+            , row [ width fill, padding 10, Font.size 16 ]
+                [ el [ width fill ]
+                    (row [ centerX ]
+                        [ el [] (text "Roga by ")
+                        , link [ Font.color blue ]
+                            { url = "https://jeffas.io"
+                            , label = el [] (text "Jeffas")
+                            }
+                        ]
+                    )
+                , el [ width fill ]
+                    (row [ centerX ]
+                        [ el [] (text "Source available on ")
+                        , link [ Font.color blue ]
+                            { url = "https://github.com/jeffa5/roga"
+                            , label = el [] (text "GitHub")
+                            }
+                        ]
+                    )
+                ]
+            ]
             |> layout []
         ]
     }
