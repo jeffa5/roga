@@ -903,7 +903,7 @@ viewFilters model =
                     ]
                     [ viewNumberInput ("Number of Poses: " ++ String.fromInt model.query.numPoses) 1 50 model.query.numPoses FilterNum
                     , viewNumberInput ("Break duration: " ++ viewTime model.query.breakDuration) 0 30 breakDuration SetBreakDuration
-                    , viewNumberInput ("Exercise duration: " ++ viewTime model.query.exerciseDuration) 10 60 exerciseDuration SetExerciseDuration
+                    , viewNumberInput ("Exercise duration: " ++ viewTime model.query.exerciseDuration) 10 120 exerciseDuration SetExerciseDuration
                     ]
                 )
             , el [ width fill ]

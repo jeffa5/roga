@@ -15420,7 +15420,7 @@ var $author$project$Main$viewFilters = function (model) {
 									$author$project$Main$viewNumberInput,
 									'Exercise duration: ' + $author$project$Main$viewTime(model.a.p),
 									10,
-									60,
+									120,
 									exerciseDuration,
 									$author$project$Main$SetExerciseDuration)
 								]))),
