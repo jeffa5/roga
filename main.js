@@ -5780,13 +5780,13 @@ var $author$project$Main$params = {
 	k: A4(
 		$author$project$Main$QueryParam,
 		'breakDuration',
-		$author$project$Main$seconds(5),
+		$author$project$Main$seconds(10),
 		$author$project$Main$timeParser,
 		$author$project$Main$timeBuilder),
 	p: A4(
 		$author$project$Main$QueryParam,
 		'exerciseDuration',
-		$author$project$Main$seconds(30),
+		$author$project$Main$seconds(60),
 		$author$project$Main$timeParser,
 		$author$project$Main$timeBuilder),
 	B: A4($author$project$Main$QueryParam, 'intermediate', true, $author$project$Main$boolParser, $author$project$Main$boolBuilder),

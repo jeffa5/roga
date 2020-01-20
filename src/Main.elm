@@ -146,8 +146,8 @@ params :
     , poseIDs : QueryParam (List Int)
     }
 params =
-    { breakDuration = QueryParam "breakDuration" (seconds 5) timeParser timeBuilder
-    , exerciseDuration = QueryParam "exerciseDuration" (seconds 30) timeParser timeBuilder
+    { breakDuration = QueryParam "breakDuration" (seconds 10) timeParser timeBuilder
+    , exerciseDuration = QueryParam "exerciseDuration" (seconds 60) timeParser timeBuilder
     , numPoses = QueryParam "numPoses" 10 intParser intBuilder
     , beginner = QueryParam "beginner" True boolParser boolBuilder
     , intermediate = QueryParam "intermediate" True boolParser boolBuilder
