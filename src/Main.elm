@@ -1,6 +1,7 @@
 port module Main exposing (main)
 
 import Browser exposing (Document)
+import Browser.Events exposing (onResize)
 import Browser.Navigation as Nav
 import Dict exposing (Dict)
 import Element
@@ -29,7 +30,6 @@ import Element
         , px
         , rgb255
         , row
-        , shrink
         , spacing
         , spacingXY
         , text
@@ -316,7 +316,7 @@ sides =
 -- MAIN
 
 
-main : Program () Model Msg
+main : Program Json.Decode.Value Model Msg
 main =
     Browser.application
         { init = init
@@ -346,6 +346,8 @@ type alias Model =
     , workoutIndex : Int
     , key : Nav.Key
     , query : Query
+    , window : Window
+    , device : Element.Device
     }
 
 
@@ -365,9 +367,32 @@ normalizedUrl url =
     { url | path = "" }
 
 
-init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
-init _ url key =
+type alias Window =
+    { width : Int
+    , height : Int
+    }
+
+
+windowDecoder : Decoder Window
+windowDecoder =
+    Json.Decode.map2 Window
+        (field "width" Json.Decode.int)
+        (field "height" Json.Decode.int)
+
+
+init : Json.Decode.Value -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
+init windowJson url key =
     let
+        window =
+            case
+                Json.Decode.decodeValue windowDecoder windowJson
+            of
+                Ok w ->
+                    w
+
+                Err _ ->
+                    { width = 0, height = 0 }
+
         query =
             case
                 parse queryParser (normalizedUrl url)
@@ -386,6 +411,8 @@ init _ url key =
       , workoutIndex = 0
       , key = key
       , query = query
+      , window = window
+      , device = Element.classifyDevice window
       }
     , getPoses
     )
@@ -413,6 +440,7 @@ type Msg
     | Tick Posix
     | LinkClicked Browser.UrlRequest
     | UrlChanged Url.Url
+    | Resize ( Int, Int )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -631,6 +659,13 @@ update msg model =
         UrlChanged _ ->
             ( model, Cmd.none )
 
+        Resize ( w, h ) ->
+            let
+                window =
+                    { width = w, height = h }
+            in
+            ( { model | window = window, device = Element.classifyDevice window }, Cmd.none )
+
 
 scrollConfig : SmoothScroll.Config
 scrollConfig =
@@ -656,7 +691,10 @@ scrollToTitle =
 
 subscriptions : Model -> Sub Msg
 subscriptions _ =
-    Time.every 1000 Tick
+    Sub.batch
+        [ Time.every 1000 Tick
+        , onResize (\w h -> Resize ( w, h ))
+        ]
 
 
 
@@ -677,7 +715,14 @@ view model =
                 ]
                 (text "Roga")
             , column
-                [ width shrink
+                [ width
+                    (case model.device.orientation of
+                        Element.Portrait ->
+                            px model.window.width
+
+                        Element.Landscape ->
+                            fill
+                    )
                 , height fill
                 , centerX
                 ]
@@ -989,7 +1034,9 @@ viewPoses model =
                         el [ width fill ] (el [ centerX ] (text "No poses to show"))
 
                     _ ->
-                        column [ width fill ]
+                        column
+                            [ width fill
+                            ]
                             (List.indexedMap
                                 (\i pose ->
                                     el
