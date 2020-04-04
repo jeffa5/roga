@@ -23,6 +23,7 @@ import Element
         , inFront
         , layout
         , link
+        , maximum
         , padding
         , paddingEach
         , paddingXY
@@ -716,7 +717,7 @@ view model =
                 ]
                 (text "Roga")
             , column
-                [ width shrink
+                [ width (shrink |> maximum model.window.width)
                 , height fill
                 , centerX
                 ]
@@ -774,7 +775,7 @@ viewExercise model ( i, exercise ) =
                     , centerY
                     , paddingEach { sides | right = 10 }
                     ]
-                    (viewButton CancelWorkout "Cancel Workout")
+                    (viewButton CancelWorkout "Cancel")
                 )
 
         time t =
@@ -932,9 +933,7 @@ viewFilters model =
     column
         [ width fill ]
         [ wrappedRow
-            [ width fill
-            , spacingXY 20 0
-            ]
+            [ width fill ]
             [ el [ width fill ]
                 (column
                     [ spacing 10
@@ -960,7 +959,7 @@ viewFilters model =
             [ el [ width fill ] (el [ centerX ] (viewButton Filter "Filter"))
             , el [ width fill ] (el [ centerX ] (viewButton Reset "Reset"))
             , el [ width fill ] (el [ centerX ] (text <| viewTime workoutDuration))
-            , el [ width fill ] (el [ centerX ] (viewButton StartWorkout "Start Workout"))
+            , el [ width fill ] (el [ centerX ] (viewButton StartWorkout "Start"))
             ]
         ]
 
