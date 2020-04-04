@@ -830,7 +830,7 @@ viewExercise model ( i, exercise ) =
                            )
                     )
                     (text "Exercise")
-                , viewPose ("exercise" ++ String.fromInt i) pose
+                , viewPose model ("exercise" ++ String.fromInt i) pose
                 ]
 
         Break t ->
@@ -1048,7 +1048,7 @@ viewPoses model =
                                         , width fill
                                         , height fill
                                         ]
-                                        (viewPose "" pose)
+                                        (viewPose model "" pose)
                                 )
                                 (getSelectedPoses poses model.query.poseIDs)
                             )
@@ -1085,8 +1085,8 @@ viewPoseText p =
         ]
 
 
-viewPoseImage : Pose -> Element Msg
-viewPoseImage p =
+viewPoseImage : Model -> Pose -> Element Msg
+viewPoseImage model p =
     el
         [ height fill
         , paddingXY 0 20
@@ -1094,21 +1094,32 @@ viewPoseImage p =
         (link []
             { url = p.image
             , label =
-                image [ width (px 128) ]
+                image
+                    [ width
+                        (px
+                            (case model.device.orientation of
+                                Element.Portrait ->
+                                    256
+
+                                Element.Landscape ->
+                                    128
+                            )
+                        )
+                    ]
                     { src = p.image, description = p.pose }
             }
         )
 
 
-viewPose : String -> Pose -> Element Msg
-viewPose id pose =
+viewPose : Model -> String -> Pose -> Element Msg
+viewPose model id pose =
     wrappedRow
         [ width fill
         , spacingXY 10 0
         , paddingXY 10 0
         , htmlAttribute (Attrs.id id)
         ]
-        [ viewPoseImage pose
+        [ viewPoseImage model pose
         , viewPoseText pose
         ]
 
