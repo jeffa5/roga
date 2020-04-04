@@ -1035,8 +1035,7 @@ viewPoses model =
 
                     _ ->
                         column
-                            [ width fill
-                            ]
+                            [ width fill ]
                             (List.indexedMap
                                 (\i pose ->
                                     el
