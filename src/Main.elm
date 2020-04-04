@@ -30,6 +30,7 @@ import Element
         , px
         , rgb255
         , row
+        , shrink
         , spacing
         , spacingXY
         , text
@@ -715,14 +716,7 @@ view model =
                 ]
                 (text "Roga")
             , column
-                [ width
-                    (case model.device.orientation of
-                        Element.Portrait ->
-                            px model.window.width
-
-                        Element.Landscape ->
-                            fill
-                    )
+                [ width shrink
                 , height fill
                 , centerX
                 ]
@@ -830,7 +824,7 @@ viewExercise model ( i, exercise ) =
                            )
                     )
                     (text "Exercise")
-                , viewPose model ("exercise" ++ String.fromInt i) pose
+                , viewPose ("exercise" ++ String.fromInt i) pose
                 ]
 
         Break t ->
@@ -1048,7 +1042,7 @@ viewPoses model =
                                         , width fill
                                         , height fill
                                         ]
-                                        (viewPose model "" pose)
+                                        (viewPose "" pose)
                                 )
                                 (getSelectedPoses poses model.query.poseIDs)
                             )
@@ -1085,8 +1079,8 @@ viewPoseText p =
         ]
 
 
-viewPoseImage : Model -> Pose -> Element Msg
-viewPoseImage model p =
+viewPoseImage : Pose -> Element Msg
+viewPoseImage p =
     el
         [ height fill
         , paddingXY 0 20
@@ -1094,32 +1088,21 @@ viewPoseImage model p =
         (link []
             { url = p.image
             , label =
-                image
-                    [ width
-                        (px
-                            (case model.device.orientation of
-                                Element.Portrait ->
-                                    256
-
-                                Element.Landscape ->
-                                    128
-                            )
-                        )
-                    ]
+                image [ width (px 128) ]
                     { src = p.image, description = p.pose }
             }
         )
 
 
-viewPose : Model -> String -> Pose -> Element Msg
-viewPose model id pose =
+viewPose : String -> Pose -> Element Msg
+viewPose id pose =
     wrappedRow
         [ width fill
         , spacingXY 10 0
         , paddingXY 10 0
         , htmlAttribute (Attrs.id id)
         ]
-        [ viewPoseImage model pose
+        [ viewPoseImage pose
         , viewPoseText pose
         ]
 
