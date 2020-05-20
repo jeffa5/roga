@@ -5798,13 +5798,13 @@ var $author$project$Main$timeParser = F2(
 var $author$project$Main$params = {
 	x: A4($author$project$Main$QueryParam, 'advanced', true, $author$project$Main$boolParser, $author$project$Main$boolBuilder),
 	z: A4($author$project$Main$QueryParam, 'beginner', true, $author$project$Main$boolParser, $author$project$Main$boolBuilder),
-	k: A4(
+	i: A4(
 		$author$project$Main$QueryParam,
 		'breakDuration',
 		$author$project$Main$seconds(10),
 		$author$project$Main$timeParser,
 		$author$project$Main$timeBuilder),
-	p: A4(
+	n: A4(
 		$author$project$Main$QueryParam,
 		'exerciseDuration',
 		$author$project$Main$seconds(60),
@@ -5812,9 +5812,9 @@ var $author$project$Main$params = {
 		$author$project$Main$timeBuilder),
 	B: A4($author$project$Main$QueryParam, 'intermediate', true, $author$project$Main$boolParser, $author$project$Main$boolBuilder),
 	s: A4($author$project$Main$QueryParam, 'numPoses', 10, $author$project$Main$intParser, $author$project$Main$intBuilder),
-	j: A4($author$project$Main$QueryParam, 'poseIDs', _List_Nil, $author$project$Main$intListParser, $author$project$Main$intListBuilder)
+	k: A4($author$project$Main$QueryParam, 'poseIDs', _List_Nil, $author$project$Main$intListParser, $author$project$Main$intListBuilder)
 };
-var $author$project$Main$defaultQuery = {x: $author$project$Main$params.x.A, z: $author$project$Main$params.z.A, k: $author$project$Main$params.k.A, p: $author$project$Main$params.p.A, B: $author$project$Main$params.B.A, s: $author$project$Main$params.s.A, j: $author$project$Main$params.j.A};
+var $author$project$Main$defaultQuery = {x: $author$project$Main$params.x.A, z: $author$project$Main$params.z.A, i: $author$project$Main$params.i.A, n: $author$project$Main$params.n.A, B: $author$project$Main$params.B.A, s: $author$project$Main$params.s.A, k: $author$project$Main$params.k.A};
 var $author$project$Main$GotPoses = function (a) {
 	return {$: 1, a: a};
 };
@@ -6599,7 +6599,7 @@ var $elm$url$Url$Parser$parse = F2(
 	});
 var $author$project$Main$Query = F7(
 	function (breakDuration, exerciseDuration, numPoses, beginner, intermediate, advanced, poseIDs) {
-		return {x: advanced, z: beginner, k: breakDuration, p: exerciseDuration, B: intermediate, s: numPoses, j: poseIDs};
+		return {x: advanced, z: beginner, i: breakDuration, n: exerciseDuration, B: intermediate, s: numPoses, k: poseIDs};
 	});
 var $elm$url$Url$Parser$Query$map7 = F8(
 	function (func, _v0, _v1, _v2, _v3, _v4, _v5, _v6) {
@@ -6651,13 +6651,13 @@ var $author$project$Main$queryParser = $elm$url$Url$Parser$query(
 	A8(
 		$elm$url$Url$Parser$Query$map7,
 		$author$project$Main$Query,
-		$author$project$Main$parser($author$project$Main$params.k),
-		$author$project$Main$parser($author$project$Main$params.p),
+		$author$project$Main$parser($author$project$Main$params.i),
+		$author$project$Main$parser($author$project$Main$params.n),
 		$author$project$Main$parser($author$project$Main$params.s),
 		$author$project$Main$parser($author$project$Main$params.z),
 		$author$project$Main$parser($author$project$Main$params.B),
 		$author$project$Main$parser($author$project$Main$params.x),
-		$author$project$Main$parser($author$project$Main$params.j)));
+		$author$project$Main$parser($author$project$Main$params.k)));
 var $author$project$Main$Window = F2(
 	function (width, height) {
 		return {a2: height, aS: width};
@@ -8010,13 +8010,13 @@ var $author$project$Main$queryBuilder = function (q) {
 			},
 			_List_fromArray(
 				[
-					A2($author$project$Main$paramBuilder, $author$project$Main$params.k, q.k),
-					A2($author$project$Main$paramBuilder, $author$project$Main$params.p, q.p),
+					A2($author$project$Main$paramBuilder, $author$project$Main$params.i, q.i),
+					A2($author$project$Main$paramBuilder, $author$project$Main$params.n, q.n),
 					A2($author$project$Main$paramBuilder, $author$project$Main$params.s, q.s),
 					A2($author$project$Main$paramBuilder, $author$project$Main$params.z, q.z),
 					A2($author$project$Main$paramBuilder, $author$project$Main$params.B, q.B),
 					A2($author$project$Main$paramBuilder, $author$project$Main$params.x, q.x),
-					A2($author$project$Main$paramBuilder, $author$project$Main$params.j, q.j)
+					A2($author$project$Main$paramBuilder, $author$project$Main$params.k, q.k)
 				])));
 };
 var $author$project$Main$updateQuery = F3(
@@ -8028,14 +8028,14 @@ var $author$project$Main$updateQuery = F3(
 					return _Utils_update(
 						query,
 						{
-							k: $author$project$Main$seconds(t)
+							i: $author$project$Main$seconds(t)
 						});
 				case 1:
 					var t = msg.a;
 					return _Utils_update(
 						query,
 						{
-							p: $author$project$Main$seconds(t)
+							n: $author$project$Main$seconds(t)
 						});
 				case 2:
 					var n = msg.a;
@@ -8060,12 +8060,12 @@ var $author$project$Main$updateQuery = F3(
 				case 7:
 					return _Utils_update(
 						$author$project$Main$defaultQuery,
-						{j: query.j});
+						{k: query.k});
 				default:
 					var l = msg.a;
 					return _Utils_update(
 						query,
-						{j: l});
+						{k: l});
 			}
 		}();
 		return _Utils_Tuple2(
@@ -8096,7 +8096,7 @@ var $author$project$Main$update = F2(
 						{
 							ac: $author$project$Main$Success(posesDict)
 						});
-					return (!$elm$core$List$length(model.a.j)) ? _Utils_Tuple2(
+					return (!$elm$core$List$length(model.a.k)) ? _Utils_Tuple2(
 						_Utils_update(
 							newModel,
 							{X: true}),
@@ -8237,23 +8237,23 @@ var $author$project$Main$update = F2(
 				var _v11 = model.ac;
 				if (_v11.$ === 2) {
 					var poses = _v11.a;
-					if ((!model.X) && (!(!$elm$core$List$length(model.a.j)))) {
+					if ((!model.X) && (!(!$elm$core$List$length(model.a.k)))) {
 						var positions = A2(
 							$elm$core$List$map,
 							function (p) {
 								return $author$project$Main$Position(
-									_Utils_Tuple2(p, model.a.p));
+									_Utils_Tuple2(p, model.a.n));
 							},
-							A2($author$project$Main$getSelectedPoses, poses, model.a.j));
-						var workout = (!(!$elm$time$Time$posixToMillis(model.a.k))) ? function (i) {
+							A2($author$project$Main$getSelectedPoses, poses, model.a.k));
+						var workout = (!(!$elm$time$Time$posixToMillis(model.a.i))) ? function (i) {
 							return A2(
 								$elm$core$List$cons,
-								$author$project$Main$Break(model.a.k),
+								$author$project$Main$Break(model.a.i),
 								i);
 						}(
 							A2(
 								$elm$core$List$intersperse,
-								$author$project$Main$Break(model.a.k),
+								$author$project$Main$Break(model.a.i),
 								positions)) : positions;
 						return _Utils_Tuple2(
 							_Utils_update(
@@ -8287,15 +8287,16 @@ var $author$project$Main$update = F2(
 					} else {
 						var _v12 = function () {
 							var f = F2(
-								function (_v17, _v18) {
-									var i = _v17.a;
-									var exercise = _v17.b;
-									var newI = _v18.a;
-									var es = _v18.b;
+								function (_v19, _v20) {
+									var i = _v19.a;
+									var exercise = _v19.b;
+									var newI = _v20.a;
+									var es = _v20.b;
+									var bp = _v20.c;
 									var time = function () {
 										if (!exercise.$) {
-											var _v16 = exercise.a;
-											var t = _v16.b;
+											var _v18 = exercise.a;
+											var t = _v18.b;
 											return t;
 										} else {
 											var t = exercise.a;
@@ -8305,47 +8306,67 @@ var $author$project$Main$update = F2(
 									var set = F2(
 										function (e, t) {
 											if (!e.$) {
-												var _v14 = e.a;
-												var p = _v14.a;
+												var _v16 = e.a;
+												var p = _v16.a;
 												return $author$project$Main$Position(
 													_Utils_Tuple2(p, t));
 											} else {
 												return $author$project$Main$Break(t);
 											}
 										});
+									var original_duration = function () {
+										if (!exercise.$) {
+											var _v14 = exercise.a;
+											return model.a.n;
+										} else {
+											return model.a.i;
+										}
+									}();
 									if (_Utils_eq(i, model.u)) {
 										var decremented = $elm$time$Time$millisToPosix(
 											$elm$time$Time$posixToMillis(time) - 1000);
 										return _Utils_eq(
 											decremented,
-											$elm$time$Time$millisToPosix(0)) ? _Utils_Tuple2(
+											$elm$time$Time$millisToPosix(0)) ? _Utils_Tuple3(
 											newI + 1,
 											A2(
 												$elm$core$List$cons,
 												A2(set, exercise, decremented),
-												es)) : _Utils_Tuple2(
+												es),
+											true) : (_Utils_eq(
+											$elm$time$Time$posixToMillis(decremented),
+											($elm$time$Time$posixToMillis(original_duration) / 2) | 0) ? _Utils_Tuple3(
 											newI,
 											A2(
 												$elm$core$List$cons,
 												A2(set, exercise, decremented),
-												es));
+												es),
+											true) : _Utils_Tuple3(
+											newI,
+											A2(
+												$elm$core$List$cons,
+												A2(set, exercise, decremented),
+												es),
+											false));
 									} else {
-										return _Utils_Tuple2(
+										return _Utils_Tuple3(
 											newI,
 											A2(
 												$elm$core$List$cons,
 												A2(set, exercise, time),
-												es));
+												es),
+											bp);
 									}
 								});
 							return A3(
 								$elm$core$List$foldr,
 								f,
-								_Utils_Tuple2(model.u, _List_Nil),
+								_Utils_Tuple3(model.u, _List_Nil, false),
 								A2($elm$core$List$indexedMap, $elm$core$Tuple$pair, model.M));
 						}();
 						var j = _v12.a;
 						var poses = _v12.b;
+						var bep = _v12.c;
 						var newModel = _Utils_eq(
 							j,
 							$elm$core$List$length(poses)) ? _Utils_update(
@@ -8358,7 +8379,7 @@ var $author$project$Main$update = F2(
 								[
 									$author$project$Main$scrollToExercise(newModel.u),
 									$author$project$Main$beep(0)
-								])) : $elm$core$Platform$Cmd$none;
+								])) : (bep ? $author$project$Main$beep(0) : $elm$core$Platform$Cmd$none);
 						return _Utils_Tuple2(
 							_Utils_update(
 								newModel,
@@ -8385,9 +8406,9 @@ var $author$project$Main$update = F2(
 			case 16:
 				return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 			default:
-				var _v20 = msg.a;
-				var w = _v20.a;
-				var h = _v20.b;
+				var _v22 = msg.a;
+				var w = _v22.a;
+				var h = _v22.b;
 				var window = {a2: h, aS: w};
 				return _Utils_Tuple2(
 					_Utils_update(
@@ -15634,9 +15655,9 @@ var $mdgriffith$elm_ui$Element$wrappedRow = F2(
 	});
 var $author$project$Main$viewFilters = function (model) {
 	var workoutDuration = $elm$time$Time$millisToPosix(
-		model.a.s * ($elm$time$Time$posixToMillis(model.a.k) + $elm$time$Time$posixToMillis(model.a.p)));
-	var exerciseDuration = ($elm$time$Time$posixToMillis(model.a.p) / 1000) | 0;
-	var breakDuration = ($elm$time$Time$posixToMillis(model.a.k) / 1000) | 0;
+		model.a.s * ($elm$time$Time$posixToMillis(model.a.i) + $elm$time$Time$posixToMillis(model.a.n)));
+	var exerciseDuration = ($elm$time$Time$posixToMillis(model.a.n) / 1000) | 0;
+	var breakDuration = ($elm$time$Time$posixToMillis(model.a.i) / 1000) | 0;
 	return A2(
 		$mdgriffith$elm_ui$Element$column,
 		_List_fromArray(
@@ -15677,14 +15698,14 @@ var $author$project$Main$viewFilters = function (model) {
 									$author$project$Main$FilterNum),
 									A5(
 									$author$project$Main$viewNumberInput,
-									'Break duration: ' + $author$project$Main$viewTime(model.a.k),
+									'Break duration: ' + $author$project$Main$viewTime(model.a.i),
 									0,
 									30,
 									breakDuration,
 									$author$project$Main$SetBreakDuration),
 									A5(
 									$author$project$Main$viewNumberInput,
-									'Exercise duration: ' + $author$project$Main$viewTime(model.a.p),
+									'Exercise duration: ' + $author$project$Main$viewTime(model.a.n),
 									10,
 									120,
 									exerciseDuration,
@@ -15933,7 +15954,7 @@ var $author$project$Main$viewPoses = function (model) {
 		case 2:
 			var poses = _v0.a;
 			if (!model.X) {
-				var _v1 = model.a.j;
+				var _v1 = model.a.k;
 				if (!_v1.b) {
 					return A2(
 						$mdgriffith$elm_ui$Element$el,
@@ -15974,7 +15995,7 @@ var $author$project$Main$viewPoses = function (model) {
 											]),
 										A2($author$project$Main$viewPose, '', pose));
 								}),
-							A2($author$project$Main$getSelectedPoses, poses, model.a.j)));
+							A2($author$project$Main$getSelectedPoses, poses, model.a.k)));
 				}
 			} else {
 				return A2(

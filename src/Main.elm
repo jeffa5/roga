@@ -593,9 +593,9 @@ update msg model =
 
             else
                 let
-                    ( j, poses ) =
+                    ( j, poses, bep ) =
                         let
-                            f ( i, exercise ) ( newI, es ) =
+                            f ( i, exercise ) ( newI, es, bp ) =
                                 let
                                     time =
                                         case exercise of
@@ -612,6 +612,14 @@ update msg model =
 
                                             Break _ ->
                                                 Break t
+
+                                    original_duration =
+                                        case exercise of
+                                            Position ( _, _ ) ->
+                                                model.query.exerciseDuration
+
+                                            Break _ ->
+                                                model.query.breakDuration
                                 in
                                 if i == model.workoutIndex then
                                     let
@@ -619,16 +627,19 @@ update msg model =
                                             Time.millisToPosix (Time.posixToMillis time - 1000)
                                     in
                                     if decremented == Time.millisToPosix 0 then
-                                        ( newI + 1, set exercise decremented :: es )
+                                        ( newI + 1, set exercise decremented :: es, True )
+
+                                    else if Time.posixToMillis decremented == Time.posixToMillis original_duration // 2 then
+                                        ( newI, set exercise decremented :: es, True )
 
                                     else
-                                        ( newI, set exercise decremented :: es )
+                                        ( newI, set exercise decremented :: es, False )
 
                                 else
-                                    ( newI, set exercise time :: es )
+                                    ( newI, set exercise time :: es, bp )
                         in
                         List.indexedMap Tuple.pair model.workoutPoses
-                            |> List.foldr f ( model.workoutIndex, [] )
+                            |> List.foldr f ( model.workoutIndex, [], False )
                 in
                 let
                     newModel =
@@ -644,6 +655,9 @@ update msg model =
                                 [ scrollToExercise newModel.workoutIndex
                                 , beep ()
                                 ]
+
+                        else if bep then
+                            beep ()
 
                         else
                             Cmd.none
