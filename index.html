@@ -16,6 +16,10 @@
         var audio = document.getElementById("beep");
         audio.play();
       });
+      app.ports.revbeep.subscribe(function () {
+        var audio = document.getElementById("revbeep");
+        audio.play();
+      });
     </script>
   </body>
 </html>

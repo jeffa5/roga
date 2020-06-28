@@ -7828,6 +7828,11 @@ var $elm$core$Tuple$pair = F2(
 		return _Utils_Tuple2(a, b);
 	});
 var $elm$browser$Browser$Navigation$pushUrl = _Browser_pushUrl;
+var $author$project$Main$revbeep = _Platform_outgoingPort(
+	'revbeep',
+	function ($) {
+		return $elm$json$Json$Encode$null;
+	});
 var $author$project$Main$NoOp = {$: 0};
 var $elm$core$Basics$always = F2(
 	function (a, _v0) {
@@ -8333,7 +8338,7 @@ var $author$project$Main$update = F2(
 												$elm$core$List$cons,
 												A2(set, exercise, decremented),
 												es),
-											true) : (_Utils_eq(
+											false) : (_Utils_eq(
 											$elm$time$Time$posixToMillis(decremented),
 											($elm$time$Time$posixToMillis(original_duration) / 2) | 0) ? _Utils_Tuple3(
 											newI,
@@ -8366,7 +8371,7 @@ var $author$project$Main$update = F2(
 						}();
 						var j = _v12.a;
 						var poses = _v12.b;
-						var bep = _v12.c;
+						var half = _v12.c;
 						var newModel = _Utils_eq(
 							j,
 							$elm$core$List$length(poses)) ? _Utils_update(
@@ -8379,7 +8384,7 @@ var $author$project$Main$update = F2(
 								[
 									$author$project$Main$scrollToExercise(newModel.u),
 									$author$project$Main$beep(0)
-								])) : (bep ? $author$project$Main$beep(0) : $elm$core$Platform$Cmd$none);
+								])) : (half ? $author$project$Main$revbeep(0) : $elm$core$Platform$Cmd$none);
 						return _Utils_Tuple2(
 							_Utils_update(
 								newModel,
@@ -16237,6 +16242,16 @@ var $author$project$Main$view = function (model) {
 											[
 												$elm$html$Html$Attributes$src('beep.wav'),
 												$elm$html$Html$Attributes$id('beep'),
+												$elm$html$Html$Attributes$type_('audio/wav')
+											]),
+										_List_Nil)),
+									$mdgriffith$elm_ui$Element$html(
+									A2(
+										$elm$html$Html$audio,
+										_List_fromArray(
+											[
+												$elm$html$Html$Attributes$src('revbeep.wav'),
+												$elm$html$Html$Attributes$id('revbeep'),
 												$elm$html$Html$Attributes$type_('audio/wav')
 											]),
 										_List_Nil)),

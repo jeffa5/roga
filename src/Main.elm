@@ -60,6 +60,9 @@ import Url.Parser.Query as Query
 port beep : () -> Cmd msg
 
 
+port revbeep : () -> Cmd msg
+
+
 toSeconds : Posix -> Int
 toSeconds t =
     Time.posixToMillis t // 1000
@@ -593,7 +596,7 @@ update msg model =
 
             else
                 let
-                    ( j, poses, bep ) =
+                    ( j, poses, half ) =
                         let
                             f ( i, exercise ) ( newI, es, bp ) =
                                 let
@@ -627,7 +630,7 @@ update msg model =
                                             Time.millisToPosix (Time.posixToMillis time - 1000)
                                     in
                                     if decremented == Time.millisToPosix 0 then
-                                        ( newI + 1, set exercise decremented :: es, True )
+                                        ( newI + 1, set exercise decremented :: es, False )
 
                                     else if Time.posixToMillis decremented == Time.posixToMillis original_duration // 2 then
                                         ( newI, set exercise decremented :: es, True )
@@ -656,8 +659,8 @@ update msg model =
                                 , beep ()
                                 ]
 
-                        else if bep then
-                            beep ()
+                        else if half then
+                            revbeep ()
 
                         else
                             Cmd.none
@@ -740,6 +743,14 @@ view model =
                         (audio
                             [ Attrs.src "beep.wav"
                             , Attrs.id "beep"
+                            , Attrs.type_ "audio/wav"
+                            ]
+                            []
+                        )
+                    , html
+                        (audio
+                            [ Attrs.src "revbeep.wav"
+                            , Attrs.id "revbeep"
                             , Attrs.type_ "audio/wav"
                             ]
                             []
